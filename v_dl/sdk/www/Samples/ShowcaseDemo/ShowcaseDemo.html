@@ -210,6 +210,8 @@ else {
 
 //VARS
 //**********
+const params = new URLSearchParams(window.location.search);
+const selected = Number(params.get("v"));
 var fpsOut = document.getElementById('boldStuff');
 var transOutput = document.getElementById('myTrans'),
 	rotOutput = document.getElementById('myRot'),
@@ -1223,7 +1225,7 @@ function drawAnalysisResults(emotionList, genderList, ageList, faces)
 		//displays gender, age and emotion data
 		canCon.translate(mWidth, 0);
 		canCon.scale(-1, 1);
-		drawGenderAgeEmotions(emotionList[i], genderList[i], ageList[i], i, activeMode);
+		drawGenderAgeEmotions(emotionList[i], genderList[i], ageList[i], i, activeMode,selected);
 		canCon.translate(mWidth, 0);
 		canCon.scale(-1, 1);
 	}

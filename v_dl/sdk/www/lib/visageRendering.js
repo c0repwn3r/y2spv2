@@ -1044,8 +1044,9 @@ function beep(duration, frequency, volume, type, callback) {
 * @param {int} age - estimated age
 * @param {int} index - used by detector for multiple faces
 * @param {int} mode - used to determine the operating mode
+ * @param {int} selected - which emotion is selected to go beep boop
 */
-function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
+function drawGenderAgeEmotions(emotion_values,gender,age,index,mode,selected)
 {
 	if (mode === MODE_TRACK)
 	{
@@ -1167,8 +1168,11 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 		{
 			for(var j = 0; j < numberOfEmotions; ++j)
 			{
-				console.log(emotion_values[j]);
-				beep(100, 500 + 500 * emotion_values[j], 1, "sine", () => {});
+				if (j === selected) {
+					console.log(emotion_values[j]);
+					beep(300, 500 + 500 * emotion_values[j], 1, "sine", () => {
+					});
+				}
 				var length = emotion_values[j] * (backgroundWidth-emotionsBarOffset-xOffset*3);
 				canCon.beginPath();
 				canCon.fillStyle="black";
