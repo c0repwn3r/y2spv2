@@ -62,18 +62,21 @@ self.onmessage = function (msg) {
 
 
 
-licenseName = "dev_html5.vlc"
-licenseURL = "dev_html5.vlc"
+let licenses = ["063-172-163-996-391-498-880-879-796-980-878.vlc", "289-098-022-858-883-076-746-061-783-146-760.vlc", "383-192-941-979-373-458-660-171-653-160-671.vlc", "695-404-032-262-884-678-752-402-455-252-704.vlc"];
+
 var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
 VisageModule = {
-   locateFile: locateFile,
-   preRun: [function() {
-		VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ console.log("Loading License Failed!") }); 
-        VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);        
-    }],
+	locateFile: locateFile,
+	preRun: [function() {
+		for (let i = 0; i < licenses.length; i++) {
+			VisageModule.FS_createPreloadedFile('/', licenses[i], licenses[i], true, false, function(){ },  function(){ console.log("Loading License " + licenses[i] + " Failed!") });
+		}
+		VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+	}],
 
-   onRuntimeInitialized: onModuleInitialized
+	onRuntimeInitialized: onModuleInitialized
 }
+
 importScripts('../../lib/visageSDK.js');
 importScripts('../../lib/visageRecognitionData.js');
 
@@ -90,23 +93,25 @@ function onModuleInitialized()
 		setTimeout(onModuleInitialized, 100);
 		return
 	}
-	
+
 	ppixels = VisageModule._malloc(mWidth*mHeight*4);
 	pixels = new Uint8Array(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
-	
-	alert = function(msg) 
-	{ 
-		console.log(msg); 
+
+	alert = function(msg)
+	{
+		console.log(msg);
 	}
 
-	VisageModule.initializeLicenseManager(licenseName);
+	for (let i = 0; i < licenses.length; i++) {
+		VisageModule.initializeLicenseManager(licenses[i]);
+	}
 	m_Recog = new VisageModule.VisageFaceRecognition();
 	m_faceDataArray = new VisageModule.FaceDataVector();
 	m_faceDataArray.push_back(new VisageModule.FaceData());
 	recogInitialized = true;
 	uniquePersonCnt = 0;
 	self.postMessage({aTopic:'initialization done'});
-	
+
 }
 
 /**
@@ -129,8 +134,8 @@ function changeName(changedNames)
 			m_Recog.replaceDescriptorName(changedNames[currentName], i)
 		}
 	}
-	
-	self.postMessage({aTopic: 'name changed'});		
+
+	self.postMessage({aTopic: 'name changed'});
 }
 
 
@@ -142,15 +147,15 @@ function changeName(changedNames)
 function loadGallery()
 {
 	if (recogInitialized)
-	{	
+	{
 		m_Recog.loadGallery(galleryFileName, function(name, status)
-		{   
+		{
 			var	names = [];
-			
-			//If gallery is empty sends an empty array, otherwise adds the name from gallery in the array. 
-			//If there is more then one descriptor per name the name is added only once. 
+
+			//If gallery is empty sends an empty array, otherwise adds the name from gallery in the array.
+			//If there is more then one descriptor per name the name is added only once.
 			if(status)
-			{	
+			{
 				if (m_Recog.getDescriptorCount() === 0)
 				{
 					names = [];
@@ -171,7 +176,7 @@ function loadGallery()
 					}
 				}
 			}
-			self.postMessage({aTopic: 'gallery loaded', nameArray: names});	
+			self.postMessage({aTopic: 'gallery loaded', nameArray: names});
 			for(var i = 0; i < names.length; i++)
 			{
 				delete names[i];
@@ -183,24 +188,24 @@ function loadGallery()
 /**
 * Saves VisageFaceRecognition gallery to IndexedDB.
 * <br/><br/>
-* 
+*
 */
 function saveGallery()
 {
 	if (recogInitialized)
 	{
 		m_Recog.saveGallery(galleryFileName, function(name, status)
-		{   
+		{
 		   if(status)
-		   {	
-				self.postMessage({aTopic: 'gallery saved'});	
+		   {
+				self.postMessage({aTopic: 'gallery saved'});
 		   }
 		});
 	}
 }
 
 /**
-* Clears all face descriptors from the VisageFaceRecognition gallery. 
+* Clears all face descriptors from the VisageFaceRecognition gallery.
 * <br/><br/>
 * Deletes all descriptors from the gallery.
 */
@@ -209,7 +214,7 @@ function clearGallery()
 	if (recogInitialized)
 	{
 		m_Recog.resetGallery();
-		
+
 	}
 	self.postMessage({aTopic:'gallery cleared'});
 }
@@ -231,7 +236,7 @@ function resetInitialization()
 /**
 * Extracts the face descriptor for face recognition from an image and compares it with all descriptors in the current VisageFaceRecognition gallery.
 * <br/><br/>
-* Tries to recognize face based on descriptors' similarity. If the similarity is below similarityThreshold(0.65) threshold through numOfDescPerFace(5) iterations, the face is added to the gallery. 
+* Tries to recognize face based on descriptors' similarity. If the similarity is below similarityThreshold(0.65) threshold through numOfDescPerFace(5) iterations, the face is added to the gallery.
 * If freeze gallery option is checked new face descritpors will not be added to the gallery.
 */
 function trackRecognition()
@@ -242,12 +247,12 @@ function trackRecognition()
 		{
 			pixels[i] = imageData[i];
 		}
-		
+
 		var descriptor = new VisageModule.VectorShort();
 		var similarityArray = new VisageModule.VectorFloat();
 		var nameArray = new VisageModule.VectorString();
 		var numRecFaces = 1;
-		
+
 		//Extract the face descriptor from an image to the descriptor variable
 		var success = m_Recog.extractDescriptor(
 			m_faceDataArray.get(0),
@@ -267,12 +272,12 @@ function trackRecognition()
 		//Identity is recognized successfully (similarity index is over the threshold)
 		//Return the name of the identity
 		if(numOfSim > 0 && similarityArray.get(0) > similarityThreshold)
-		{	
+		{
 			resetInitialization();
 			recognizedName = nameArray.get(0);
-			descriptor.delete();	
+			descriptor.delete();
 		}
-		//There are no similar faces found in the gallery, go into initialization phase 
+		//There are no similar faces found in the gallery, go into initialization phase
 		//collect numOfDescPerFace(5) descriptors for the new identity and then add it to the gallery
 		else
 		{
@@ -304,12 +309,12 @@ function trackRecognition()
 			}
 			//There are no descriptors for the new identity, add the first one
 			else
-			{	
+			{
 				descArray.push(descriptor);
 			}
-			
+
 			//If numOfDescPerFace(5) descriptors are collected assign an unique name and add them to the gallery,
-			//else assign "?" 
+			//else assign "?"
 			if(descArray.length >= numOfDescPerFace)
 			{
 				recognizedName = "Person"+(uniquePersonCnt+1).toString();
@@ -325,8 +330,8 @@ function trackRecognition()
 			{
 				recognizedName = "?";
 			}
-		
-		}		
+
+		}
 		similarityArray.delete();
 		nameArray.delete();
 	}
@@ -337,27 +342,27 @@ function trackRecognition()
 		{
 			pixels[i] = imageData[i];
 		}
-		
+
 		if(descArray.length > 0)
 		{
 			resetInitialization();
 		}
-		
+
 		//Get the number of descriptors from the gallery
 		var count = m_Recog.getDescriptorCount();
-		
+
 		if (count > 0)
 		{
 			var descriptor = new VisageModule.VectorShort();
 			var similarityArray = new VisageModule.VectorFloat();
 			var nameArray = new VisageModule.VectorString();
-			
+
 			//Extract the face descriptor for face recognition from an image
 			m_Recog.extractDescriptor(m_faceDataArray.get(0), mWidth, mHeight, ppixels, descriptor);
-			
+
 			//Check similarity
 			var numOfSim = m_Recog.recognize(descriptor, 1, nameArray, similarityArray);
-			
+
 			//Face is recognized, send its name
 			if(numOfSim>0 && similarityArray.get(0)>similarityThreshold)
 			{
@@ -368,10 +373,10 @@ function trackRecognition()
 			{
 				recognizedName = "?";
 			}
-			
+
 			descriptor.delete();
 			similarityArray.delete();
-			nameArray.delete();	
+			nameArray.delete();
 		}
 		else
 		{

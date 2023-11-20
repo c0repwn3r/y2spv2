@@ -1486,7 +1486,10 @@ function onModuleInitialized()
 	pixels = new Uint8ClampedArray(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
 
 	//set up tracker and licensing, valid license needs to be provided
-	VisageModule.initializeLicenseManager(licenseName);
+	for (let i = 0; i < licenses.length; i++) {
+		VisageModule.initializeLicenseManager(licenses[i]);
+	}
+
 	m_Tracker = new VisageModule.VisageTracker("Head Tracker.cfg");
 	TfaceDataArray = new VisageModule.FaceDataVector();
 	for (var i = 0; i < maxFacesTracker; ++i)
@@ -1641,8 +1644,8 @@ function createWorkerAnalysis()
 
 
 <script>
-licenseName = "dev_html5.vlc"
-licenseURL = "dev_html5.vlc"
+	let licenses = ["063-172-163-996-391-498-880-879-796-980-878.vlc", "289-098-022-858-883-076-746-061-783-146-760.vlc", "383-192-941-979-373-458-660-171-653-160-671.vlc", "695-404-032-262-884-678-752-402-455-252-704.vlc"];
+
 var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
 VisageModule = {
 	locateFile: locateFile,
@@ -1652,7 +1655,9 @@ VisageModule = {
 		VisageModule.FS_createPreloadedFile('/', 'Head Tracker.cfg', "../../lib/Head Tracker.cfg", true, false);
 		VisageModule.FS_createPreloadedFile('/', 'Face Detector.cfg', "../../lib/Face Detector.cfg", true, false);
 		VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
-		VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") });
+		for (let i = 0; i < licenses.length; i++) {
+			VisageModule.FS_createPreloadedFile('/', licenses[i], licenses[i], true, false, function(){ },  function(){ console.log("Loading License " + licenses[i] + " Failed!") });
+		}
 
 	}],
 

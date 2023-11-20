@@ -73,14 +73,16 @@ self.onmessage = function (msg) {
 }
 
 
-licenseName = "dev_html5.vlc"
-licenseURL = "dev_html5.vlc"
+let licenses = ["063-172-163-996-391-498-880-879-796-980-878.vlc", "289-098-022-858-883-076-746-061-783-146-760.vlc", "383-192-941-979-373-458-660-171-653-160-671.vlc", "695-404-032-262-884-678-752-402-455-252-704.vlc"];
+
 var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
 VisageModule = {
    locateFile: locateFile,
    preRun: [function() {
-		VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ console.log("Loading License Failed!") });
-        VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+	   for (let i = 0; i < licenses.length; i++) {
+		   VisageModule.FS_createPreloadedFile('/', licenses[i], licenses[i], true, false, function(){ },  function(){ console.log("Loading License " + licenses[i] + " Failed!") });
+	   }
+	   VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
     }],
 
    onRuntimeInitialized: onModuleInitialized
@@ -110,7 +112,9 @@ function onModuleInitialized()
 		console.log(msg);
 	}
 
-	VisageModule.initializeLicenseManager(licenseName);
+	for (let i = 0; i < licenses.length; i++) {
+		VisageModule.initializeLicenseManager(licenses[i]);
+	}
 	m_FaceAnalyser = new VisageModule.VisageFaceAnalyser();
 
 	m_faceDataArrayTrack = new VisageModule.FaceDataVector();
