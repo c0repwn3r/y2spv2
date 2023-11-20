@@ -19,12 +19,6 @@
 <body style="background-color: white; margin: 0px;">
 	<div id="cinema" >
 		<div id="outer-container">
-			<div id="tracktext">
-				<p class="whitetextcenter" align="center">TRACKER: Single-face tracking, higher performance and accuracy.</p>
-			</div>
-			<div id="detecttext">
-				<p class="whitetextcenter" align="center">DETECTOR: Multiple face detection, lower performance and accuracy.</p>
-			</div>
 
 			<div id="downloadinfo" align="center">
 				<div  id="status" align="center">Downloading...</div>
@@ -36,149 +30,9 @@
 			<div id="inner-container">
 				<img id="logogrey" src="../../lib/logotype.png">
 				<canvas id="canvas"></canvas>
-				<canvas id="bgcanvas" width="640" height="480" style="display:none"></canvas>
-				<video class="video" id="webcam" width="640px" height="480px" autoplay playsinline></video>
+				<canvas id="bgcanvas" style="display:none;width:100%;height:100%;"></canvas>
+				<video class="video" id="webcam" style="width:100%;height:100%;" autoplay playsinline></video>
 			</div>
-		</div>
-
-		<div id="right-container">
-
-			<div id="optionbox">
-				<br>
-				<div>
-					<a href="#" class="tooltip">
-						<button type="Button" class="button" id="ToggleTD" onclick="ToggleTrackDetect();">Switch to Detector</button>
-						<span id="tooltiptext">DETECTOR: Multiple face detection, lower performance and accuracy.</span>
-					</a>
-				</div>
-				<br>
-				<div class="toolbox" id="confDropDown">
-					<select id="myList" onchange="testConfig()">
-						<option>Head Tracker.cfg</option>
-						<option>Facial Features Tracker.cfg</option>
-						<option>Facial Features Tracker - With Ears.cfg</option>
-					</select>
-				</div>
-				<br>
-				<label class="inputButton" id="inputButton" style ="display:none">
-					UPLOAD IMAGE!
-					<input id="file" type='file' name='image' accept='image/*' onchange='openFile(event)' style ="display:none">
-				</label>
-				<img id = "image" style ="display:none">
-				<br><br><br>
-				<div class="whitetext">DRAW OPTIONS:</div>
-				<div class="specific">
-					<div>
-						<div class="whitetext">
-							<input type="checkbox" checked="checked" onclick="toggleFeaturePoints();">
-							FEATURE POINTS
-						</div>
-					</div>
-					<div>
-						<div class="whitetext">
-							<input type="checkbox" id="irisChb" onclick="toggleIrisRadius();">
-							IRIS RADIUS
-						</div>
-					</div>
-					<div id="optionEars">
-						<div class="whitetext">
-							<input type="checkbox" id="earsChb" onclick="toggleEarsTracking();">
-							EARS
-						</div>
-					</div>
-					<div id="optionGaze">
-						<div class="whitetext">
-							<input type="checkbox" id="gazeChb" onclick="toggleGaze();">
-							GAZE
-						</div>
-					</div>
-					<div id="optionFMA">
-						<div class="whitetext">
-							<input type="checkbox" checked="checked" onclick="toggleFMA();">
-							FACE MODEL AXIS
-						</div>
-					</div>
-					<div id="optionWireframe">
-						<div class="whitetext">
-							<input id="WireframeCheck" type="checkbox" onclick="toggleWireframe();">
-							WIREFRAME
-						</div>
-					</div>
-					<div id="optionTiger">
-						<div class="whitetext">
-							<input id="TigerCheck" type="checkbox" onclick="toggleTiger();">
-							TIGER MODEL
-						</div>
-					</div>
-					<div>
-						<div class="whitetext">
-							<input type="checkbox" checked="checked" onclick="toggleGTQ();">
-							GLOBAL TRACKING QUALITY
-						</div>
-					</div>
-					<div>
-						<div class="whitetext">
-							<input type="checkbox" checked="checked" onclick="togglePPTQ();">
-							FEATURE POINT QUALITY
-						</div>
-					</div>
-				</div>
-				<br>
-				<div class="whitetext">FACE ANALYSIS:</div>
-				<div class="specific">
-					<div>
-						<div class="whitetext">
-							<input type="checkbox" onclick="toggleGender();">
-							GENDER
-						</div>
-						<div class="whitetext">
-							<input type="checkbox" onclick="toggleAge();">
-							AGE
-						</div>
-						<div class="whitetext">
-							<input type="checkbox" onclick="toggleEmotions();">
-							EMOTIONS
-						</div>
-					</div>
-				</div>
-				<br>
-				<div class="whitetext" id="textRecognition">FACE RECOGNITION:</div>
-				<div class="specific" id="optionRecognition">
-					<div id="col">
-						<div class="whitetextright">
-							<input type="checkbox" onclick="toggleMatch();" id="match">
-							MATCH FACES
-							<br>
-							<input type="checkbox" onclick="toggleFreeze();" id="freeze">
-							FREEZE GALLERY
-							<br>
-							<a class="material-icons" id="info" title="To rename an identity, &#013;click on its current name, &#013;type in a new name, &#013;and press the enter key to confirm."
-							style ="display:none;font-size:20px">info</a>
-						</div>
-						<div class='square-box' id="squareBox" style ="display:none">
-							<div class='square-content' id="box">	</div>
-						</div>
-					</div>
-					<br>
-						<div class="whitetext">
-							<button type="Button" class="buttonrec" id="loadGal" onclick="onClickLoadGallery();">LOAD</button>
-							<button type="Button" class="buttonrec" id="saveGal" onclick="onClickSaveGallery();">SAVE</button>
-							<button type="Button" class="buttonrec" id="clearGal" onclick="onClickClearGallery();">CLEAR</button>
-						</div>
-				</div>
-			</div>
-
-			<div id="data" style= "padding: 10px">
-				<p class="whitetext"><b>RESULTS:</b></p>
-				<p class="whitetext">FRAME RATE: <b id="boldStuff">29.3fps</b> </p>
-				<p class="vanishing">TRANSLATION: <b id="myTrans">----</b> </p>
-				<p class="vanishing">ROTATION: <b id="myRot">----</b> </p>
-				<p class="vanishing">STATUS: <b id="myStat">[TRACK_STAT_OFF]</b> </p>
-			</div>
-
-			<a href="http://www.visagetechnologies.com">
-				<img src="../../lib/logotype.png" id="logosmall">
-			</a>
 		</div>
 	</div>
 
@@ -190,33 +44,11 @@
 
 <script type='text/javascript'>
 
-function toggleSlider() {
-if ($("#panelThatSlides").is(":visible")) {
-	$("#contentThatFades").fadeOut(600, function(){
-		$("#panelThatSlides").slideUp();
-	});
-}
-if ($("#panelThatSlides2").is(":visible")) {
-	$("#contentThatFades2").fadeOut(600, function(){
-		$("#panelThatSlides2").slideUp();
-	});
-}
-else {
-	$("#panelThatSlides").slideDown(600, function(){
-		$("#contentThatFades").fadeIn();
-	});
-}
-}
-
 //VARS
 //**********
 const params = new URLSearchParams(window.location.search);
 const selected = Number(params.get("v"));
-var fpsOut = document.getElementById('boldStuff');
-var transOutput = document.getElementById('myTrans'),
-	rotOutput = document.getElementById('myRot'),
-	statOutput = document.getElementById('myStat'),
-	canvas = document.getElementById('canvas');
+
 
 //GUI draw control
 var drawAge = true;
@@ -291,12 +123,8 @@ function toggleAge()
 }
 
 //FPS - Refreshes FPS display every 1000ms
-setInterval(function(){
-	fpsOut.innerHTML = fps.toFixed(1) + "fps";
-}, 10);
 
 function testConfig(){
-	var mylist=document.getElementById("myList");
 	var cfgPath = mylist.options[mylist.selectedIndex].text;
 	if(activeMode == MODE_TRACK)
 	{
@@ -317,15 +145,6 @@ function updateGUI()
 		return;
 
 	var cfg = m_Tracker.getConfiguration();
-
-    statusIrisRadius = (cfg.getProcessEyes() >=2) ? true : false;
-    document.getElementById("irisChb").checked = statusIrisRadius;
-    //
-    statusEars = (cfg.getRefineEars() == 1) ? true : false;
-    document.getElementById("earsChb").checked = statusEars;
-    //
-    statusGaze = (cfg.getProcessEyes() == 1 || cfg.getProcessEyes() == 3) ? true : false;
-    document.getElementById("gazeChb").checked = statusGaze;
 
 	m_Tracker.setConfiguration(cfg);
 	cfg.delete();
@@ -1008,8 +827,8 @@ function trackFrame()
 			initialized3D = true;
 		}
 
-		transOutput.innerHTML = "[" + TfaceData.getFaceTranslation()[0].toFixed(2) + "," + TfaceData.getFaceTranslation()[1].toFixed(2) + "," + TfaceData.getFaceTranslation()[2].toFixed(2) + "]";
-		rotOutput.innerHTML = "[" + TfaceData.getFaceRotation()[0].toFixed(2) + "," + TfaceData.getFaceRotation()[1].toFixed(2) + "," + TfaceData.getFaceRotation()[2].toFixed(2) + "]";
+		//transOutput.innerHTML = "[" + TfaceData.getFaceTranslation()[0].toFixed(2) + "," + TfaceData.getFaceTranslation()[1].toFixed(2) + "," + TfaceData.getFaceTranslation()[2].toFixed(2) + "]";
+		//rotOutput.innerHTML = "[" + TfaceData.getFaceRotation()[0].toFixed(2) + "," + TfaceData.getFaceRotation()[1].toFixed(2) + "," + TfaceData.getFaceRotation()[2].toFixed(2) + "]";
 	}
 
 	if (trackerReturnState[0] !== VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value)
@@ -1051,7 +870,7 @@ function trackFrame()
 		drawAnalysisResults(EmotionListTrack, GenderTrack, AgeTrack, maxFacesTracker);
 	}
 
-	statOutput.innerHTML = "[" + trackerStates[trackerReturnState[0]] + "]";
+	//statOutput.innerHTML = "[" + trackerStates[trackerReturnState[0]] + "]";
 }
 
 /*
@@ -1213,6 +1032,10 @@ function detectFrame()
 	}
 }
 
+let emotions = [];
+let got_data_yet = false;
+let played_initializing = false;
+
 //Draws analysis results
 function drawAnalysisResults(emotionList, genderList, ageList, faces)
 {
@@ -1221,6 +1044,8 @@ function drawAnalysisResults(emotionList, genderList, ageList, faces)
 		if(activeMode == MODE_TRACK)
 			if(trackerReturnState[i] !== VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value)
 				continue;
+
+		emotions = emotionList[i];
 
 		//displays gender, age and emotion data
 		canCon.translate(mWidth, 0);
@@ -1231,6 +1056,47 @@ function drawAnalysisResults(emotionList, genderList, ageList, faces)
 	}
 }
 
+//if you have another AudioContext class use that one, as some browsers have a limit
+var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+//All arguments are optional:
+
+//duration of the tone in milliseconds. Default is 500
+//frequency of the tone in hertz. default is 440
+//volume of the tone. Default is 1, off is 0.
+//type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
+//callback to use on end of tone
+function beep(duration, frequency, volume, type, callback) {
+	var oscillator = audioCtx.createOscillator();
+	var gainNode = audioCtx.createGain();
+
+	oscillator.connect(gainNode);
+	gainNode.connect(audioCtx.destination);
+
+	if (volume){gainNode.gain.value = volume;}
+	if (frequency){oscillator.frequency.value = frequency;}
+	if (type){oscillator.type = type;}
+	if (callback){oscillator.onended = callback;}
+
+	oscillator.start(audioCtx.currentTime);
+	oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+};
+
+function beepboop() {
+	if (emotions.length >= (selected - 1)) {
+		let value = emotions[selected];
+		let percent = Math.floor(value * 100);
+		if (percent === 0) { percent = 1; }
+		if (value > 0.2) {
+			beep(50 + value * 200, 300 + value * 400, 1, "triangle", () => {});
+		}
+		setTimeout(beepboop, (1/percent));
+	} else {
+		setTimeout(beepboop, 5);
+	}
+}
+
+beepboop();
 
 /*
 *Method that is called on every frame via requestAnimationFrame mechanism.
@@ -1247,7 +1113,7 @@ function processFrame()
 	if(firstRun)
 	{
 		firstRun = false;
-		trackText.style.display = "block";
+		//trackText.style.display = "block";
 		opacityControl();
 
 		if(typeof renderer !== "undefined")
@@ -1309,9 +1175,9 @@ function decOpacity()
 {
 	if(currentOpacity > 0 && decOpacityEnabled)
 		{
-			currentOpacity = Math.max(currentOpacity - 1/(fps*decTime), 0);
-			detectText.style.opacity = currentOpacity;
-			trackText.style.opacity = currentOpacity;
+			//currentOpacity = Math.max(currentOpacity - 1/(fps*decTime), 0);
+			//detectText.style.opacity = currentOpacity;
+			//trackText.style.opacity = currentOpacity;
 		}
 	else
 	{
@@ -1322,8 +1188,8 @@ function decOpacity()
 function opacityControl()
 {
 	currentOpacity = 1.00;
-	detectText.style.opacity = currentOpacity;
-	trackText.style.opacity = currentOpacity;
+	//detectText.style.opacity = currentOpacity;
+	//trackText.style.opacity = currentOpacity;
 	setTimeout(function(){
 		decOpacityEnabled = true;
 	}, 2000);
@@ -1332,8 +1198,8 @@ function opacityControl()
 /*
 ***Tracker and detector swich contol
 */
-var detectText = document.getElementById('detecttext');
-var trackText = document.getElementById('tracktext');
+//var detectText = document.getElementById('detecttext');
+//var trackText = document.getElementById('tracktext');
 
 function ToggleTrackDetect(){
 	var results = document.getElementsByClassName('vanishing');
@@ -1367,8 +1233,8 @@ function ToggleTrackDetect(){
 			results[i].style.display = "none";
 		}
 		document.getElementById('ToggleTD').innerHTML = "Switch to Tracker";
-		detectText.style.display = "block";
-		trackText.style.display = "none";
+		//detectText.style.display = "block";
+		//trackText.style.display = "none";
 
 
 		workerAnalysis.postMessage(

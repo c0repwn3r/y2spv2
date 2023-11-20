@@ -1010,32 +1010,6 @@ function drawGaze(faceData){
 	reye.delete();
 }
 
-//if you have another AudioContext class use that one, as some browsers have a limit
-var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
-
-//All arguments are optional:
-
-//duration of the tone in milliseconds. Default is 500
-//frequency of the tone in hertz. default is 440
-//volume of the tone. Default is 1, off is 0.
-//type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
-//callback to use on end of tone
-function beep(duration, frequency, volume, type, callback) {
-	var oscillator = audioCtx.createOscillator();
-	var gainNode = audioCtx.createGain();
-
-	oscillator.connect(gainNode);
-	gainNode.connect(audioCtx.destination);
-
-	if (volume){gainNode.gain.value = volume;}
-	if (frequency){oscillator.frequency.value = frequency;}
-	if (type){oscillator.type = type;}
-	if (callback){oscillator.onended = callback;}
-
-	oscillator.start(audioCtx.currentTime);
-	oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
-};
-
 /**
 * Draws the box with gender, age and emotion estimation.
 * <br/><br/>
@@ -1168,11 +1142,6 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode,selected)
 		{
 			for(var j = 0; j < numberOfEmotions; ++j)
 			{
-				if (j === selected) {
-					console.log(emotion_values[j]);
-					beep(300 + 500 * emotion_values[j], 500 + 500 * j/7, 1, "sine", () => {
-					});
-				}
 				var length = emotion_values[j] * (backgroundWidth-emotionsBarOffset-xOffset*3);
 				canCon.beginPath();
 				canCon.fillStyle="black";
