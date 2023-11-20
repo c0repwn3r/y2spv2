@@ -1170,7 +1170,7 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode,selected)
 			{
 				if (j === selected) {
 					console.log(emotion_values[j]);
-					beep(300, 500 + 500 * emotion_values[j], 1, "sine", () => {
+					beep(300 + 500 * emotion_values[j], 500 + 500 * j/7, 1, "sine", () => {
 					});
 				}
 				var length = emotion_values[j] * (backgroundWidth-emotionsBarOffset-xOffset*3);
