@@ -14,7 +14,7 @@ var IRIS_COLOR			=	"rgba(200,80,0,255)",
 	FEMALE_GENDER		=	"rgba(255,0,0,0.8)",
 	GRAY_COLOR		=	"rgba(128,128,128,1)",
 	GREEN_COLOR		=	"rgba(0,255,0,1)";
-	
+
 var CHIN_POINTS	= "#8080FF",
 	INNER_LIP_POINTS	=	"#EC0000",
 	OUTER_LIP_POINTS	=	"#EC0000",
@@ -26,11 +26,11 @@ var CHIN_POINTS	= "#8080FF",
 	EYEBROWS_COLOR		= 	"#E3FE49",
 	HAIR_COLOR		= 	"#646464",
 	GAZE_COLOR		=	"#00FF00";
-	
+
 var CALIB_COLOR = "#1d97e9",
 	ESTIM_COLOR = "#37fd82";
-	
-	
+
+
 var styles = {'LINE' : 0, 'LINELOOP' : 1, 'POINT' : 2, 'SPLINE' : 3}
 
 var splineResolution = 5;
@@ -87,7 +87,7 @@ function drawPoints2D(points, pointsNum, style, featurePoints2D, color, radius, 
 
 	canCon.beginPath();
 	canCon.closePath();
-	
+
 	var n = 0;
 	for (var i = 0; i < pointsNum*2; i+=2){
 		if (featurePoints2D.FPIsDefined(points[i],points[i+1]) === true){
@@ -157,7 +157,7 @@ function drawPoints2D(points, pointsNum, style, featurePoints2D, color, radius, 
 					}
 				}
 			}
-			
+
 			n++;
 		}
 	}
@@ -181,9 +181,9 @@ function drawPoints2D(points, pointsNum, style, featurePoints2D, color, radius, 
 			}
 		}
 	}
-	
-	
-			
+
+
+
 	if (style == styles.LINELOOP){
 		var x = featurePoints2D.getFPPos(points[0],points[1])[0]*canvas.width;
 		var y = (1 - featurePoints2D.getFPPos(points[0],points[1])[1])*canvas.height;
@@ -195,19 +195,19 @@ function drawPoints2D(points, pointsNum, style, featurePoints2D, color, radius, 
 }
 
 /*
-* Draw irises 
+* Draw irises
 */
 function drawIrises(faceData, width, height)
 {
     var irisRadius = faceData.getIrisRadius();
-    
+
     if (irisRadius[0] > 0 || irisRadius[1] > 0)
     {
         var featurePoints2D = faceData.getFeaturePoints2D();
-        
+
         var fpGroup = 3;
         var fpIndex = [5,6];
-        
+
         for (var irisIndex = 0; irisIndex < 2; irisIndex+=1)
         {
             if (irisRadius[irisIndex] > 0)
@@ -235,7 +235,7 @@ function drawIrises(faceData, width, height)
 * Draw facial features
 * <br/><br/>
 * @param {FaceDataVector} faceData - Array of {@link FaceData|FaceData} objects containing the tracking results
-* @param {bool} drawQuality 
+* @param {bool} drawQuality
 * Extracts location of feature points from faceData. Calls drawPoints2D() function for drawing feature points and lines between points on canvas.
 */
 function drawFaceFeatures(faceData, drawQuality)
@@ -243,14 +243,14 @@ function drawFaceFeatures(faceData, drawQuality)
 	if (typeof drawQuality === 'undefined') drawQuality = false;
 
 	var radius = (faceData.faceScale / mWidth) * 10;
-	
+
 	var chinPoints = [
 		2,	1,
 	]
 
 	drawPoints2D(chinPoints, 1, styles.POINT,  faceData.getFeaturePoints2D(),POINTS_COLOR, radius, drawQuality);
 
-	
+
 	var innerLipPoints = [
 		2,	2,
 		17,	18,
@@ -389,7 +389,7 @@ function drawFaceFeatures(faceData, drawQuality)
 		]
 		drawPoints2D(irisPoints, 1,styles.POINT, faceData.getFeaturePoints2D(),IRIS_COLOR,radius);
 	}
-	
+
 	if(faceData.getEyeClosure()[1])
 	{
 		//if eye is open, draw the iris
@@ -605,7 +605,7 @@ function drawFaceFeatures(faceData, drawQuality)
 		15,	4,
 		15,	2
 	]
-	
+
 	drawPoints2D(contourPointsPhysical, 17, styles.SPLINE, faceData.getFeaturePoints2D(), SPLINES_COLOR, true);
 	drawPoints2D(contourPointsPhysical, 17, styles.POINT, faceData.getFeaturePoints2D(), POINTS_COLOR, radius, drawQuality, true);
 }
@@ -613,7 +613,7 @@ function drawFaceFeatures(faceData, drawQuality)
 /**
 * Draw tracking quality bar on canvas
 * <br/><br/>
-* @param {float} quality - Estimated tracking quality level for the current frame. The value is between 0 and 1. 
+* @param {float} quality - Estimated tracking quality level for the current frame. The value is between 0 and 1.
 */
 function drawTrackingQualityBar(quality)
 {
@@ -626,7 +626,7 @@ function drawTrackingQualityBar(quality)
 	var barPosY = mHeight*0.9;
 	var barColor = "rgba("+ (255 - quality*255).toFixed(0) + "," + (quality*255).toFixed(0) + ",0,1.0)";
 
-	var barColor 
+	var barColor
 	//background rectangle
 	canCon.beginPath();
 	canCon.rect(barPosX, barPosY, barWidth, barHeight);
@@ -664,7 +664,7 @@ function drawName(x,y,name)
 		canCon.fillText(""+ name, x+6, y+6);
 		canCon.closePath();
 		canCon.translate(mWidth, 0);
-		canCon.scale(-1, 1);    
+		canCon.scale(-1, 1);
 }
 
 /**
@@ -682,54 +682,54 @@ function draw3DModel()
 			faceModelGeometry.dispose();
 
 		var texCoordsStatic = TfaceDataArray.get(0).getFaceModelTextureCoordsStatic();
-					
+
 		tempUV = [[]];
 
 		var triangles = TfaceDataArray.get(0).getFaceModelTriangles();
 		for(var i = 0; i < triangles.length; i += 3)
-		{					
+		{
 			face = [
 			new THREE.Vector2(
 				texCoordsStatic[
 					triangles[i] * 2
-					], 
+					],
 				texCoordsStatic[
 					triangles[i] * 2 + 1
 					]
 				),
-				
+
 			new THREE.Vector2(
 				texCoordsStatic[
 					triangles[i + 1] * 2
-					], 
+					],
 				texCoordsStatic[
 					triangles[i + 1] * 2 + 1
 					]
 				),
-				
+
 			new THREE.Vector2(
 				texCoordsStatic[
 					triangles[i + 2] * 2
-					], 
+					],
 				texCoordsStatic[
 					triangles[i + 2] * 2 + 1
 					]
 				)
-			];									
-			
+			];
+
 			tempUV[0].push(face);
 		}
 
 		faceModelGeometry = new THREE.Geometry();
 		//faceModelTriangleCount
-		
+
 		var triangles = TfaceData.getFaceModelTriangles();
 		for(i=0;i<TfaceData.faceModelTriangleCount*3;i+=3)
-		{	
+		{
 			var testFace = new THREE.Face3(triangles[i],triangles[i+1], triangles[i+2] ) ;
 			faceModelGeometry.faces.push(testFace);
 		}
-		
+
 		var wireframeVertices = TfaceData.getFaceModelVertices();
 		for(i=0;i<TfaceData.faceModelVertexCount*3;i+=3)
 		{
@@ -739,21 +739,21 @@ function draw3DModel()
 
 		faceModelGeometry.faceVertexUvs = tempUV;
 		faceModelGeometry.uvsNeedUpdate = true;
-		
+
 		faceModelMesh = new THREE.Mesh(faceModelGeometry,  materialTiger);
-				
+
 		faceModelMesh.position.set(TfaceData.getFaceTranslation()[0], TfaceData.getFaceTranslation()[1], -TfaceData.getFaceTranslation()[2]);
 		faceModelMesh.rotation.set(TfaceData.getFaceRotation()[0], -TfaceData.getFaceRotation()[1], -TfaceData.getFaceRotation()[2]);
 		scene.add(faceModelMesh);
 		renderer.render(scene, v_camera);
-		
+
 		if(statusWireframe)
 		{
 			faceModelMesh.material = materialWireframe;
 			faceModelMesh.material.needsUpdate = true;
 			renderer.render(scene, v_camera);
 		}
-	
+
 		meshCreated = true;
 	}
 	else
@@ -767,7 +767,7 @@ function draw3DModel()
 		}
 
 		faceModelMesh.geometry.verticesNeedUpdate = true;
-	
+
 		faceModelMesh.position.set(TfaceData.getFaceTranslation()[0], TfaceData.getFaceTranslation()[1], -TfaceData.getFaceTranslation()[2]);
 		faceModelMesh.rotation.set(TfaceData.getFaceRotation()[0], -TfaceData.getFaceRotation()[1], -TfaceData.getFaceRotation()[2]);
 		faceModelMesh.rotation.order = "YXZ";
@@ -784,7 +784,7 @@ function draw3DModel()
 */
 function drawFaceModelAxes(faceData)
 {
-	
+
 	var r = faceData.getFaceRotation();
 	var f = faceData.cameraFocus;
 
@@ -793,20 +793,20 @@ function drawFaceModelAxes(faceData)
 
 	var fp1 = faceData.getFeaturePoints3D().getFP(4,1);
 	var fp2 = faceData.getFeaturePoints3D().getFP(4,2);
-	
+
 	var t = [
 		(fp1.getPos(0) + fp2.getPos(0)) / 2,
 		(fp1.getPos(1) + fp2.getPos(1)) / 2,
 		(fp1.getPos(2) + fp2.getPos(2)) / 2
 	];
-	
+
 	var sinrx = Math.sin(r[0]);
 	var sinry = Math.sin(r[1] + Math.PI);
 	var sinrz = Math.sin(r[2]);
 	var cosrx = Math.cos(r[0]);
 	var cosry = Math.cos(r[1] + Math.PI);
 	var cosrz = Math.cos(r[2]);
-	
+
 	//set the rotation matrix
 	var R00 = cosry*cosrz+sinrx*sinry*sinrz;
 	var R01 = -cosry*sinrz+sinrx*sinry*cosrz;
@@ -817,7 +817,7 @@ function drawFaceModelAxes(faceData)
 	var R20 = -sinry*cosrz+sinrx*cosry*sinrz;
 	var R21 = sinry*sinrz+sinrx*cosry*cosrz;
 	var R22 = cosrx*cosry;
-	
+
 	var vertices = [
 		0,	0,	0,
 		-0.07,	0,	0,
@@ -828,7 +828,7 @@ function drawFaceModelAxes(faceData)
 	];
 
 	var vertices2D = [];
-	
+
 	// variables for aspect correction
 	var x_offset = 1;
 	var y_offset = 1;
@@ -838,7 +838,7 @@ function drawFaceModelAxes(faceData)
 		x_offset = w / h;
 	else if (w < h)
 		y_offset = h / w;
-	
+
 	//loop over all vertices
 	for (var i = 0; i < 6; i++)
 	{
@@ -858,7 +858,7 @@ function drawFaceModelAxes(faceData)
 		vertices2D[2*i+0] = ((x * -0.5 / x_offset) + 0.5) * w;
 		vertices2D[2*i+1] = (1.0 - ((y *  0.5 / y_offset) + 0.5)) * h;
 	}
-	
+
 	//draw x axis
 	canCon.beginPath();
 	canCon.moveTo(vertices2D[0],vertices2D[1]);
@@ -867,7 +867,7 @@ function drawFaceModelAxes(faceData)
 	canCon.lineWidth = 3;
 	canCon.stroke();
 	canCon.closePath();
-	
+
 	//draw y axis
 	canCon.beginPath();
 	canCon.moveTo(vertices2D[4],vertices2D[5]);
@@ -885,7 +885,7 @@ function drawFaceModelAxes(faceData)
 	canCon.lineWidth = 3;
 	canCon.stroke();
 	canCon.closePath();
-	
+
 	fp1.delete();
 	fp2.delete();
 }
@@ -897,21 +897,21 @@ function drawFaceModelAxes(faceData)
 * Projects 3D gaze information (gazeDirectionGlobal) to 2D and draws on canvas.
 */
 function drawGaze(faceData){
-	
+
 	if (!faceData.getEyeClosure()[1])
 		return;
-	
+
 	var eye_r = faceData.getGazeDirectionGlobal();
 	var f = faceData.cameraFocus;
-	
+
 	if(!faceData.getFeaturePoints3D())
 		return;
 
 	var leye = faceData.getFeaturePoints3D().getFP(3,5);
 	var reye = faceData.getFeaturePoints3D().getFP(3,6);
-	
+
 	var t = [];
-	
+
 	if (leye.defined && reye.defined)
 	{
 		//left eye vector origin
@@ -931,14 +931,14 @@ function drawGaze(faceData){
 		t.push(reye.getPos(1));
 		t.push(reye.getPos(2));
 	}
-	
+
 	var sinrx = Math.sin(eye_r[0]);
 	var sinry = Math.sin(eye_r[1] + Math.PI);
 	var sinrz = Math.sin(eye_r[2]);
 	var cosrx = Math.cos(eye_r[0]);
 	var cosry = Math.cos(eye_r[1] + Math.PI);
 	var cosrz = Math.cos(eye_r[2]);
-	
+
 	//set the rotation matrix
 	var R00 = cosry*cosrz+sinrx*sinry*sinrz;
 	var R01 = -cosry*sinrz+sinrx*sinry*cosrz;
@@ -949,16 +949,16 @@ function drawGaze(faceData){
 	var R20 = -sinry*cosrz+sinrx*cosry*sinrz;
 	var R21 = sinry*sinrz+sinrx*cosry*cosrz;
 	var R22 = cosrx*cosry;
-	
+
 	var vertices = [
 		0, 0, 0,    //left eye vector origin
 		0, 0, 0.04, //left eye vector end
 		0, 0, 0,    //right eye vector origin
 		0, 0, 0.04  //right eye vector end
 	];
-	
+
 	var vertices2D = [];
-	
+
 	// variables for aspect correction
 	var x_offset = 1;
 	var y_offset = 1;
@@ -968,7 +968,7 @@ function drawGaze(faceData){
 		x_offset = w / h;
 	else if (w < h)
 		y_offset = h / w;
-	
+
 	//loop over all vertices
 	for (var i = 0; i < 4; i++)
 	{
@@ -988,7 +988,7 @@ function drawGaze(faceData){
 		vertices2D[2*i+0] = ((x * -0.5 / x_offset) + 0.5) * w;
 		vertices2D[2*i+1] = (1.0 - ((y *  0.5 / y_offset) + 0.5)) * h;
 	}
-	
+
 	//draw left eye gaze
 	canCon.beginPath();
 	canCon.moveTo(vertices2D[0],vertices2D[1]);
@@ -997,7 +997,7 @@ function drawGaze(faceData){
 	canCon.lineWidth = 2;
 	canCon.stroke();
 	canCon.closePath();
-	
+
 	//draw right eye gaze
 	canCon.beginPath();
 	canCon.moveTo(vertices2D[4],vertices2D[5]);
@@ -1010,6 +1010,32 @@ function drawGaze(faceData){
 	reye.delete();
 }
 
+//if you have another AudioContext class use that one, as some browsers have a limit
+var audioCtx = new (window.AudioContext || window.webkitAudioContext || window.audioContext);
+
+//All arguments are optional:
+
+//duration of the tone in milliseconds. Default is 500
+//frequency of the tone in hertz. default is 440
+//volume of the tone. Default is 1, off is 0.
+//type of tone. Possible values are sine, square, sawtooth, triangle, and custom. Default is sine.
+//callback to use on end of tone
+function beep(duration, frequency, volume, type, callback) {
+	var oscillator = audioCtx.createOscillator();
+	var gainNode = audioCtx.createGain();
+
+	oscillator.connect(gainNode);
+	gainNode.connect(audioCtx.destination);
+
+	if (volume){gainNode.gain.value = volume;}
+	if (frequency){oscillator.frequency.value = frequency;}
+	if (type){oscillator.type = type;}
+	if (callback){oscillator.onended = callback;}
+
+	oscillator.start(audioCtx.currentTime);
+	oscillator.stop(audioCtx.currentTime + ((duration || 500) / 1000));
+};
+
 /**
 * Draws the box with gender, age and emotion estimation.
 * <br/><br/>
@@ -1020,7 +1046,7 @@ function drawGaze(faceData){
 * @param {int} mode - used to determine the operating mode
 */
 function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
-{		
+{
 	if (mode === MODE_TRACK)
 	{
 		fd = TfaceDataArray.get(index);
@@ -1029,19 +1055,19 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 	{
 		fd = DfaceDataArray.get(index);
 	}
-	
+
 	calculateBackgroundSize();
 
 	var x;
 	var y;
 	var xOffset = 5;
 	var yOffset = 15
-	
+
 	var down = fd.getFeaturePoints2D().getFPPos(2,1);
 	var left = fd.getFeaturePoints2D().getFPPos(4,5);
 	var right = fd.getFeaturePoints2D().getFPPos(4,6);
 	var up = fd.getFeaturePoints2D().getFPPos(11,1);
-	
+
 	if (up[1] * canvas.height - backgroundHeight < canvas.height)
 	{
 		x = (1 - up[0])*canvas.width;
@@ -1070,10 +1096,10 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 
 	var emotions = ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise", "Neutral"];
 	canCon.fillStyle="rgba(255,255,255,0.5)";
-	
+
 	canCon.fillRect(x,y,backgroundWidth,backgroundHeight);
-	
-	if(withinConstraints()) 
+
+	if(withinConstraints())
 	{
 		if(drawGender && drawAge)
 		{
@@ -1123,9 +1149,9 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 			else
 				canCon.fillText("Age: -- ",x+xOffset,y+yOffset);
 			canCon.closePath();
-			
+
 		}
-		
+
 		if(drawEmotions && (drawAge || drawGender))
 		{
 			canCon.beginPath();
@@ -1141,7 +1167,9 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 		{
 			for(var j = 0; j < numberOfEmotions; ++j)
 			{
-				var length = emotion_values[j] * (backgroundWidth-emotionsBarOffset-xOffset*3); 
+				console.log(emotion_values[j]);
+				beep(100, 500 + 500 * emotion_values[j], 1, "sine", () => {});
+				var length = emotion_values[j] * (backgroundWidth-emotionsBarOffset-xOffset*3);
 				canCon.beginPath();
 				canCon.fillStyle="black";
 				canCon.font = fontSize.toString() + "px Arial";
@@ -1165,7 +1193,7 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 		canCon.fillText("only in frontal pose",x+xOffset,y+yOffset*backgroundHeight/backgroundHeightMax*3);
 		canCon.fillText("and if face is fairly",x+xOffset,y+yOffset*backgroundHeight/backgroundHeightMax*4);
 		canCon.fillText("close to the camera.",x+xOffset,y+yOffset*backgroundHeight/backgroundHeightMax*5);
-		
+
 		canCon.closePath();
 	}
 }
@@ -1176,7 +1204,7 @@ function drawGenderAgeEmotions(emotion_values,gender,age,index,mode)
 * Parameters:
 */
 function calculateBackgroundSize()
-{	
+{
 	backgroundWidthMax = 180;
 	backgroundHeightMax = 120;
 
@@ -1184,8 +1212,8 @@ function calculateBackgroundSize()
 	{
 		if(drawEmotions)
 		{
-			fontSizePerc = 15/backgroundWidthMax;	
-			
+			fontSizePerc = 15/backgroundWidthMax;
+
 		}
 		else
 		{
@@ -1199,25 +1227,25 @@ function calculateBackgroundSize()
 		backgroundWidthMax = 180;
 		backgroundHeightMax = 80;
 		fontSizePerc = 15/backgroundWidthMax;
-		
+
 	}
-	
+
 	backgroundPercW = backgroundWidthMax/canvas.width;
-	backgroundPercH = backgroundHeightMax/canvas.height;		
+	backgroundPercH = backgroundHeightMax/canvas.height;
 	backgroundWidth = canvas.width * backgroundPercW;
 	backgroundHeight = canvas.height * backgroundPercH;
-	
+
 	verticalStepMax = 12;
 	verticalStepPerc = verticalStepMax/backgroundHeightMax;
-	verticalStep = backgroundHeight * verticalStepPerc;		
-	
+	verticalStep = backgroundHeight * verticalStepPerc;
+
 	emotionsBarOffsetMax = 70;
 	emotionsBarOffsetPerc = emotionsBarOffsetMax/backgroundWidthMax;
 	emotionsBarOffset = backgroundWidth * emotionsBarOffsetPerc + 1;
 
 	backgroundLine = backgroundWidth * 0.9;
-	
-	fontSize = backgroundWidth*fontSizePerc;	
+
+	fontSize = backgroundWidth*fontSizePerc;
 }
 
 /**
@@ -1238,9 +1266,9 @@ function withinConstraints()
 	//
 	var CONSTRAINT_ANGLE = 40;
 	//
-	if (Math.abs(head_pitch_compensated_deg) > CONSTRAINT_ANGLE || 
-		Math.abs(head_yaw_compensated_deg) > CONSTRAINT_ANGLE || 
-		Math.abs(head_roll_deg) > CONSTRAINT_ANGLE || 
+	if (Math.abs(head_pitch_compensated_deg) > CONSTRAINT_ANGLE ||
+		Math.abs(head_yaw_compensated_deg) > CONSTRAINT_ANGLE ||
+		Math.abs(head_roll_deg) > CONSTRAINT_ANGLE ||
 		fd.faceScale < 40)
 	{
 		return false;
@@ -1254,7 +1282,7 @@ function withinConstraints()
 * Parameters:
 * @param {float} x x coordinate of the point in normalized screen coordinates
 * @param {float} y y coordinate of the point in normalized screen coordinates
-* @param {int} inState - state of gaze estimator:<br/>    
+* @param {int} inState - state of gaze estimator:<br/>
 	* - Estimator is off, inState is equal to 0.<br/>
 	* - Estimator is calibrating, inState is equal to 1.<br/>
 	* - Estimator is estimating, inState is equal to 2.
@@ -1267,7 +1295,7 @@ function drawScreenSpaceGaze(gazeCanCon, x, y, inState) {
 		gazeCanCon.closePath();
 		gazeCanCon.fill();
 	}
-	
+
 	if (inState == 1 || inState == 2) {
 		gazeCanCon.beginPath();
 		gazeCanCon.fillStyle = '#070a0f';
@@ -1275,7 +1303,7 @@ function drawScreenSpaceGaze(gazeCanCon, x, y, inState) {
 		gazeCanCon.closePath();
 		gazeCanCon.fill();
 	}
-	
+
 	if (inState == 1) {
 		gazeCanCon.beginPath();
 		gazeCanCon.fillStyle = CALIB_COLOR;
@@ -1283,7 +1311,7 @@ function drawScreenSpaceGaze(gazeCanCon, x, y, inState) {
 		gazeCanCon.closePath();
 		gazeCanCon.fill();
 	}
-	
+
 	if (inState == 2) {
 		gazeCanCon.beginPath();
 		gazeCanCon.fillStyle = ESTIM_COLOR;
@@ -1298,7 +1326,7 @@ function drawScreenSpaceGaze(gazeCanCon, x, y, inState) {
 * <br/><br/>
 */
 function multiplyMatrix(m1, m2, M, N, P) {
-	
+
 	var res = [];
 	for(var i = 0; i < M; ++i)
 	{
@@ -1312,6 +1340,6 @@ function multiplyMatrix(m1, m2, M, N, P) {
 			res[i*P+j] = sum;
 		}
 	}
-	
+
 	return res;
 }
