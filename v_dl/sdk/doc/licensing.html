@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Licensing</h1>
+<p>By having any Visage Technologies Program, or part of it, installed or copied on your computer, you agree to the terms of the <a href="../VT License Agreement.pdf">Visage Technologies AB Software License Agreement</a>. If you do not agree with these terms, please entirely remove any Visage Technologies Programs from your computer.</p>
+
+<p>This page focuses on technical issues such as obtaining and using the license key files. For detailed commercial conditions please <a href="http://www.visagetechnologies.com/contact/" target="New">contact Visage Technologies</a>.</p>
+
+<p>Applications developed using visage|SDK must be licensed in order to function. Licensing is based on License Key Files. A single License Key File is valid for one or more installations on one or more platforms (operating systems). The License Key File can be opened in a text editor (e.g. Windows Notepad or similar) in order to read the licensing information, but it is important not to change the file in any way as it would become invalid.</p>
+
+<p>Note that you need to obtain a Licence Key File when you want to run any application using visage|SDK for HTML5 on your web server. 
+Without a license key, applications will not work properly and appropriate warning message will be displayed.
+</p>
+
+
+<h2>Obtaining the License Key File</h2>
+
+<p>For 30-day evaluation, simply send an email request to your Visage Technologies contact person and you will receive a License Key File by email.</p>
+
+<p>If you are purchasing a license, your Visage Technologies
+contact person will deliver your License Key File by email based on your purchase order.</p>
+
+<h2><a class="anchor" id="include_license"></a>Including the License Key File in your application</h2>
+
+<h3>a) Javascript application</h3>
+<p>Add License Key File to the folder on the server where HTML file is located (for example <em>www\Samples\VirtualEyewearTryOn</em> folder).
+In your application, you need to preload License Key File before VisageModule is loaded, and then call the initialization
+function in order to let the Application read the License Key File. Example how this is done is as follows in your application code:
+<br/>
+<br/>
+
+<p>Preloading License Key File:</p>
+
+<pre>
+
+    licenseName = "lic_web.vlc";
+    licenseURL = "lic_web.vlc";
+
+    VisageModule = {
+        preRun: [function() {
+            VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") });
+        }],
+        onRuntimeInitialized: onModuleInitialized
+    }
+
+</pre>
+
+<p>Initializing License Key File:</p>
+
+<pre>
+
+    VisageModule.initializeLicenseManager("name-of-the-license-file.vlc");
+
+    tracker = new VisageModule.VisageTracker("../../lib/Head_Tracker.cfg");
+
+    faceData = new VisageModule.FaceData();
+
+</pre>
+
+<br/>
+where "name-of-the-license-file.vlc" is the name of your License Key File located in the same folder as the main HTML file of application.
+Examples can be found in onModuleInitialized() function in gazeTracker.html (GazeTracker sample), ShowcaseDemo.html, recognitionWorker.js and analysisWorker.js (ShowcaseDemo sample) files or in eyewear.html (VirtualEyewearTryOn sample) file. 
+
+</p>
+
+
+<h3>b) Unity application</h3>
+<p>Add License Key File to the <i>Assets/StreamingAssets</i> folder in the Unity application. The License Key File needs to be preloaded
+in <i>Awake()</i> function, and then initialized in <i>Start()</i> function in order to let the Application read the License Key File.
+Example how this is done is as follows in your Unity application code:
+
+
+<p>Preloading License Key File:</p>
+<pre class="prettyprint source"><code>
+	VisageTrackerNative._preloadFile(Application.streamingAssetsPath + "/Visage Tracker/" + LicenseString.licenseString);
+    
+</code></pre>
+
+<p>Initializing License Key File:</p>
+<pre class="prettyprint source"><code>
+	licenseFilePath = "";
+	
+	...
+
+	VisageTrackerNative._initializeLicense(licenseFilePath + LicenseString.licenseString);
+	
+</code></pre>
+
+<h4> VisageTrackerUnityDemo Sample</h4>
+<p>In the VisageTrackerUnityDemo sample project the license is expected to be placed in the correct folder in the Unity project: 
+<i>Assets/StreamingAssets/Visage Tracker</i>.</p>
+
+<p>Also, the name of the License Key File (name-of-the-license-file.vlc) needs be set to <i>licenseString</i> variable in script <i>LicenseString.cs</i>.</p>
+
+<h2>Including multiple License Key Files in your application</h2>
+
+<h3>a) Javascript application</h3>
+</p>Add License Key Files to the folder on the server where HTML file is located (for example <em>www\Samples\ShowcaseDemo</em> folder).
+To include multiple License Key Files simply preload each License Key File before VisageModule is loaded, then call the initialization function for each License Key File.
+This is done as follows in your application code:
+<br/>
+<br/>
+
+<p>Preloading License Key File:</p>
+
+<pre>
+
+    licenseName = "name-of-first-license-file";
+    licenseURL = "name-of-first-license-file";
+    licenseName_2 = "name-of-second-license-file.vlc";
+    licenseURL_2 = "name-of-second-license-file.vlc";
+
+    VisageModule = {
+        preRun: [function() {
+            VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") });
+            VisageModule.FS_createPreloadedFile('/', licenseName_2, licenseURL_2, true, false, function(){ },  function(){ alert("Loading License Failed!") });
+        }],
+        onRuntimeInitialized: onModuleInitialized
+    }
+
+</pre>
+
+<p>Initializing License Key File:</p>
+
+<pre>
+
+    VisageModule.initializeLicenseManager("licenseName");
+    VisageModule.initializeLicenseManager("licenseName_2");
+
+    tracker = new VisageModule.VisageTracker("../../lib/Head_Tracker.cfg");
+
+    faceData = new VisageModule.FaceData();
+
+</pre>
+
+<br/>
+where "name-of-first-license-file.vlc" and "name-of-second-license-file.vlc" are the names of your License Key Files located in the same folder as the main HTML file of application.
+Examples can be found in onModuleInitialized() function in gazeTracker.html (GazeTracker sample), ShowcaseDemo.html, recognitionWorker.js and analysisWorker.js (ShowcaseDemo sample) files or in eyewear.html (VirtualEyewearTryOn sample) file. 
+</p>
+
+<h3>b) Unity application</h3>
+<p>Add License Key Files to the <i>Assets/StreamingAssets</i> folder in the Unity application. To include multiple License Key Files, each one needs to be preloaded
+in <i>Awake()</i> function, and then initialized in <i>Start()</i> function in order to let the Application read each License Key File.
+Example how this is done is as follows in your Unity application code:
+
+<p>Preloading License Key File:</p>
+<pre class="prettyprint source"><code>
+	VisageTrackerNative._preloadFile(Application.streamingAssetsPath + "/Visage Tracker/" + LicenseString.licenseString);
+	VisageTrackerNative._preloadFile(Application.streamingAssetsPath + "/Visage Tracker/" + LicenseString.licenseString2);
+    
+</code></pre>
+
+<p>To initialize multiple License Key Files simply initialize each License Key File. This is done as follows in your application:</p>
+<pre class="prettyprint source"><code>
+	licenseFilePath = ""; //same license file path if License Key Files are in the same folder
+	
+	...
+
+	VisageTrackerNative._initializeLicense(licenseFilePath + LicenseString.licenseString);
+	VisageTrackerNative._initializeLicense(licenseFilePath + LicenseString.licenseString2);
+	
+</code></pre>
+
+<h4> VisageTrackerUnityDemo Sample</h4>
+<p>In the VisageTrackerUnityDemo sample project the licenses are expected to be placed in the correct folder in the Unity project: 
+<i>Assets/StreamingAssets/Visage Tracker</i>.</p>
+
+<p>Also, each <i>licenseString</i> variable in script <i>LicenseString.cs</i> needs to be set to name of the each License Key File name (name-of-the-license-file.vlc).</p>
+</p>
+
+</body>
+</html>

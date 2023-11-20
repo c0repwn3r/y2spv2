@@ -1,0 +1,8602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: VisageConfiguration</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: VisageConfiguration</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageConfiguration
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="VisageConfiguration"><span class="type-signature"></span>new VisageConfiguration<span class="signature">(configurationName)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        VisageConfiguration is a class used to change, apply, load and save configuration parameters used by <a href="VisageTracker.html">VisageTracker</a>. 
+<br/><br/>
+The idea behind this interface is for a user to:
+<ul>
+    <li> obtain a copy of the VisageConfiguration object from <a href="VisageTracker.html">VisageTracker</a>,</li>
+    <li> apply the desired changes on the VisageConfiguration object and,</li>
+    <li> send the modified object back to the <a href="VisageTracker.html">VisageTracker</a></li>
+</ul>
+
+As a direct result of this implementation, the VisageConfiguration default constructor is private and it is expected and encouraged 
+that the initial copy is obtained from the <a href="VisageTracker.html">VisageTracker</a>. Alternatively, VisageConfiguration can also be constructed by passing a 
+path to the valid .cfg file using
+<pre class="prettyprint source"><code>
+m_Configuration = new VisageModule.VisageConfiguration(trackerConfigFile)
+</code></pre>
+<br/>
+<h5>Obtaining a copy of the VC object</h5>
+<br/>
+A copy of the <a href="VisageTracker.html">VisageTracker</a> internal member can be obtained by calling <a href="VisageTracker.html#getConfiguration">VisageTracker.getConfiguration()</a>
+method as demonstrated in the code example below:
+
+<pre class="prettyprint source"><code>
+var m_Tracker = new VisageModule.VisageTracker(defaultConfigFile);
+// Obtain a copy of internal VisageConfiguration member
+var m_Configuration = m_Tracker.getConfiguration();
+</code></pre>
+<br/>
+<h5>Applying changes on the VC object</h5>
+<br/>
+The interface of the VisageConfiguration class is designed so the parameters cannot be accessed directly, 
+instead, each parameter has its own getter and setter function. After a local copy is obtained, a setter function can be called.
+Setter functions perform input validation to verify that the value passed to the function is:
+a) within a certain range, 
+b) not empty, or 
+c) otherwise valid.
+Thus, the return parameter of the setter function is a boolean and if the value passed as an argument is invalid, the setter function will 
+return false. Otherwise, if the value of the parameter was successfully changed, the function will return true.
+<br>
+A detailed description of each particular configuration parameter, including valid ranges and other specifics, are available 
+in the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>. 
+<br/><br/>
+Parameters of the VisageConfiguration class can be divided into two categories:
+<ul>
+    <li> primitive type parameters (Number, String)</li>
+    <li> objects of different types (VectorString, Array)</li>
+</ul>
+<br><br>  
+Following code example demonstrates a modification of <b>primitive type parameters</b> by modifying the <i>camera_focus</i> configuration parameter:
+
+<pre class="prettyprint source"><code>
+// Obtain a copy of internal VisageConfiguration member
+m_Configuration = m_Tracker.getConfiguration();
+bool success = m_Configuration.setCameraFocus(5.0);
+if (success)
+    //The parameter was changed successfully
+else
+    //The operation failed
+</code></pre>   
+<br><br>  
+
+Following two code examples demonstrate a modification of <b>array type parameters</b>.
+<br/>
+Modification of the <i>smoothing_factors</i> parameter:
+<pre class="prettyprint source"><code>
+// Obtain a copy of internal VisageConfiguration member
+m_Configuration = m_Tracker.getConfiguration();
+//Get smoothing_factors array from <a href="VisageConfiguration.html#getSmoothingFactors">VisageConfiguration.getSmoothingFactors()</a> method
+var smoothingFactors = cfg.getSmoothingFactors();
+//Change value of the eyebrows smoothing factor
+smoothing_factors[0] = 2.0;
+bool success = m_Configuration.setSmoothingFactors(smoothing_factors);
+if (success)
+    //The parameter was changed successfully
+else
+    //The operation failed
+</code></pre>   
+<br> 
+Modification of the <i>au_names</i> parameter:
+<pre class="prettyprint source"><code>
+// Obtain a copy of internal VisageConfiguration member
+m_Configuration = m_Tracker.getConfiguration();
+//Create a VectorString object
+var au_names = new VisageModule.VectorString();
+//Copy returned vector from the <a href="VisageConfiguration.html#getAuNames">VisageConfiguration.getAuNames()</a> method
+au_names =  m_Configuration.getAuNames();
+//Change value of the eyebrows smoothing factor
+auNames = [];
+//
+for(var i = 0; i < size; ++i)
+{
+   auNames[i] = au_names.get(i);
+}
+auNames[0] = "au_nose";
+//
+bool success = m_Configuration.setAuNames(auNames);
+if (success)
+    //The parameter was changed successfully
+else
+    //The operation failed
+</code></pre>   
+<br>
+<h5>Sending the object to <a href="VisageTracker.html">VisageTracker</a></h5>
+<br/>
+<a href="VisageTracker.html">VisageTracker</a> provides a method <a href="VisageTracker.html#setConfiguration">VisageTracker.setConfiguration(VisageConfiguration vc)</a>. Usage is demonstrated in the code example below:
+
+<pre class="prettyprint source"><code>
+//Assuming m_Configuration object has been obtained as in example above
+m_Tracker.setConfiguration(m_Configuration);
+</code></pre> 
+
+The parameters' values of the sent configuration object will be used in the next tracking session (i.e. when <a href="VisageTracker.html#track">VisageTracker.track()</a> is called).
+
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>configurationName</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name of the tracker configuration file (.cfg; default configuration files are provided in lib folder; 
+for further details see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>).</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="getCameraFocus"><span class="type-signature"></span>getCameraFocus<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the camera_focus parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the camera_focus parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getRecoveryTimeout"><span class="type-signature"></span>getRecoveryTimeout<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the recovery_timeout parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the recovery_timeout parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getSmoothingFactors"><span class="type-signature"></span>getSmoothingFactors<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the smoothing_factors parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the smoothing_factors parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getEnableSmoothing"><span class="type-signature"></span>getEnableSmoothing<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the enable_smoothing parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the enable_smoothing parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTemporallyDenoiseInput"><span class="type-signature"></span>getTemporallyDenoiseInput<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the temporally_denoise_input parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the temporally_denoise_input parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseModelAuCount"><span class="type-signature"></span>getPoseModelAuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of action units for the pose fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the pose model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuModelAuCount"><span class="type-signature"></span>getAuModelAuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of action units for the action unit fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the action model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshModelAuCount"><span class="type-signature"></span>getMeshModelAuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of action units for the mesh fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the action model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseModelSuCount"><span class="type-signature"></span>getPoseModelSuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of shape units for the pose fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the pose model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuModelSuCount"><span class="type-signature"></span>getAuModelSuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of shape units for the action unit fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the action model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshModelSuCount"><span class="type-signature"></span>getMeshModelSuCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the number of shape units for the mesh fitting model.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value greater than 0 if the mesh model is succesfully loaded.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getProcessEyes"><span class="type-signature"></span>getProcessEyes<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the process_eyes parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the process_eyes parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getRefineEars"><span class="type-signature"></span>getRefineEars<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the refine_ears parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the refine_ears parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMinFaceScale"><span class="type-signature"></span>getMinFaceScale<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the min_face_scale parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the min_face_scale parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMaxFaceScale"><span class="type-signature"></span>getMaxFaceScale<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the max_face_scale parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the max_face_scale parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceDetectorSensitivity"><span class="type-signature"></span>getFaceDetectorSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the face_detector_sensitivity parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    value of the face_detector_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingModel"><span class="type-signature"></span>getPoseFittingModel<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_model parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the pose_fitting_model parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingModel"><span class="type-signature"></span>getAuFittingModel<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_model parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the au_fitting_model parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingModel"><span class="type-signature"></span>getMeshFittingModel<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_model parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the mesh_fitting_model parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingFdp"><span class="type-signature"></span>getPoseFittingFdp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_fdp parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the pose_fitting_fdp parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingFdp"><span class="type-signature"></span>getAuFittingFdp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_fdp parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the au_fitting_fdp parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingFdp"><span class="type-signature"></span>getMeshFittingFdp<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_fdp parameter.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing path of the mesh_fitting_fdp parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingAuUse"><span class="type-signature"></span>getPoseFittingAuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_au_use parameter.
+<br/><br/>
+The number of values in the pose_fitting_au_use array is equal to the number of action units of 
+the pose fitting model and can be obtained by <a href="VisageConfiguration.html#getPoseModelAuCount">getPoseModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the pose_fitting_au_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingSuUse"><span class="type-signature"></span>getPoseFittingSuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_su_use parameter.
+<br/><br/>
+The number of values in the pose_fitting_su_use array is equal to the number of shape units of 
+the pose fitting model and can be obtained by <a href="VisageConfiguration.html#getPoseModelSuCount">getPoseModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the pose_fitting_su_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingPoseSensitivity"><span class="type-signature"></span>getPoseFittingPoseSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_pose_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_pose_sensitivity array is equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the pose_fitting_pose_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingAuSensitivity"><span class="type-signature"></span>getPoseFittingAuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_au_sensitivity array is equal to the number of action units of 
+the pose fitting model and can be obtained by <a href="VisageConfiguration.html#getPoseModelAuCount">getPoseModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the pose_fitting_au_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getPoseFittingSuSensitivity"><span class="type-signature"></span>getPoseFittingSuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the pose_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_su_sensitivity array is equal to the number of shape units of 
+the pose fitting model and can be obtained by <a href="VisageConfiguration.html#getPoseModelSuCount">getPoseModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the pose_fitting_su_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingAuUse"><span class="type-signature"></span>getAuFittingAuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_au_use parameter.
+<br/><br/>
+The number of values in the au_fitting_au_use array is equal to the number of action units of 
+the action unit fitting model and can be obtained by <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the au_fitting_au_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingSuUse"><span class="type-signature"></span>getAuFittingSuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_su_use parameter.
+<br/><br/>
+The number of values in the au_fitting_su_use array is equal to the number of shape units of 
+the action unit fitting model and can be obtained by <a href="VisageConfiguration.html#getAuModelSuCount">getAuModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the au_fitting_su_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingAuSensitivity"><span class="type-signature"></span>getAuFittingAuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the au_fitting_au_sensitivity array is equal to the number of action units of 
+the action unit fitting model and can be obtained by <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the au_fitting_au_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuFittingSuSensitivity"><span class="type-signature"></span>getAuFittingSuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the au_fitting_su_sensitivity array is equal to the number of shape units of 
+the action unit fitting model and can be obtained by <a href="VisageConfiguration.html#getAuModelSuCount">getAuModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the au_fitting_su_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingAuUse"><span class="type-signature"></span>getMeshFittingAuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_au_use parameter.
+<br/><br/>
+The number of values in the mesh_fitting_au_use array is equal to the number of action units of 
+the mesh fitting model and can be obtained by <a href="VisageConfiguration.html#getMeshModelAuCount">getMeshModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the mesh_fitting_au_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingSuUse"><span class="type-signature"></span>getMeshFittingSuUse<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_su_use parameter.
+<br/><br/>
+The number of values in the mesh_fitting_su_use array is equal to the number of shape units of 
+the mesh fitting model and can be obtained by <a href="VisageConfiguration.html#getMeshModelSuCount">getMeshModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the mesh_fitting_su_use parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingAuSensitivity"><span class="type-signature"></span>getMeshFittingAuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the mesh_fitting_au_sensitivity array is equal to the number of action units of 
+the mesh fitting model and can be obtained by <a href="VisageConfiguration.html#getMeshModelAuCount">getMeshModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the mesh_fitting_au_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getMeshFittingSuSensitivity"><span class="type-signature"></span>getMeshFittingSuSensitivity<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the mesh_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the mesh_fitting_su_sensitivity array is equal to the number of shape units of 
+the mesh fitting model and can be obtained by <a href="VisageConfiguration.html#getMeshModelSuCount">getMeshModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the mesh_fitting_su_sensitivity parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuNames"><span class="type-signature"></span>getAuNames<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="VectorString.html">VectorString</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the au_names parameter.
+<br/><br/>
+The number of names in the au_names array is equal to the number of action units of 
+the action unit fitting model and can be obtained by <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing string values of the au_names parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="VectorString.html">VectorString</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getRotationLimit"><span class="type-signature"></span>getRotationLimit<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the rotation_limit parameter.
+<br/><br/>
+The number of values in the rotation_limit array is equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the rotation_limit parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getTranslationLimit"><span class="type-signature"></span>getTranslationLimit<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the translation_limit parameter.
+<br/><br/>
+The number of values in the translation_limit array is equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the translation_limit parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getAuLimit"><span class="type-signature"></span>getAuLimit<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the action_unit_limit parameter.
+<br/><br/>
+The number of values in the action_unit_limit array is twice the size of the number of action units of 
+the action unit fitting model and can be obtained for each model via the <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a>.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    containing values of the action_unit_limit parameter.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setCameraFocus"><span class="type-signature"></span>setCameraFocus<span class="signature">(camera_focus)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the camera_focus parameter.
+<br/><br/>
+Value must be greater than zero.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>camera_focus</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">camera_focus value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setRecoveryTimeout"><span class="type-signature"></span>setRecoveryTimeout<span class="signature">(recovery_timeout)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the recovery_timeout parameter.
+<br/><br/>
+Value must be greater than or equal to zero and not a NaN value.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>recovery_timeout</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">recovery_timeout value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setSmoothingFactors"><span class="type-signature"></span>setSmoothingFactors<span class="signature">(smoothing_factors)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the values of the smoothing_factors parameter.
+<br/><br/>
+Values must not be a NaN value
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>smoothing_factors</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">smoothing_factors values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setEnableSmoothing"><span class="type-signature"></span>setEnableSmoothing<span class="signature">(enable_smoothing)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the enable_smoothing parameter.
+<br/><br/>
+ Value can only be 0 or 1.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>enable_smoothing</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">enable_smoothing value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setTemporallyDenoiseInput"><span class="type-signature"></span>setTemporallyDenoiseInput<span class="signature">(temporally_denoise_input)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the temporally_denoise_input parameter.
+<br/><br/>
+ Value can only be 0 or 1.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>temporally_denoise_input</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">temporally_denoise_input value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setProcessEyes"><span class="type-signature"></span>setProcessEyes<span class="signature">(process_eyes)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the process_eyes parameter.
+<br/><br/>
+Value can only be 0, 1, 2, or 3.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>process_eyes</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">process_eyes value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setRefineEars"><span class="type-signature"></span>setRefineEars<span class="signature">(refine_ears)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the refine_ears parameter.
+<br/><br/>
+ Value can only be 0 or 1.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>refine_ears</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">refine_ears value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMinFaceScale"><span class="type-signature"></span>setMinFaceScale<span class="signature">(min_face_scale)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the min_face_scale parameter.
+<br/><br/>
+ Value must be greater than 0.0 and less than or equal to 1.0.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>min_face_scale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">min_face_scale value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMaxFaceScale"><span class="type-signature"></span>setMaxFaceScale<span class="signature">(max_face_scale)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the max_face_scale parameter.
+<br/><br/>
+ Value must be greater than 0.0 and less than or equal to 1.0.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>max_face_scale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">max_face_scale value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setFaceDetectorSensitivity"><span class="type-signature"></span>setFaceDetectorSensitivity<span class="signature">(face_detector_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the face_detector_sensitivity parameter.
+<br/><br/>
+ Value must be greater than 0.0 and less than or equal to 1.0.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>face_detector_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">face_detector_sensitivity value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingModel"><span class="type-signature"></span>setPoseFittingModel<span class="signature">(pose_fitting_model)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_model parameter.
+<br/><br/>
+This function sets the .wfm (pose_fitting_model) file used for pose fitting. 
+The model will be disabled if the passed empty string is empty ("") or "none".
+<br/><br/>
+NOTE: Changing the model affects the sizes of arrays in the FaceData object populated with values from the model file.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_model</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_model String path to the model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingModel"><span class="type-signature"></span>setAuFittingModel<span class="signature">(au_fitting_model)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_model parameter.
+<br/><br/>
+This function sets the .wfm (au_fitting_model) file used for action unit fitting.
+The model will be disabled if the passed empty string is empty ("") or "none".
+<br/><br/>
+NOTE: Changing the model affects the sizes of arrays in the FaceData object populated with values from the model file.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_model</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_model String path to the model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingModel"><span class="type-signature"></span>setMeshFittingModel<span class="signature">(mesh_fitting_model)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_model parameter.
+<br/><br/>
+This function sets the .wfm (mesh_fitting_model) file used for mesh fitting.
+The model will be disabled if the passed empty string is empty ("") or "none".
+<br/><br/>
+NOTE: Changing the model affects the sizes of arrays in the FaceData object populated with values from the model file.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_model</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_model String path to the model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingFdp"><span class="type-signature"></span>setPoseFittingFdp<span class="signature">(pose_fitting_fdp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_fdp parameter.
+<br/><br/>
+This function sets the .fdp (pose_fitting_fdp) file used for mesh fitting.
+The pose fitting model will be disabled if the empty string is passed as input file ("").
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_fdp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_fdp String path to the fdp model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingFdp"><span class="type-signature"></span>setAuFittingFdp<span class="signature">(au_fitting_fdp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_fdp parameter.
+<br/><br/>
+This function sets the .fdp (au_fitting_fdp) file used for action unit fitting.
+The pose fitting model will be disabled if the empty string is passed as input file ("").
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_fdp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_fdp String path to the fdp model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingFdp"><span class="type-signature"></span>setMeshFittingFdp<span class="signature">(mesh_fitting_fdp)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_fdp parameter.
+<br/><br/>
+This function sets the .fdp (mesh_fitting_fdp) file used for mesh fitting.
+The pose fitting model will be disabled if the empty string is passed as input file ("").
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_fdp</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_fdp String path to the fdp model file</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input file does not exist
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingAuUse"><span class="type-signature"></span>setPoseFittingAuUse<span class="signature">(pose_fitting_au_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_au_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the pose_fitting_au_use array must be equal to the number of action units of 
+the pose fitting model which can be obtained by <a href="VisageConfiguration.html#getPoseModelAuCount">getPoseModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_au_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_au_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingSuUse"><span class="type-signature"></span>setPoseFittingSuUse<span class="signature">(pose_fitting_su_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_su_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the pose_fitting_su_use array must be equal to the number of shape units of 
+the pose fitting model which can be obtained by <a href="VisageConfiguration.html#getPoseModelSuCount">getPoseModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_su_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_su_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingPoseSensitivity"><span class="type-signature"></span>setPoseFittingPoseSensitivity<span class="signature">(pose_fitting_pose_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_pose_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_pose_sensitivity array must be equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_pose_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_pose_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingAuSensitivity"><span class="type-signature"></span>setPoseFittingAuSensitivity<span class="signature">(pose_fitting_au_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_au_sensitivity array must be equal to the number of action units of 
+the pose fitting model which can be obtained by <a href="VisageConfiguration.html#getPoseModelAuCount">getPoseModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_au_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_au_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setPoseFittingSuSensitivity"><span class="type-signature"></span>setPoseFittingSuSensitivity<span class="signature">(pose_fitting_su_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the pose_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the pose_fitting_su_sensitivity array must be equal to the number of shape units of 
+the pose fitting model which can be obtained by <a href="VisageConfiguration.html#getPoseModelSuCount">getPoseModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>pose_fitting_su_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">pose_fitting_su_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingAuUse"><span class="type-signature"></span>setAuFittingAuUse<span class="signature">(au_fitting_au_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_au_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the au_fitting_au_use array must be equal to the number of action units of 
+the action unit fitting model which can be obtained by <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_au_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_au_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingSuUse"><span class="type-signature"></span>setAuFittingSuUse<span class="signature">(au_fitting_su_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_su_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the au_fitting_su_use array must be equal to the number of shape units of 
+the action unit fitting model which can be obtained by <a href="VisageConfiguration.html#getAuModelSuCount">getAuModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_su_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_su_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingAuSensitivity"><span class="type-signature"></span>setAuFittingAuSensitivity<span class="signature">(au_fitting_au_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the au_fitting_au_sensitivity array must be equal to the number of action units of 
+the action unit fitting model which can be obtained by <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_au_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_au_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuFittingSuSensitivity"><span class="type-signature"></span>setAuFittingSuSensitivity<span class="signature">(au_fitting_su_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the au_fitting_su_sensitivity array must be equal to the number of shape units of 
+the action unit fitting model which can be obtained by <a href="VisageConfiguration.html#getAuModelSuCount">getAuModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_su_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_fitting_su_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingAuUse"><span class="type-signature"></span>setMeshFittingAuUse<span class="signature">(mesh_fitting_au_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_au_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the mesh_fitting_au_use array must be equal to the number of action units of 
+the mesh fitting model which can be obtained by <a href="VisageConfiguration.html#getMeshModelAuCount">getMeshModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_au_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_au_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingSuUse"><span class="type-signature"></span>setMeshFittingSuUse<span class="signature">(mesh_fitting_su_use)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_su_use parameter.
+<br/><br/>
+Values can only be 0 or 1.
+The number of values in the mesh_fitting_su_use array must be equal to the number of shape units of 
+the mesh fitting model which can be obtained by <a href="VisageConfiguration.html#getMeshModelSuCount">getMeshModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_su_use</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_su_use values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingAuSensitivity"><span class="type-signature"></span>setMeshFittingAuSensitivity<span class="signature">(mesh_fitting_au_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_au_sensitivity parameter.
+<br/><br/>
+The number of values in the mesh_fitting_au_sensitivity array must be equal to the number of action units of 
+the mesh fitting model which can be obtained by <a href="VisageConfiguration.html#getMeshModelAuCount">getMeshModelAuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_au_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_au_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setMeshFittingSuSensitivity"><span class="type-signature"></span>setMeshFittingSuSensitivity<span class="signature">(mesh_fitting_su_sensitivity)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the mesh_fitting_su_sensitivity parameter.
+<br/><br/>
+The number of values in the mesh_fitting_su_sensitivity array must be equal to the number of shape units of 
+the mesh fitting model which can be obtained by <a href="VisageConfiguration.html#getMeshModelSuCount">getMeshModelSuCount()</a> function.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_su_sensitivity</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">mesh_fitting_su_sensitivity values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuNames"><span class="type-signature"></span>setAuNames<span class="signature">(au_names)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the au_names parameter.
+<br/><br/>
+The number of names in the array must be equal to the number of action units of the action unit fitting model,
+which can be obtained for each model via the <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a>.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_names</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">au_names values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setRotationLimit"><span class="type-signature"></span>setRotationLimit<span class="signature">(rotation_limit)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the rotation_limit parameter.
+<br/><br/>
+The number of values in the rotation_limit array must be equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation_limit</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">rotation_limit values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setTranslationLimit"><span class="type-signature"></span>setTranslationLimit<span class="signature">(translation_limit)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the translation_limit parameter.
+<br/><br/>
+The number of values in the translation_limit array must be equal to 6.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>translation_limit</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">translation_limit values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setAuLimit"><span class="type-signature"></span>setAuLimit<span class="signature">(action_unit_limit)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the value of the action_unit_limit parameter.
+<br/><br/>
+The number of values in the action_unit_limit array must be twice the size of the number of action units of 
+the action unit fitting model which can be obtained for each model via the <a href="VisageConfiguration.html#getAuModelAuCount">getAuModelAuCount()</a>.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>action_unit_limit</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">action_unit_limit values</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="enableAuModel"><span class="type-signature"></span>enableAuModel<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Enables the use of the 3D model used to estimate action units (au_fitting_model configuration parameter).
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="enableMeshModel"><span class="type-signature"></span>enableMeshModel<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Enables the use of the fine 3D mesh (mesh_fitting_model configuration parameter).
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="disableAuModel"><span class="type-signature"></span>disableAuModel<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Disables the use of the 3D model used to estimate action units (au_fitting_model configuration parameter).
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="disableMeshModel"><span class="type-signature"></span>disableMeshModel<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Disables the use of the fine 3D mesh (mesh_fitting_model configuration parameter).
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="setUseVNN"><span class="type-signature"></span>setUseVNN<span class="signature">(use_vnn)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Enables the use of prototype tracking algorithm (use_vnn configuration parameter).
+
+Value can be 0, 1, or 2.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>use_vnn</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">use_vnn value</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if the parameter was changed, false if the input was invalid
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getUseVNN"><span class="type-signature"></span>getUseVNN<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the value of the use_vnn configuration parameter.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:29 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

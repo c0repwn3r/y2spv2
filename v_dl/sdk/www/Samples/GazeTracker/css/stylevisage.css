@@ -1,0 +1,457 @@
+html, body {
+	margin: 0px;
+	height: 100%;
+	overflow: hidden;
+	background-color: #070a0f;
+	font-family: "Roboto", sans-serif;
+	color: #fff;
+}
+
+/* ~~~~~~~~~~~ FONT ~~~~~~~~~~~ */
+.green_highlight {
+	color:#37fd82;
+}
+.blue_highlight {
+	color:#007bff;
+}
+
+.xs_font {
+	font-size: small;
+	letter-spacing: 0.75px;
+}
+.sm_font {
+	font-size: medium;
+	letter-spacing: 1.05px;
+}
+.md_font {
+	font-size: large;
+	letter-spacing: 1.2px;
+}
+.lg_font {
+	font-size: x-large;
+	font-weight: bold;
+	letter-spacing: 2.7px;
+}
+/* ~~~~~~~~~~~ FONT-END ~~~~~~~~~~~ */
+
+
+/* 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+		WELCOME SCREEN 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+*/
+
+#welcome_wrapper {
+	display: grid;
+	grid-template-areas: "header" "loading_info" "get_started_panel";
+	grid-template-rows: auto 1fr 1fr;
+	gap: 4vmin;
+	height: 100%;
+	z-index: 5;
+}
+
+
+/* ~~~~~~~~~~~ HEADER ~~~~~~~~~~~ */
+.header {
+	grid-area: header;
+	margin: 4vmin 8vmin;
+	z-index: 2;
+}
+
+.logo {
+	width: 32vmin;
+}
+/* ~~~~~~~~~~~ HEADER-END ~~~~~~~~~~~ */
+
+
+/* ~~~~~~~~~~~ LOADING INFO ~~~~~~~~~~~ */
+.loading_info {
+	grid-area: loading_info;
+	display: grid;
+	grid-template-areas: "loading_text" "loading_spinner" "demo_name_tooltip";
+	place-items: center;
+	gap: 5vmin;
+}
+
+#downloading_text {
+	grid-area: loading_text;
+}
+#loaded_text {
+	grid-area: loading_text;
+	display: none;
+}
+
+.loading_spinner {
+	grid-area: loading_spinner;
+	width: 50px;
+	height: 50px;
+}
+
+#ready_button {
+	grid-area: loading_spinner;
+	background-color: #3fff85;
+	padding: 2vmin 8vmin;
+	text-decoration: none;
+	border: 1px solid #fff;
+	border-radius: 30px;
+	display: none;
+}
+
+#ready_button:hover {
+	border: 1px solid #3fff85;
+	background-image: linear-gradient(to bottom, #37fd82 50%, #ffffffa5), linear-gradient(to bottom, #37fd82, #37fd82 52%);
+	cursor: pointer;
+}
+
+#ready_button:active {
+	border: 3px solid #3fff85;
+	background-image: linear-gradient(to bottom, #37fd82 50%, #ffffffa5), linear-gradient(to bottom, #37fd82, #37fd82 52%);
+}
+
+.ready_text {
+	font-weight: bold;
+	letter-spacing: 1.54px;
+	text-align: center;
+	color: #070a0f;
+}
+
+.demo_name_tooltip {
+	grid-area: demo_name_tooltip;
+	display: flex;
+	align-items: center;
+	gap: 2vmin;
+}
+/* ~~~~~~~~~~~ LOADING INFO-END ~~~~~~~~~~~ */
+
+
+/* ~~~~~~~~~~~ GET STARTED PANEL ~~~~~~~~~~~ */
+.get_started_panel {
+	grid-area: get_started_panel;
+	display: grid;
+	gap: 6vmin;
+	place-items: center;
+	background-color: #101a24;
+	margin: 4vmin 6vmin;
+	padding: 8vmin;
+	border-radius: 30px 30px 10px 10px;
+}
+
+.get_started_cards {
+	display: grid;
+	grid-auto-flow: column;
+	grid-auto-columns: minmax(0, 0.8fr);
+	text-align: center;
+	gap: 4vmin;
+}
+
+.get_started_card {
+	display: grid;
+	gap: 1vmin;
+	place-items: center;
+	border: 1px solid #1f2b38;
+	padding: 2.5vmin 6vmin;
+}
+
+.get_started_card_icons {
+	height: 2rem;
+}
+
+/* ~~~~~~~~~~~ GET STARTED PANEL-END ~~~~~~~~~~~ */
+
+
+/* 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+		CALIBRATION SCREEN 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+*/
+
+.calibration_silhouette_wrapper {
+	margin: 0px;
+	height: 100%;
+}
+
+#silhouette_wrapper {
+	display: none;
+	justify-content: center;
+	opacity: 0;
+	visibility: hidden;
+}
+
+.video {
+	position: absolute;
+	/* mirroring in fullscreen works only on Firefox */
+	transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg); /* Safari and Chrome */
+    -moz-transform: rotateY(180deg); /* Firefox */
+	height: 100%;
+	object-fit: cover;
+}
+
+#face_position_mask {
+	position: absolute;
+	stroke: #fff;
+	stroke-width: 1.5px;
+	fill: #00000066;
+	transform-origin: 2050px 2050px;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(6);
+	transition: fill 0.8s ease-out;
+}
+
+#silhouette_text {
+	position: absolute;
+	top: 10%;
+	padding: 2vmin;
+	background-color: #20202080;
+	border-radius: 2vmin;
+	visibility: hidden;
+}
+
+#calibration_wrapper {
+	grid-area: calibration_silhouette_wrapper;
+	position: relative;
+	display: none;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 5vmin;
+	text-align: center;
+	height: 100%;
+	opacity: 0;
+	visibility: hidden;
+}
+
+#gazeCanvas{
+	position: absolute;
+	object-fit: cover;
+}
+
+.calibration_text {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding: 2vmin;
+}
+
+#calibration_tooltip {
+	display: none;
+}
+
+
+/* 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+		UTILITIES 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+*/
+
+/* ~~~~~~~~~~~ TOOLTIP ~~~~~~~~~~~ */
+.tooltip_icon {
+	height: 1.2rem;
+	width: 1.2rem;
+	opacity: 30%;
+}
+
+.tooltip {
+	display: inline-block;
+	position: relative;
+	text-align: justify;
+}
+
+.tooltip .top {
+	min-width: 300px;
+	top: -20px;
+	left: 10%;
+	transform: translate(-50%, -100%);
+	padding: 10px 20px;
+	color: #fff;
+	background-color: #202020;
+	font-size: 16px;
+	border-radius: 8px;
+	position: absolute;
+	z-index: 99999999;
+	box-sizing: border-box;
+	display: none;
+	border: 1px solid #007bff;
+}
+
+.tooltip:hover .top {
+	display: block !important ;
+}
+
+.tooltip .top i {
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	width: 24px;
+	height: 12px;
+	overflow: hidden;
+}
+
+.tooltip .top i::after {
+	content: "";
+	position: absolute;
+	width: 12px;
+	height: 12px;
+	left: 50%;
+	transform: translate(-50%, -50%) rotate(45deg);
+	background-color: #202020;
+	border: 1px solid #007bff;
+}
+/* ~~~~~~~~~~~ TOOLTIP-END ~~~~~~~~~~~ */
+
+
+/* ~~~~~~~~~~~ LOADING SPINNER ~~~~~~~~~~~ */
+/* From https://loading.io/css/ */
+
+.loading_spinner div {
+	transform-origin: 25px 25px;
+	animation: loading_spinner 1.2s linear infinite;
+}
+.loading_spinner div:after {
+	content: " ";
+	display: block;
+	position: absolute;
+	top: 35px;
+	left: 23px;
+	width: 4px;
+	height: 20px;
+	border-radius: 2.5px;
+	background-image: linear-gradient(100deg, #35fd82 50%, #0a93e7 80%);
+}
+.loading_spinner div:nth-child(1) {
+	transform: rotate(0deg);
+	animation-delay: -1.1s;
+}
+.loading_spinner div:nth-child(2) {
+	transform: rotate(30deg);
+	animation-delay: -1s;
+}
+.loading_spinner div:nth-child(3) {
+	transform: rotate(60deg);
+	animation-delay: -0.9s;
+}
+.loading_spinner div:nth-child(4) {
+	transform: rotate(90deg);
+	animation-delay: -0.8s;
+}
+.loading_spinner div:nth-child(5) {
+	transform: rotate(120deg);
+	animation-delay: -0.7s;
+}
+.loading_spinner div:nth-child(6) {
+	transform: rotate(150deg);
+	animation-delay: -0.6s;
+}
+.loading_spinner div:nth-child(7) {
+	transform: rotate(180deg);
+	animation-delay: -0.5s;
+}
+.loading_spinner div:nth-child(8) {
+	transform: rotate(210deg);
+	animation-delay: -0.4s;
+}
+.loading_spinner div:nth-child(9) {
+	transform: rotate(240deg);
+	animation-delay: -0.3s;
+}
+.loading_spinner div:nth-child(10) {
+	transform: rotate(270deg);
+	animation-delay: -0.2s;
+}
+.loading_spinner div:nth-child(11) {
+	transform: rotate(300deg);
+	animation-delay: -0.1s;
+}
+.loading_spinner div:nth-child(12) {
+	transform: rotate(330deg);
+	animation-delay: 0s;
+}
+@keyframes loading_spinner {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+/* ~~~~~~~~~~~ LOADING SPINNER-END ~~~~~~~~~~~ */
+
+
+
+/* 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+		MEDIA QUERIES 
+~~~~~~~~~~~ ~~~~~~~~~~~ ~~~~~~~~~~~
+*/
+
+@media only screen and (max-width: 900px) {
+	/* font size */
+	.xs_font {
+		font-size: x-small;
+	}
+	.sm_font {
+		font-size: small;
+	}
+	.md_font {
+		font-size: medium;
+	}
+	.lg_font {
+		font-size: large;
+	}
+
+
+	/* element changes */
+	#welcome_wrapper {
+		grid-template-rows: auto 0.8fr 1.2fr;
+	}
+	.get_started_cards {
+		grid-auto-flow: row;
+		text-align: left;
+		grid-auto-columns: unset;
+		gap: 0vmin;
+	}
+	.get_started_card {
+		display: flex;
+		grid-auto-flow: row;
+		gap: 2rem;
+		border-width: 1px 0;
+		padding: 3vmin 1vmin;
+	}
+	h2 {
+		text-align: center;
+	}
+
+	.calibration_silhouette_wrapper {
+		display: grid;
+		grid-template-areas: "calibration_silhouette_wrapper";
+	}
+	#silhouette_wrapper {
+		grid-area: calibration_silhouette_wrapper;
+		position: relative;
+	}
+	#calibration_wrapper {
+		grid-area: calibration_silhouette_wrapper;
+		position: relative;
+	}
+	#click_dots_text {
+		padding: 11vmin;
+	}
+	.calibration_text {
+		padding: 5vmin;
+	}
+	#silhouette_text {
+		text-align: center;
+		padding: 3vmin;
+		margin: 0 6vmin;
+	}
+	#face_position_mask {
+		transform: translate(-50%, -50%) scale(4.5);
+	}
+	.video {
+		object-fit: contain;
+	}
+	
+}
+/* ~~~~~~~~~~~ MEDIA QUERIES-END ~~~~~~~~~~~ */

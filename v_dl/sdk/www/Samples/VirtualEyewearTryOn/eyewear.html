@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset=UTF-8>
+	<title>Virtual Eyewear Try-On</title>
+	<meta name="description" content="Visage Technologies Virtual Eyewear Try-On Demo" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#0a93e7" />
+	<link rel="stylesheet" href="css/eyewear.css" type="text/css" media="all" />
+	<link rel="icon" href="favicon.ico" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+</head>
+<body>
+<video class="video" id="webcam" width="1920" height="1080" autoplay playsinline></video>
+
+<div class="wrapper">
+	<div class="header">
+		<img class="logotype" src="./logo.png"/>
+	</div>
+
+	<div class="ipd">
+		<div class="ipd_container">
+			<button class="dec" onclick="dec('qty')">-</button>
+			<div>
+				<span class="ipd_input">IPD:</span> 
+				<input class="ipd_input" name="qty" type="text" readonly disabled  value="65">
+				<span class="ipd_input">mm</span>
+			</div>
+			<button class="inc" onclick="inc('qty')">+</button>  
+		</div>
+	</div>
+
+	<div class="main">
+		<div class="shadow" id="shadow"></div>
+
+		<div class="canvasContainer" id="container"></div>
+		<canvas id="bgcanvas" style="display: none"></canvas>
+		<div class="canvasContainer" id="stub"></div>
+
+		<div class="thumbs">
+			<ul>
+				<li class="active"><a href="#image1"><img src="icons/MauiJim icon.png" alt="models/MauiJim_SunCoco" /></a></li>
+				<li><a href="#image2"><img src="icons/845 icon.png" alt="models/845 glasses" /></a></li>
+				<li><a href="#image3"><img src="icons/398 icon.png" alt="models/389 glasses" /></a></li>
+			</ul>
+		</div>
+		
+		<img class="background" id="background" src="./background_black.png"/>
+		<div class="loading-spinner" id="splash_img">
+			<div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+		<div class="text" id="dl_text">Downloading...</div>
+		<div class="text" id="camera_text" hidden="true">Please allow camera access!</div>
+		<div class="text" id="glass_text" hidden="true">Loading glasses...</div>
+	</div>
+
+	<div class="footer">
+		<div class="demo_name_tooltip">
+			<span class="demo_name"> Virtual Eyewear Try-On </span>
+
+			<div class="btn btn-primary tooltip">
+				<img src="icons/tooltip icon.png" alt="tooltip" style="width: 1rem; height: 1rem; opacity: 30%; cursor:pointer;">
+				<div class="top">
+					<h3 style="color:#37fd82; text-align: center;" ">Virtual Eyewear Try-On</h3>
+					<p style="font-family:Helvetica;">
+						Let your customers virtually try on glasses, sunglasses, or colored contact lenses – anytime, anywhere. Our face tracking software ensures the perfect fit in real time. 
+						<br><br>
+						<a href="https://visagetechnologies.com/application-fields/virtual-eyewear/" target="_blank" style="color:#007bff;">Learn more</a>
+					</p>
+					<i></i>
+				</div>
+			</div>
+		</div>
+
+		<a class="trial_button" href="https://visagetechnologies.com/contact/" target="_blank">
+			<span class="trial_text"> Start your free trial </span> 
+		</a>
+	</div>
+
+</div>
+
+	
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+	var glassSel = "models/MauiJim_SunCoco";
+	
+	$(document).ready(function () {
+		$('.thumbs').slides();
+	});
+
+	(function($){
+		$.fn.extend({
+		slides: function() {
+		function getHref(el) {
+			hash = $(el).find('a').attr('href');
+			if (hash) return hash.substring(0,hash.length-4);
+			else return false;
+		}
+		function getGlassesPath(el) {
+			hash = $(el).find('img').attr('alt');
+			if (hash) return hash;
+			else return false;
+		}
+		function setActive(el) {
+			$(el).addClass('active');
+			if (getHref(el)) {
+				$(getHref(el)).show();
+				var tmp = getGlassesPath(el);
+				if (tmp!=glassSel) {
+					glassSel=tmp;
+					load(tmp);
+				}
+				else return false;
+			}
+			else return false;
+
+			$(el).siblings('li').each(function(){
+			$(this).removeClass('active');
+			$(getHref(this)).hide();
+			});
+		}
+		
+		return this.each(function() {
+			var self = this;
+			$(this).find('li>a').each(function() {
+				$(this).attr('href',$(this).attr('href') +  '-tab');
+			});
+
+			function handleHash() {
+				if (location.hash)
+					setActive($(self).find('a[href='  + location.hash  + ']').parent());
+			}
+
+			if (location.hash)
+			handleHash();
+			setInterval(handleHash,100);
+			$(this).find('li').each(function() {
+				if ($(this).hasClass('active'))
+					$(getHref(this)).show();
+				else $(getHref(this)).hide();
+			});
+		})
+		}
+		});
+	})(jQuery);
+</script>
+
+<script>
+	// Show Tooltip onTouch/onClick
+	$(document).ready(function(){
+		$(".tooltip").click(function() {
+			$(".tooltip .top").css({
+				"display":"block"
+			});
+
+			// Hide Tooltip after 8s
+			setTimeout(hideTooltip, 8000)
+		});
+	
+		// Hide Tooltip onTouch/onClick anywhere except tooltip
+		$(document).mouseup(function (e) { 
+			if ($(e.target).closest(".tooltip").length == 0) { 
+				hideTooltip()
+			} 
+		}); 
+	});
+
+	function hideTooltip() {
+		$(".tooltip .top").css({
+			"display": "none"
+		});
+	}
+</script>
+
+<script>
+	var cameraAllowed = false;
+	var downloadComplete = false;
+	
+	/*
+	*	Callback if the user denied camera access.
+	*/
+	function deniedStream() { alert("Camera access denied!"); }
+
+	/*
+	*	Callback if there was an error while getting camera access.
+	*/
+	function errorStream(e) { if (e) console.error(e); }
+
+	var backgroundCanvas = document.getElementById('bgcanvas');
+	var bgCanCon = backgroundCanvas.getContext('2d');
+
+	/*
+	*	Callback if the user allowed camera access.
+	*/
+	function startStream(stream) {
+		bgCanCon.drawImage(video,0,0);
+		video.addEventListener('canplay', function DoStuff() {
+			bgCanCon.drawImage(video,0,0);
+			video.removeEventListener('canplay', DoStuff, true);
+			setTimeout(function() {
+				video.play();
+			
+				console.log("camera allowed");
+				cameraAllowed = true;
+	
+				if (downloadComplete) removeSplash();
+				else {
+					var cam_text = document.getElementById("camera_text");
+					var dltext = document.getElementById("dl_text");
+					cam_text.hidden = true;
+					dltext.hidden = false;
+				}
+			}, 1000);
+		}, true);
+		
+		video.srcObject = stream;
+		video.play();
+	}
+	
+	var video = document.getElementById('webcam');
+	
+
+	if (window.matchMedia("(orientation: portrait)").matches) {
+		video.setAttribute("width", 720);
+		video.setAttribute("height", 1280);
+	}
+
+	if (window.matchMedia("(orientation: landscape)").matches) {
+		video.setAttribute("width", 1280);
+		video.setAttribute("height", 720);
+	}
+
+	// Listen for orientation changes
+	window.addEventListener("orientationchange", function() {
+		if (window.matchMedia("(orientation: landscape)").matches) {
+			video.setAttribute("width", 1280);
+			video.setAttribute("height", 720);
+		} else {
+			video.setAttribute("width", 720);
+			video.setAttribute("height", 1280);
+		}
+	}, false);
+	
+	try {
+		navigator.mediaDevices.getUserMedia({
+			video: {
+				width: { ideal: 1280 },
+				height: { ideal: 720 }
+			},
+			audio: false
+		}).then(startStream).catch(deniedStream);
+	} catch (e) {
+		try {
+			navigator.mediaDevices.getUserMedia('video', startStream, deniedStream);
+		} catch (e) {
+			errorStream(e);
+		}
+	}
+</script>
+
+<script src="../../lib/three.min.js"></script>
+<script src="MTLLoader.js"></script>
+<script src="OBJLoader.js"></script>
+<script src="../../lib/visageAR.js"></script>
+
+<script>
+	// initializes visage AR
+	var container = document.getElementById('container');
+	var webcam = document.getElementById('webcam');
+	var v_ar = new VisageAR();
+	var initialized = false;
+	var occluderObject = "models/occlusion_mask";
+	
+	function onModuleInitialized() {
+		downloadComplete = true;
+		
+		if (!cameraAllowed) {
+			setTimeout(onModuleInitialized, 10);
+			return;
+		}
+	
+		VisageModule.initializeLicenseManager(licenseName);
+
+		v_ar.initialize(container, webcam);
+		
+		if (cameraAllowed == true)
+			removeSplash();
+		else {
+			var cam_text = document.getElementById("camera_text");
+			var dltext = document.getElementById("dl_text");
+			var splash_image = document.getElementById("splash_img");
+			cam_text.hidden = false;
+			cam_text.style.color = "red";
+			dltext.hidden = true;
+			splash_image.style.visibility = "hidden";
+		}
+		//btnCfg.disabled = false;
+		if (cameraAllowed)
+			start();
+		
+		stub = document.getElementById("stub");
+		stub.style.display = "none";
+		// loads the occluder object
+		v_ar.loadOccluder(occluderObject);
+		// loads the vogue glasses
+		v_ar.loadObject(glassSel);
+
+		var scene = v_ar.getScene();
+
+		scene.traverse( function(node) {
+			if (node.isLight) {
+				node.intensity = 0;
+			}
+		});
+
+		// setup ambient light
+		var ambientLight = new THREE.AmbientLight(0xFFFFFF);
+		scene.add(ambientLight);
+		
+		// setup point light
+		var pointLight = new THREE.PointLight(0xA0A0A0, 0.03, 0.0, 2);
+		pointLight.position.set(0, 0, 0);
+		scene.add(pointLight);
+		
+		initialized = true;
+	}
+	
+	/*
+	*	Call setIPD method
+	*/
+	function inc(element) {
+		var el = document.querySelector(`[name="${element}"]`);
+		el.value = parseInt(el.value) + 1;
+		v_ar.setIPD(el.value)
+	}
+	
+	function dec(element) {
+		var el = document.querySelector(`[name="${element}"]`);
+		if (parseInt(el.value) > 0) {
+			el.value = parseInt(el.value) - 1;
+			v_ar.setIPD(el.value)
+		}
+	}
+
+	/*
+	*	Starts tracking.
+	*/
+	function start() {
+		v_ar.startTracking();
+	}
+
+	/*
+	*	Stops tracking.
+	*/
+	function stop() {
+		v_ar.stopTracking();
+	}
+
+	/*
+	*	Loads a glasses model from the select box. 
+	*	See the <a href="eyewear_model_guide.html">modeling guide</a> on how to prepare models for use with VisageAR.
+	*/
+	function load(glasses) {
+		if (initialized) {	
+			v_ar.clearOccluder();
+			v_ar.loadOccluder(occluderObject);
+			v_ar.loadObject(glasses);
+		}
+	}
+
+	/*
+	*	Remove the wait for download/camera splash screen
+	*/
+	function removeSplash() {
+		var splash_image = document.getElementById("splash_img");
+		var background = document.getElementById("background");
+		var dltext = document.getElementById("dl_text");
+		var cam_text = document.getElementById("camera_text");
+		splash_image.style.display = "none";
+		background.style.display = "none";
+		dltext.hidden = true;
+		cam_text.hidden = true;
+	}
+</script>
+
+<script>
+	var licenseName = "dev_html5.vlc"
+	var licenseURL = "dev_html5.vlc"
+	var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
+	VisageModule = {
+		locateFile: locateFile,
+		preRun: [function() {
+			VisageModule.FS_createPreloadedFile('/', 'Head Tracker.cfg', "../../lib/Head Tracker.cfg", true, false);
+			VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+			VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+		
+		}],
+		onRuntimeInitialized: onModuleInitialized
+	}
+</script>
+
+<script src="../../lib/visageSDK.js"></script>
+
+</body>
+</html>

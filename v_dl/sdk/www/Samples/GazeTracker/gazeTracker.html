@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Visage Gaze Tracker</title>
+	<meta name="description" content="Visage Technologies | Visage Gaze Tracker Demo" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="theme-color" content="#0a93e7" />
+	<link rel="stylesheet" href="css/stylevisage.css" type="text/css" media="all" />
+	<link rel="icon" href="favicon.ico" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+</head>
+
+<body>
+
+<div id="welcome_wrapper">
+	<div class="header">
+		<img class="logo" src="./logo.png"/>
+	</div>
+
+	<div class="loading_info">
+		<span id="downloading_text" class="xs_font">Downloading data</span>
+		<span id="loaded_text" class="xs_font">Data loaded</span>
+
+		<div id="spinner" class="loading_spinner">
+			<div></div><div></div><div></div><div></div><div></div><div></div>
+			<div></div><div></div><div></div><div></div><div></div><div></div>
+		</div>
+
+		<a id="ready_button" onclick="startCalibration()">
+			<span class="ready_text"> I'm ready to start </span> 
+		</a>
+
+		<div class="demo_name_tooltip">
+			<span class="lg_font"> Visage Gaze Tracker </span>
+
+			<div class="tooltip">
+				<img class="tooltip_icon" src="icons/tooltip icon.png" alt="tooltip" style=" cursor:pointer;"/>
+
+				<div class="top">
+					<h3 class="green_highlight" align="center"> Visage Gaze Tracker </h3>
+					<p>
+						Track screen-space gaze position in real time and create powerful solutions for marketing research, user studies and other applications that benefit from knowing where on the screen the user is looking.
+						<br> <br>
+						<a class="blue_highlight" href="https://visagetechnologies.com/eye-gaze-tracking/"> Learn more </a>
+					</p>
+					<i></i>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="get_started_panel">
+		<h2 class="md_font"> To get started with gaze tracking, <span class="green_highlight"> please ensure that: </span> </h2>
+
+		<div class="get_started_cards">
+				<div class="get_started_card">
+					<img class="get_started_card_icons" src="icons/sun icon.png" alt="sun" />
+					<p class="sm_font">Your face is <span class="green_highlight"> well-lit. </span> </p>
+				</div>
+				<div class="get_started_card">
+					<img class="get_started_card_icons" src="icons/face icon.png" alt="face" />
+					<p class="sm_font"> You are <span class="green_highlight">facing</span> the camera. </p>
+				</div>
+				<div class="get_started_card">
+					<img class="get_started_card_icons" src="icons/couch icon.png" alt="couch" />
+					<p class="sm_font"> You are comfortable and <span class="green_highlight"> won't move. </span> </p>
+				</div>
+		</div>
+	</div>
+</div>
+
+
+
+<div class="calibration_silhouette_wrapper">
+	<div id="silhouette_wrapper">
+		<video class="video" id="webcam" width="1920" height="1080" autoplay playsinline></video>
+
+		<svg width="4100" height="4100" viewBox="0 0 4100 4100" id="face_position_mask" hidden="false">
+			<g>
+				<path d="M 0 0 L 4100 0 L 4100 4100 L 0 4100 Z M 2050 2010 C 2030.67 2010 2015 2022.938 2015 2050 C 2015 2077.062 2030.67 2099 2050 2099 
+					C 2069.33 2099 2085 2077.062 2085 2050 C 2085 2022.938 2069.33 2010 2050 2010 Z">
+				</path>
+			</g>
+		</svg>
+
+		<p id="silhouette_text" class="md_font"> 
+			Make sure your face <span class="green_highlight"> matches </span> the silhouette.
+		</p>
+	</div>
+
+	<div id="calibration_wrapper">
+
+		<canvas id="gazeCanvas" width="100%" height="100%" margin="0"></canvas>
+		<div class="calibration_text">
+			<span class="lg_font"> Calibration </span>
+			
+			<div id="calibration_tooltip" class="tooltip">
+				<img class="tooltip_icon" src="icons/tooltip icon.png" alt="tooltip" style=" cursor:pointer;" />
+
+				<div class="top">
+					<p> 
+						Click on the blue dots. Remember, <span class="green_highlight"> only your eyes move, </span> not your head.
+						<br> <br>
+						Press <span class="green_highlight"> "SPACE" </span> if you wish to <span class="green_highlight"> reset the calibration. </span> 
+					</p>
+					<i></i>
+				</div>
+			</div>
+		</div>
+
+
+		<p id="click_dots_text" class="md_font"> 
+			Click on the blue dots. Remember, <span class="green_highlight"> only your eyes move, </span> not your head.
+			<br> <br>
+			Press <span class="green_highlight"> "SPACE" </span> if you wish to <span class="green_highlight"> reset the calibration. </span> 
+		</p>
+	</div>
+</div>
+
+<div id="calibration_end", class="md_font", style="display:none;position: absolute;top: 20px;left: 20px">
+		Initial calibration has finished and gaze tracking has started.
+</div>
+
+<canvas id="canvas" width="1920" height="1080" hidden="true"></canvas>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<script>
+	// Show Tooltip onTouch/onClick
+	$(document).ready(function(){
+		$(".tooltip").click(function() {
+			$(".tooltip .top").css({
+				"display":"block"
+			});
+
+			// Hide Tooltip after 8s
+			setTimeout(hideTooltip, 8000)
+		});
+	
+		// Hide Tooltip onTouch/onClick anywhere except tooltip
+		$(document).mouseup(function (e) { 
+			if ($(e.target).closest(".tooltip").length == 0) { 
+				hideTooltip()
+			} 
+		}); 
+	});
+
+	function hideTooltip() {
+		$(".tooltip .top").css({
+			"display": "none"
+		});
+	}
+</script>
+
+<script src="../../lib/visageRendering.js"></script>
+<script type='text/javascript'>
+
+
+
+/*
+* 	VARS
+*/
+var	canvas = document.getElementById('canvas');
+	gazeCanvas = document.getElementById('gazeCanvas');
+
+	gazeCanvas.width = document.documentElement.clientWidth;
+	gazeCanvas.height = document.documentElement.clientHeight; 
+
+var mWidth = 0,
+	mHeight = 0;
+	
+var fps = 0,
+	now = 0, 
+	lastUpdate = 0,
+	fpsFilter = 50;
+
+var canCon = canvas.getContext('2d',  {willReadFrequently: true});	
+var gazeCanCon = gazeCanvas.getContext('2d',  {willReadFrequently: true});
+var startTracking = false;
+var draw = true;
+
+var timeme = false;
+
+var trackerStates = ["TRACK_STAT_OFF","TRACK_STAT_OK","TRACK_STAT_RECOVERING","TRACK_STAT_INIT"];
+var trackerReturnState = trackerStates[0];
+
+var frameSample = [0,0,0,0,0];
+var newSample = [0,0,0,0,0];
+var ppixels,
+	pixels;
+
+var calibrations;
+var calibFrameCount;
+var inRecalibSequence = false;
+var timer;
+var startTimestamp = 0;
+var lastTimestamp = 0;
+var calibIndex;
+var calibCount;
+var recalibSequenceFinished = false;
+var drawgaze = false;
+var moduleInit = false;
+
+function recalibrate() {		
+	if (moduleInit) {
+		if (trackerReturnState[0] == 1) {
+			drawgaze = false;
+			timer = new Date();
+			inRecalibSequence = true;
+			startTimestamp = timer.getSeconds();
+			calibIndex = 0;
+			recalibSequenceFinished = false;
+		}
+	}
+}
+	
+/*
+* Compares two samples of 5 pixel values 
+*/
+function checkFrameDuplicate(newSample) {
+	for (var i = 0; i <  newSample.length; i+=2) {
+		if (newSample[i]!==frameSample[i])
+			return false;
+	}
+	//additional check
+	for (var i = 1; i < newSample.length; i+= 2) {
+		if (newSample[i]!==frameSample[i])
+			return false;
+	}
+	return true;
+}
+
+
+var fps = 30;
+var now;
+var then = Date.now();
+var interval = 1000/fps;
+var delta;
+
+/*
+*  Switches "welcome_wrapper" with "silhouette_wrapper" and Starts Calibration
+*/
+var buttonClicked = false;
+function startCalibration() {
+	document.getElementById("welcome_wrapper").style.display = "none";
+	document.getElementById("silhouette_wrapper").style.display = "flex";
+	document.getElementById("silhouette_wrapper").style.opacity = "1";
+	document.getElementById("silhouette_wrapper").style.visibility = "visible";
+	buttonClicked = true;
+	recalibrate();
+}
+
+/*
+*Method that is called on every frame via requestAnimationFrame mechanism.
+*Draws camera image on the canvas, takes the pixel data, sends them to the tracker and finally, depending on the result, draws the results.
+*/
+function processFrame() {
+	window.requestAnimationFrame(processFrame);
+	
+	now = Date.now();
+	delta = now - then;
+	
+	//Limit frame rate according to the fps variable
+	if (delta > interval) {
+		then = now - (delta % interval);
+		
+		canvas.width = mWidth;
+		//Draws an image from cam on the canvas
+		canCon.drawImage(video,0,0,mWidth,mHeight);
+		
+		//Access pixel data	
+		imageData = canCon.getImageData(0,0, mWidth, mHeight).data;
+		
+		gazeCanCon.clearRect(0, 0, gazeCanvas.width, gazeCanvas.height);
+		gazeCanCon.canvas.width  = window.innerWidth;
+		gazeCanCon.canvas.height = window.innerHeight;
+		
+		//Save pixel data to preallocated buffer
+		for (i = 0; i < imageData.length; i += 4) {
+			average = 0.299*imageData[i] + 0.587*imageData[i+1] + 0.114*imageData[i+2];
+			pixels[i] = imageData[i];
+		}
+
+		//Call Update() if ready to start tracking and frame is new
+		if (startTracking) {
+			trackerReturnState = m_Tracker.track(
+					mWidth, mHeight, ppixels, faceDataArray,
+					VisageModule.VisageTrackerImageFormat.VISAGE_FRAMEGRABBER_FMT_RGBA.value,
+					VisageModule.VisageTrackerOrigin.VISAGE_FRAMEGRABBER_ORIGIN_TL.value, 
+					0, -1, maxFaces
+				);
+
+			if (trackerReturnState[0] === VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value) {	
+				document.getElementById("downloading_text").style.display = "none";
+				document.getElementById("spinner").style.display = "none";
+				document.getElementById("loaded_text").style.display = "block";
+				document.getElementById("ready_button").style.display = "block";
+			
+				if (recalibSequenceFinished && buttonClicked) {
+					if (faceData.getFaceTranslation()[2] <= 0.7 && Math.abs(faceData.getFaceTranslation()[1]) <= 0.3 && Math.abs(faceData.getFaceTranslation()[0]) <= 0.1) {
+						document.getElementById("calibration_wrapper").style.display = "flex";
+						document.getElementById("calibration_wrapper").style.opacity = "1";
+						document.getElementById("calibration_wrapper").style.visibility = "visible";
+						document.getElementById("calibration_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_wrapper").style.opacity = "0.1";
+						document.getElementById("silhouette_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_text").style.visibility = "hidden";
+						document.getElementById("face_position_mask").style.transition = "fill 0.8s ease-out";
+						document.getElementById("face_position_mask").style.stroke = "#37fd82";
+					}
+					else {
+						document.getElementById("calibration_wrapper").style.opacity = "0";
+						document.getElementById("calibration_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_wrapper").style.display = "flex";
+						document.getElementById("silhouette_wrapper").style.opacity = "1";
+						document.getElementById("silhouette_wrapper").style.visibility = "visible";
+						document.getElementById("silhouette_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_text").style.visibility = "visible";
+						document.getElementById("face_position_mask").style.transition = "fill 0.8s ease-out";
+						document.getElementById("face_position_mask").style.stroke = "#fff";
+					}
+				}
+
+				drawScreenSpaceGaze(
+					gazeCanCon, 
+					calibrations[3 * calibIndex + 1] * gazeCanvas.width, 
+					calibrations[3 * calibIndex + 2] * gazeCanvas.height, 
+					1
+				);
+			}			
+		}
+		
+		if (!inRecalibSequence && drawgaze && faceDataArray.get(0).gazeData.inState == 2) {
+			drawScreenSpaceGaze(
+				gazeCanCon, 
+				Math.min(Math.max(faceDataArray.get(0).gazeData.x, 0), 1) * gazeCanvas.width, 
+				Math.min(Math.max(faceDataArray.get(0).gazeData.y, 0), 1) * gazeCanvas.height, 
+				faceDataArray.get(0).gazeData.inState
+			);
+			
+			if (faceData.getFaceTranslation()[2] <= 0.7 && Math.abs(faceData.getFaceTranslation()[1]) <= 0.3 && Math.abs(faceData.getFaceTranslation()[0]) <= 0.1) {
+
+						document.getElementById("silhouette_wrapper").style.opacity = "0.1";
+						document.getElementById("silhouette_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_text").style.visibility = "hidden";
+						document.getElementById("face_position_mask").style.transition = "fill 0.8s ease-out";
+						document.getElementById("face_position_mask").style.stroke = "#37fd82";
+					}
+					else {
+
+						document.getElementById("silhouette_wrapper").style.display = "flex";
+						document.getElementById("silhouette_wrapper").style.opacity = "1";
+						document.getElementById("silhouette_wrapper").style.visibility = "visible";
+						document.getElementById("silhouette_wrapper").style.transition = "opacity 0.8s ease-out";
+
+						document.getElementById("silhouette_text").style.visibility = "visible";
+						document.getElementById("face_position_mask").style.transition = "fill 0.8s ease-out";
+						document.getElementById("face_position_mask").style.stroke = "#fff";
+					}
+		}
+		
+		if (inRecalibSequence) {	
+			curTimer = new Date();
+			lastTimestamp = curTimer.getSeconds();
+			inRecalibSequence = false;
+			recalibSequenceFinished = true;
+			m_Tracker.initOnlineGazeCalibration();
+		}
+		
+		//Calculate FPS
+		var thisFrameFPS = 1000 / ((now=new Date) - lastUpdate);
+		fps += (thisFrameFPS - fps) / fpsFilter;
+		lastUpdate = now;
+	}		
+}
+//Function called when tracking is resumed/started
+function StartTracker() {
+	startTracking = true;
+}
+
+function StopTracker() {
+	startTracking = false;
+}
+
+/**
+* Mouse position handler
+*/
+function getPosition(event) {
+	var xcan = new Number();
+	var ycan = new Number();
+	var xcanrel = new Number();
+	var ycanrel = new Number();
+	if (event.x != undefined && event.y != undefined) {
+		xcan = event.x;
+		ycan = event.y;
+	}
+	// Firefox method to get the position
+	else { 
+		xcan = event.clientX + document.body.scrollLeft +
+			document.documentElement.scrollLeft;
+		ycan = event.clientY + document.body.scrollTop +
+			document.documentElement.scrollTop;
+	}
+	xcan -= gazeCanvas.offsetLeft;
+	ycan -= gazeCanvas.offsetTop;
+	xcanrel = xcan / gazeCanvas.width;
+	ycanrel = ycan / gazeCanvas.height;
+	calibrate(xcanrel,ycanrel);
+}
+
+function minimizeCalibrationText() {
+	document.getElementById("calibration_wrapper").style.alignItems = "flex-start";
+	document.getElementById("calibration_wrapper").style.justifyContent = "flex-end";
+	document.getElementById("calibration_tooltip").style.display = "flex";
+	document.getElementById("click_dots_text").style.display = "none";
+}
+
+function fullCalibrationText() {
+	document.getElementById("calibration_wrapper").style.alignItems = "center";
+	document.getElementById("calibration_wrapper").style.justifyContent = "center";
+	document.getElementById("calibration_tooltip").style.display = "none";
+	document.getElementById("click_dots_text").style.display = "block";
+}
+
+gazeCanvas.addEventListener("mousedown", getPosition, false);
+gazeCanvas.addEventListener("mousedown", minimizeCalibrationText, false);
+
+var clickdif = 0.02; //Calibration point click allowed offset, percentage of canvas size
+
+/**
+* Calibrate initial calibration points and generate additional random calibration points.
+*/
+function calibrate(xrel,yrel) {
+	if (!startTracking || trackerReturnState[0]!==VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value) {
+		return;
+	}
+
+	if ( xrel<(calibrations[3 * calibIndex + 1]+clickdif) && 
+		xrel>(calibrations[3 * calibIndex + 1]-clickdif) && 
+		yrel<(calibrations[3 * calibIndex + 2]+clickdif) && 
+		yrel>(calibrations[3 * calibIndex + 2]-clickdif)
+	) {
+		if (startTracking===true) {
+			if (recalibSequenceFinished) {
+				m_Tracker.addGazeCalibrationPoint(calibrations[3 * calibIndex + 1], calibrations[3 * calibIndex + 2]);
+				calibIndex++;
+			}
+			
+			if (calibIndex >= calibCount) {
+				drawgaze = true;
+				var pomx = Math.random()*0.85 + 0.1;
+				var pomy = Math.random()*0.85 + 0.1;
+				calibrations.push(calibIndex);
+				calibrations.push(pomx);
+				calibrations.push(pomy);
+				m_Tracker.finalizeOnlineGazeCalibration();
+				document.getElementById("calibration_end").style.display = "inline";
+			}
+		}	
+	}
+}
+
+window.onkeypress = function(e) {
+	var key = e.keyCode ? e.keyCode : e.which;
+	//SPACE (Start recalibrate())
+	if (key == 32) {   
+		recalibrate();
+		fullCalibrationText();
+	}
+}
+
+//
+var m_Tracker;
+var imageData;
+var response;
+
+var video = document.getElementById('webcam');
+
+//Handlers for camera communication
+//callback methods for getUserMedia : deniedStream, errorStream, startStream
+//**************************************************************************
+
+//Alerts the user when there is no camera
+function deniedStream() {
+	alert("Camera access denied!");
+}
+//Pushes error to the console when there is error with camera access
+function errorStream(e) {
+	if (e) console.error(e);
+}
+
+
+function reqListener () {
+	response = this.responseText;
+	var lines = response.split('\n');
+	calibrations = [];
+	var count = 0;
+	for (i = 0; i < lines.length; i++) {
+		var line = lines[i].split(' ');
+		if (line.length == 3) {
+			calibrations[3 * i + 0] = parseFloat(line[0]);
+			calibrations[3 * i + 1] = parseFloat(line[1]);
+			calibrations[3 * i + 2] = parseFloat(line[2]);	
+			count++;
+		}
+	}
+
+	calibCount = lines.length;
+	calibIndex = 0;
+
+	//Use request animation frame mechanism
+	processFrame();
+}
+
+
+function onModuleInitialized() {	
+	if (mWidth === 0) {
+		setTimeout(onModuleInitialized, 100);
+		return
+	}
+	
+	moduleInit = true;
+	sampleState = 2;
+	
+	ppixels = VisageModule._malloc(mWidth*mHeight*4);
+	pixels = new Uint8Array(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
+					
+	VisageModule.initializeLicenseManager(licenseName);
+	//set up tracker and licensing, valid license needs to be provided
+	m_Tracker = new VisageModule.VisageGazeTracker("Facial Features Tracker.cfg");
+	
+	faceDataArray = new VisageModule.FaceDataVector();
+	faceData = new VisageModule.FaceData();
+    faceDataArray.push_back(faceData);
+	
+	maxFaces = 1;
+	
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", reqListener);
+	xhr.open("GET", "calibration.txt");
+	xhr.send();
+	
+	StartTracker();
+
+}
+
+//Is triggered when cam stream is successfully fetched
+//NOTE: Can be buggy, try to increase the value from 1000ms to some higher value in that case
+function startStream(stream) {
+	video.addEventListener('canplay', function DoStuff() {
+		video.removeEventListener('canplay', DoStuff, true);
+		setTimeout(function() {
+			video.play();
+	
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+			
+			mWidth = video.videoWidth;
+			mHeight = video.videoHeight;
+
+		}, 1000);
+	}, true);
+		
+	
+	video.srcObject = stream;
+	video.play();
+}
+						  
+(function() {
+	var i = 0,
+		lastTime = 0,
+		vendors = ['ms', 'moz', 'webkit', 'o'];
+	
+	while (i < vendors.length && !window.requestAnimationFrame) {
+		window.requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+		window.cancelAnimationFrame =
+		  window[vendors[i]+'CancelAnimationFrame'] || window[vendors[i]+'CancelRequestAnimationFrame'];
+		i++;
+	}
+	if (!window.requestAnimationFrame) {
+		alert("RequestAnimationFrame mechanism is not supported by this browser.");
+	}
+}());
+
+//Here is where the stream is fetched
+try {
+	navigator.mediaDevices.getUserMedia({
+		video: {
+			width: { ideal: 1920 },
+			height: { ideal: 1080 },
+		},
+		audio: false
+	}).then(startStream).catch(deniedStream);
+} catch (e) {
+	try {
+		navigator.mediaDevices.getUserMedia('video', startStream, deniedStream);
+	} catch (e) {
+		errorStream(e);
+	}
+}
+
+</script>
+
+<script>
+licenseName = "dev_html5.vlc"
+licenseURL = "dev_html5.vlc"
+var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
+VisageModule = {
+   locateFile: locateFile,
+   preRun: [function() {
+        VisageModule.FS_createPreloadedFile('/', 'Facial Features Tracker.cfg', "../../lib/Facial Features Tracker.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+	
+    }],
+
+   onRuntimeInitialized: onModuleInitialized
+}
+
+</script>
+<script src="../../lib/visageSDK.js"></script>
+
+</body>
+</html> 

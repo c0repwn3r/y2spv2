@@ -1,0 +1,1141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Migration from older versions</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<h1>Migration from older versions</h1>
+
+<p>Visage Technologies strives to minimize changes in API and configuration files when releasing new versions of the SDK. The inevitable changes are listed here together with specific instructions for developers who have existing applications built with older versions.</p>
+
+<h2>Changes in this release</h2>
+
+<p>This section covers all changes introduced in all releases since 9.0.</p>
+
+<h3>Landmark detection changes:</h3>
+
+<i>Additional lips landmarks</i>
+
+<ul><li>16 additional lips landmarks contained in the <b>group 17</b> (17.5-17.20) are <b>added as part of the extended lips landmarks improvements</b>.
+</li></ul>For more details please see <a href="FDP.html" target="_blank">FDP</a> documentation.</ul>
+
+<h3>Changes in configuration file:</h3>
+<ul>
+<li><b>enable_smoothing</b> configuration parameter added. Controls whether the tracker output is smoothed with the
+smoothing_factors parameter or not.
+<ul>
+<li>Value 0 - Tracker outputs are not smoothed.</li>
+<li>Value 1 - Tracker outputs are smoothed.</li>
+</ul></li>
+        <br />
+        <li>
+            <b>temporally_denoise_input</b> configuration parameter added. Controls whether the input frames are denoised in the time domain.
+            This parameter is used to minimize noise (such as small variations in the light or electrical noise coming from the camera) in the input images to increase feature point stability and precision.
+            <ul>
+                <li>Value 0 - The input frame stream is not denoised.</li>
+                <li>Value 1 - The input frame stream is denoised.</li>
+            </ul>
+        </li>
+</ul>
+<p>For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>, 
+section 2.1. for additional information.</p>
+
+<h3>API changes:</h3>
+<p><i>VisageConfiguration API</i></p>
+Introducing new functions for getting and setting <code>enable_smoothing</code> parameter:
+<ul>
+<li><pre>VisageConfiguration.getEnableSmoothing();</pre></li>
+<li><pre>VisageConfiguration.setEnableSmoothing(var enable_smoothing);</pre></li>
+</ul>
+<h3>Data files changes:</h3>
+<p>Following data files in <i>www/lib</i> folder updated: 
+  <ul>
+  <li>visageSDK.data</li> 
+  <li>visageSDK.js</li> 
+  <li>visageSDK.wasm</li>
+  </ul> 
+  Please make sure to have the current files in your folder.</p>
+
+  <h3>Sample changes:</h3>
+
+  <p>Samples displaying feature points are updated to draw additional lip points.</p>
+
+<br><hr>
+<h2>Changes in older releases</h2>
+<hr>
+
+<h2>visage|SDK 9.0</h2>
+
+<h3>General:</h3>
+
+<p>Reduced size of visage|SDK libraries.</p>
+
+<p><i>Multi-frame analysis feature</i></p>
+<p>VisageFaceAnalyser now offers multi-frame analysis functionality which performs estimations on the selected high-quality frames and returns an averaged, smoothed value. This functionality is available via the <i>VisageFaceAnalyser::analyseStream()</i> function.</p>
+
+<p><i>New tracking algorithm models</i></p>
+<p>Introducing smaller and faster tracking algorithm models while retaining the same accuracy which completely replace the old models that will no longer be distributed.</p>
+
+<p><i>New age and gender estimation models</i></p>
+<p>Introducing smaller, faster and more accurate age and gender estimation models which completely replace the old models that will no longer be distributed.</p>
+
+<h3>API changes:</h3>
+
+Introducing new FaceData member for getting the face bounding box:
+<ul>
+<li><pre>FaceData.getFaceBoundingBox</pre></li>
+</ul>
+
+<p><i>VisageFaceAnalyser API</i></p>
+
+VisageFaceAnalyser API was refactored to optimise usage and to include newly introduced multi-frame analysis feature.<br><br>
+Old face analysis functions were removed:
+<ul>
+<li><pre>VisageFaceAnalyser.estimateAge</pre></li>
+<li><pre>VisageFaceAnalyser.estimateGender</pre></li>
+<li><pre>VisageFaceAnalyser.estimateEmotion</pre></li>
+</ul>
+
+and replaced with new ones:
+<ul>
+<li><pre>VisageFaceAnalyser.analyseImage(frameWidth, frameHeight, p_imageData, faceData, options, results)</pre></li>
+<li><pre>VisageFaceAnalyser.analyseStream(frameWidth, frameHeight, p_imageData, faceData, options, results, faceIndex)</pre></li>
+<li><pre>VisageFaceAnalyser.resetStreamAnalysis(faceIndex)</pre></li>
+</ul>
+
+Three separate calls to old analysis estimation functions can now be performed by a single call to <i>analyseImage()</i> or <i>analyseStream()</i> where parameter <i>options</i> specifies which analysis operations to perform.<br><br>
+
+For more details please see <a href="VisageFaceAnalyser.html" target="_blank"> VisageFaceAnalyser API</a> documentation.<br>
+
+<p>Introducing new <a href="AnalysisData.html" target="_blank"><i>AnalysisData</i></a> structure which contains face analysis results (age, gender and emotions) returned by the <i>VisageFaceAnalyser.analyseImage</i> and <i>VisageFaceAnalyser.analyseStream</i> functions.</p>
+
+<p><i>VisageDetector API</i></p>
+
+Prototype of VisageDetector constructor has been changed:
+<ul>
+<li><pre>VisageDetector()</pre></li>
+to: 
+<li><pre>VisageDetector(configFileName)</pre></li>
+</ul>
+For more details please see <a href="VisageDetector.html" target="_blank"> VisageDetector API</a> documentation.<br>
+
+<p><i>VisageGazeTracker API</i></p>
+Prototype of following method has been changed:
+<ul>
+<li><pre>track(frameWidth, frameHeight, p_imageData, faceDataVector, format, origin, widthStep, timeStamp)</pre></li>
+to:
+<li><pre>track(frameWidth, frameHeight, p_imageData, faceDataVector, format, origin, widthStep, timeStamp, maxFaces)</pre></li>
+</ul>
+For more details please see <a href="VisageTracker.html" target="_blank"> VisageTracker API</a> documentation.<br>
+
+<h3>Data files changes:</h3>
+Location of 3D models changed from <i>root</i> of the Virtual File System to <i>vft/fm</i> (e.g. <i>jk_300.wfm</i> to <i>vft/fm/jk_300.wfm</i>).
+
+<p>Following data files in <i>www/lib</i> folder updated: 
+<ul>
+<li>visageAnalysisData.data</li>
+<li>visageAnalysisData.js</li>
+<li>VisageAnalyserUnityPlugin.jslib</li>
+<li>visageEarsRefinerData.data</li>
+<li>visageEarsRefinerData.js</li>
+<li>visageRecognitionData.data</li>
+<li>visageRecognitionData.js</li>
+<li>visageSDK.data</li> 
+<li>visageSDK.js</li> 
+<li>visageSDK.wasm</li>
+<li>VisageTrackerUnityPlugin.jslib</li>
+</ul> 
+Please make sure to have the current files in your folder.</p>
+
+<h3>Sample changes:</h3>
+
+Due to native <i>FaceData API</i> and <i>VisageFaceAnalyser API</i> changes, <a href="module-VisageTrackerUnityPlugin.html" target="_blank"> VisageTrackerUnityPlugin API</a> and <a href="module-VisageAnalyserUnityPlugin.html" target="_blank"> VisageAnalyserUnityPlugin API</a> were updated accordingly.
+
+<p><i>ShowcaseDemo</i> and <i>VisageTrackerUnityDemo</i>:</p> 
+Newly introduced face analysis functions, <i>analyseStream()</i> and <i>resetStreamAnalysis()</i>, are used to perform face analysis, thus replacing previously used estimation functions and in-app filtering.
+
+<br><br>
+<h2>visage|SDK 8.8</h2>
+
+<h3>General:</h3> 
+
+<p><i>Face tracking and detection algorithms</i></p>
+
+<p>The default legacy algorithm that could be allowed via the <i>use_vnn</i> configuration parameter (value 0) has been removed. 
+The VNN algorithm is now the default and only tracking and detection algorithm.<br><br>
+The algorithm can be configured to improve feature points precision and robustness, 
+over tracking speed (performance) by setting the <i>refine_landmarks</i> parameter to 1 in the configuration file.
+Otherwise, when performance is preferred over feature points precision, the recommendation is to disable <i>refine_landmarks</i> parameter by setting it to 0 in the configuration file.</p>
+
+<p><i>Face tracking and detection with protection masks</i></p>
+<p>Face tracking and detection algorithms are enhanced so that they can track and detect faces wearing protective masks of various colors and patterns.</p>
+
+
+<h3>Landmark detection changes:</h3>
+
+<i>Contour landmarks</i>
+
+<ul><li>Visible contour landmarks from <b>group 13</b> (13.1-13.17) are <b>no longer available</b> (not detected or estimated).
+Instead, contour landmarks are now provided only in the form of a physical contour within <b>group 15</b> (15.1-15.17).
+For more details please see <a href="FDP.html" target="_blank">FDP</a> documentation.</ul>
+
+Changing the detection of contour points from visible to physical results in improved stability and accuracy of the 3D head-pose estimation.
+
+<h3>Library changes:</h3>
+<p><i>VisageTrackerUnityPlugin and VisageAnalyserUnityPlugin</i></p>
+<p>Renaming <b>unityInstance</b> to <b>unityGame</b>:
+<ul>
+<li>Since <i>unityInstance</i> is no longer globally available as it became Promise, the resolved instance of Promise is expected to be assigned 
+to the global variable called <i>unityGame</i> in the generated main application <i>index.html</i> file and as such used within the plugin libraries.</li>
+</ul>
+</p>
+
+
+<h3>API changes:</h3>
+
+Introducing new FaceData class member for getting the rotation of the face from the camera viewpoint:
+<ul>
+<li><pre>FaceData.getFaceRotationApparent</pre></li>
+</ul>
+
+<p><i>VisageTrackerUnityPlugin API</i></p>
+<p>Introducing new function for getting the rotation of the face from the camera viewpoint:
+<ul>
+<li><pre>VisageTrackerNative._getHeadRotationApparent(rotationApparent, faceIndex)</pre></li>
+</ul>
+</p>
+
+<h3>Changes in configuration file:</h3>
+
+<p><i>Removed</i></p>
+<ul>
+<li>Parameters:</li>
+<ul>
+<li><b>use_vnn</b></li>
+<li><b>lbf_stage_modifier</b></li>
+<li><b>lbf_nperturb</b></li>
+<li><b>lbf_nperturb_threads</b></li>
+</ul>
+<li>Files:</li>
+<ul>
+<li><b>Facial Features Tracker - Ultra.cfg</b></li>
+<li><b>Facial Features Tracker - Low.cfg</b></li>
+</ul>
+</ul>
+<p><i>Added</i></p>
+<ul>
+<li><b>refine_landmarks</b> parameter</li>
+<ul>
+<li>value 0 - landmarks refinement is disabled</li>
+<li>value 1 - landmarks refinement is enabled</li>
+</ul>
+</ul>
+<p><i>Renamed</i></p>
+<ul>
+<li> <b>Facial Features Tracker - High.cfg</b> to <b>Facial Features Tracker.cfg</b></li>
+</ul>
+<p><i>Modified</i></p>
+<ul>
+<li><b>Facial Features Tracker.cfg</b> configuration file - new <i>refine_landmarks</i> parameter set to 1 (enabled)</li>
+<li><b>Head Tracker.cfg</b> configuration file - new <i>refine_landmarks</i> parameter set to 0 (disabled)</li>
+</ul>
+
+<p>Please refer to the <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>, 
+section 2.1. for additional information.</p>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the parameters values from
+Facial Features Tracker.cfg configuration file supplied in this package. 
+</p>
+
+
+<h3>Data files changes:</h3>
+
+<p><i>Removed</i></p>
+<ul>
+<li>Legacy tracking and detection algorithm data file <b>visageLBFData.data</b> (along with loader script <b>visageLBFData.js</b>)</li>
+<li>Default tracking and detection algorithm data file <b>visageVNNData.data</b> (along with loader script <b>visageVNNData.js</b>)</li>
+</ul>
+<p><i>Modified</i></p>
+<ul>
+<li>The main <b>visageSDK.data</b> data file now encompass all data needed for running tracking and detection algorithms.</li>
+</li>
+</ul>
+<p><i>Added</i></p>
+<ul>
+<li>Ears tracking data file <b>visageEarsRefinmentData.data</b> (along with data loader script <b>visageEarsRefinmentData.js</b>)</li>
+</li>
+</ul>
+
+
+<p>Projects using older versions of these files should be updated to load the newest data files along with libraries (visageSDK.js, visageSDK.wasm) from the <i>www/lib</i> folder.</p>
+<br>
+
+<h3>Sample changes:</h3>
+
+<p>Samples displaying feature points are updated to draw physical contour points.</p>
+
+<p><i>ShowcaseDemo</i> and <i>VisageTrackerUnityDemo</i>:</p> 
+
+<p>Newly introduced FaceData class member, faceRotationApparent, is used to check if face rotation is within constraints to successfully run face recognition and face analysis.</p>
+
+<br>
+<h2>visage|SDK 8.7</h2>
+
+<h3>General:</h3>
+
+<p><i>Configurable neural network runner</i></p>
+
+<p>To improve the performance of our algorithms and to support a wider variety of neural network models we are introducing an API 
+and a configurable framework for choosing between different neural network running backends.</p>
+
+<p>As a result, additional configuration file <b>NeuralNet.cfg</b> is now included in visage|SDK (located in <i>www/lib</i>). 
+This file allows the users to configure which backend will be used by visage|SDK. Users can choose between:
+<ul>
+<li>AUTO - defaults to WEBGL </li>
+<li>WEBGL - allowing GPU-assisted neural network running </li>
+<li>WASM - allowing CPU-accelerated neural network running with supported SIMD instructions</li>
+</ul>
+</p>
+For more information on the parameters of <b>NeuralNet.cfg</b> file see the <a href="index_api.html">API page</a>.
+<br>
+<br>
+
+
+<p><i>New face recognition model</i></p>
+<p>Introducing smaller, faster and more accurate face recognition model. </p>
+
+
+<p><i>New face detection model</i></p>
+<p>
+Introducing a more accurate and robust face detection model. The new model is used in face tracking and face detection when <i>use_vnn</i> configuration parameter is set to 1. Otherwise, the previous face detection model will be used.
+
+<br> For more information about using VNN detection algorithm, please consult <a href="VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> and 
+<a href="VisageDetector.html">VisageDetector</a> documentation.
+</p>
+<br>
+
+
+<h3>Library changes:</h3>
+<p><i>ASM library format</i></p>
+<p>
+Depricated ASM library format is no longer supported.
+</p>
+<p><i>visageAR</i></p>
+<p>
+<i>visageAR.js</i> library now supports changing screen orientation on mobile devices.
+</p>
+<br>
+
+<h3>API changes:</h3>
+
+
+<p><i>visage|SDK initialization order</i></p>
+<p>
+The order in which the VisageModule is declared and library and data scripts are included is predefined and should be as follows:
+</p>
+<ol>
+<li><p><b>Declare VisageModule</b></p>
+<p>
+VisageModule has to be declared with all its attributes in charge of preloading of the configuration files, license files and possibly, changing the location of data files,
+before loading <i>visageSDK.js</i> library.
+</p>
+
+<li><p><b>Include visageSDK.js library</b></p>
+<p>
+<i>visageSDK.js</i> library has to be included via script tag before any other external data loader script.
+</p>
+
+<li><p><b>Include external data loader scripts</b></p>
+</ol>
+<br>
+
+<p><i>VisageTrackerUnityPlugin API</i></p>
+<p> Introducing changes VisageTrackerUnityPlugin API. The list of added and removed function is as follows:
+<br>
+<i>Added</i>:
+<ul>
+<li><pre>VisageTrackerNative._preloadExternalJS(fileURL)</pre></li>
+<li><pre>VisageTrackerNative._setDataPath(dataPath)</pre></li>
+</ul>
+
+<i>Removed</i>:
+<ul>
+<li><pre>VisageTrackerNative._preloadAnalysisData(fileURL)</pre>
+<ul>
+<li> the function has been replaced with <code>VisageTrackerNative._preloadExternalJS(fileURL)</code> function
+</ul>
+</li>
+</ul>
+
+For more details please refer to <a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a>.
+</p>
+<br>
+
+
+<h3>Sample changes:</h3>
+
+<p><i>visage|SDK initialization order</i></p>
+<p>
+Offical samples has been updated according to changes in the visage|SDK initialization order.
+</p>
+
+<p><i>VisageTrackerUnityDemo</i></p>
+The sample now requires the path to the <i>visageSDK.js</i> library and external data loader scripts to be specified in Tracker gameObject.
+<br>
+<br>
+
+<h3>Changes in configuration file:</h3>
+<ul>
+<li><p><b>use_vnn</b> configuration parameter added to VisageDetector configuration file <i>FaceDetector.cfg</i>, set to value 1.</li>
+<li><p><b>use_vnn</b> configuration parameter values changed and additional value added:
+<ul>
+<li>value 0 - VNN algorithm is disabled, default tracking algorithm and default detection model is used</li>
+<li>value 1 - VNN algorithm enabled in fast mode, at the cost of feature points precision.</li>
+<li>value 2 - VNN algorithm enabled</li>
+</ul>
+</li>
+</ul>
+
+
+<p>For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.</p>
+
+<p>If you want to update your existing tracker configuration files, it is recommended to copy the parameters values from
+<i>Facial Features Tracker - High.cfg</i> configuration file supplied in this package. 
+</p>
+<br>
+
+
+<h3>Data files changes:</h3>
+<p>Data files has been saparated to optimize data size.
+<br/>
+VisageTracker and VisageDetector in addition to <b>visageSDK.data</b> now require an additional data file depending on the selected algorithm (configuration used).
+<ul>
+<li><b>visageLBFData.data</b> (along with loader script <b>visageLBFData.js</b>) for the default tracking and detection alogrithms</li>
+<li><b>visageVNNData.data</b> (along with loader script <b>visageVNNData.js</b>) for the VNN tracking and detection alogrithms</li>
+</ul>
+</p>
+
+<p>Projects using older versions of these files should be updated to load the newest data files from the <i>www/lib</i> folder.</p>
+<br>
+
+<br>
+<h2>visage|SDK 8.6</h2>
+<h3>General</h3>
+
+<i>Configurable detection algorithm</i>
+<br/><br/>
+New experimental algorithm for face and facial features detection introduced (<b>VNN algorithm</b>). While it significantly improves detection quality, it also reduces detection speed (performance).
+<br>Detector is currently configurable so VNN algorithm can be enabled or disabled via parameter <i>use_vnn</i> in configuration file.
+<br>The experimental detection algorithm requires additional data bundled in <b>visageVNNData.data</b> file located in <i>www/lib</i> folder.
+<br/><br/> For more information about using VNN detection algorithm, please consult <a href="VisageDetector.html">VisageDetector</a> documentation.
+<br/><br/>
+
+<i>Configurable tracking algorithm</i>
+<br/><br/>
+New experimental algorithm for face tracking introduced (<b>VNN algorithm</b>). While it significantly improves tracking quality and robustness, it also reduces tracking speed (performance).
+<br>Tracker is currently configurable so VNN algorithm can be enabled or disabled via parameter <i>use_vnn</i> in configuration file.<br/><br/>
+The experimental tracking algorithm requires additional data bundled in <b>visageVNNData.data</b> file located in <i>www/lib</i> folder.<br/><br/>
+
+For more information about using VNN tracking algorithm, please consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a> and <a href="VisageTracker.html">VisageTracker</a> documentation.
+<br/><br/>
+
+<h3>API changes:</h3>
+
+<p><i>VisageConfiguration API</i></p>
+<p>
+Introducing new API for programatically changing <a href="VisageTracker.html">VisageTracker</a> configuration parameters, including class:
+<ul>
+<li><pre><a href="VisageConfiguration.html"></a>VisageConfiguration</a></pre> Class used to change, apply, load and save configuration parameters.</li>
+</ul>
+used in conjunction with new VisageTracker methods:
+<ul>
+<li><pre>VisageConfiguration VisageTracker::getConfiguration() and</pre></li>
+<li><pre>VisageTracker::setConfiguration(VisageConfiguration configuration)</pre></li>
+</ul>
+
+For more details and <b>usage code examples</b> please refer to <a href="VisageConfiguration.html">VisageConfiguration</a>.
+</p>
+
+<p><i>FDP class:</i><br/><br/>
+<ul>
+<li><p>FDP group 10 (ears) has been extended from 10 to 24 points (12 points per ear) as part of ear tracking feature. Additional changes pertaining ear 
+tracking are documented under paragraphs <b>Model changes</b>, <b>Changes in configuration file</b> and <b>Data files changes</b>.</p>
+<p><i><b>Please note</b></i>: FDP files saved with visage|SDK 8.6 will <b>not</b> be backwards compatible with previous versions due to the addition of new FDP points.</p>
+</li>
+</ul>
+
+<p><i>VisageTracker class:</i><br/><br/>
+<ul>
+The following function has been deprecated and soon will be removed:
+<li><pre>VisageTracker::stop()</pre></li>
+</ul><br/>
+
+<h3>Model changes:</h3>
+<p>A new model file has been added for ear tracking functionality - <b>jk_300_wEars</b>. The new model is based on the previous '<i>jk_300</i>' model and contains 
+an additional 334 polygons and 14 new FDP points in group 10 (10.11 - 10.24).</p>
+
+<p>For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.</p>
+
+<h3>Changes in configuration file:</h3>
+<ul>
+<li><p><b>refine_ears</b> parameter added, which is off by default. Toggles the tracking and refinement of ear points (group 10) for Visage Tracker.</li>
+<li><p><b>Facial Features Tracker - High - With Ears.cfg</b> configuration file introduced specifically for purposes of ear tracking. It is largely identical 
+to the regular high configuration with the exception that it uses '<i>jk_300_wEars</i>' as the active model, and has the '<i>refine_ears</i>' parameter set to 1 (on).</p></li>
+<li><p><b>Facial Features Tracker - Ultra.cfg</b> configuration file introduced specifically for demonstrating VNN algorithm. It is largely identical 
+to the regular high configuration with the exception that it enables '<i>use_vnn</i>' option setting the parameter to 1 (on).</p></li>
+</ul>
+
+<p>For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.</p>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the parameters values from
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+</p>
+
+<h3>Data files changes:</h3>
+<ul>
+<li><p><b>visageSDK.data</b> file, located in the <i>www/lib</i> folder, has been updated the new model files ('<i>jk_300_wEars.fdp</i>' and '<i>jk_300_wEars.wfm</i>').</p></li>
+<li><p>Data files required by VNN algorithm are bundled in new data file <b>visageVNNData.data</b> located in <i>www/lib</i>. </p></li>
+</ul>
+
+<p>Projects using older versions of these files should be updated to contain the newest data files from the <i>www/lib</i> folder.</p>
+
+<h3>Sample changes:</h3>
+<p><i>VisageTrackerUnityDemo</i>:</p>
+VisageTrackerUnityDemo is now distributed only as Unity project. Instructions on how to build and run the provided application can be found <a href="trackerunity.html"><em>here</em></a>. Additionally, instructions for visage|SDK Unity integration can be found <a href="unity_integration.html"><em>here</em></a>.
+
+<br>
+
+<h2>visage|SDK 8.5</h2>
+
+<h3>Changes in configuration file:</h3>
+<ul>
+<li><p><b>smoothing_factors</b> - due to the implementation of new smoothing algorithms in VisageTracker, default values and optimal ranges for this parameter have been changed in all configuration</p></li>
+</ul>
+
+<p>Please refer to the <a href="VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>, section 2.1. for additional information.</p>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the parameters values from
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+</p>
+
+<h3>API changes:</h3>
+
+<i>Copyless data</i>
+</br></br>
+All function that have returned copies of their values in form of Array, VectorInt or VectorFloat are now returning TypedArray. This change refers to 
+ <a href="VisageTracker.html#track">track()</a> function, <a href="FDP.html#getFPPos">getFPPos()</a> function and most of <a href="FaceData.html">FaceData</a> members.
+</br></br>
+<i>FaceData</i>
+<ul>
+<li>Three different serialization methods for <a href="FaceData.html#ww">communicating between web worker and UI thread</a> have been introduced: 
+</br>
+<ul>
+<li><a href="FaceData.html#serializeJson">serializeJson()</a>/<a href="FaceData.html#deserializeJson">deserializeJson()</a></li>
+<li><a href="FaceData.html#serializeBuffer">serializeBuffer()</a>/<a href="FaceData.html#deserializeBuffer">deserializeBuffer()</a></li>
+<li><a href="FaceData.html#serializeAnalysis">serializeAnalysis()</a>/<a href="FaceData.html#deserializeAnalysis">deserializeAnalysis()</a></li>
+</ul>
+ </li>
+</ul>
+
+<br>
+
+<h2>visage|SDK 8.4</h2>
+
+<h3>API changes:</h3>
+
+<i>Webassembly format</i>
+</br></br>
+Default visage|SDK library is in WebAssembly format, thus it comes in two file format: visageSDK.js and visageSDK.wasm. Main file is visageSDK.js and can be located independently of
+the main .html file, while the visageSDK.wasm file depends on visageSDK.js file and is expected to be located at the same folder as the main .html file. </br>
+The location of visageSDK.wasm file can be changed, which entails changing the location of the .data files 
+(visageSDK.data, visageAnalysisData.data, visageRecognitionData.data) to the same folder. 
+An example can be found at the link: <a href="VisageTracker.html#changeLocation">Changing the location of the .data file</a>.</br>
+To use WebAssembly, MIME type for .wasm file has to be added in .htaccess file on web server as follows (see <a href="index_api.html#webassembly">MIME type</a>): 
+<ul>
+<pre class="prettyprint source"><code>
+ AddType application/wasm .wasm 
+</code>
+</ul>
+</br>
+<i>Asynchronous data load</i>
+</br>
+<p>visage|SDK library has been modified to be completely asynchronous. As a result certain .data files need to be preloaded by calling <a href="showcase.html#preloadFile">FS_createPreloadedFile()</a> function.
+The change refers to license and configuration files. Note, that the FS_createPreloadedFile() function must be called after visageSDK.js script is loaded, but before the .data is 
+completely downloaded (see <a href="VisageTracker.html#changeLocation">Changing the location of the .data file</a> example).</p>
+</br></br>
+<i>Change the name of the Module</i>
+</br></br>
+Main visage|SDK module renamed from Module to VisageModule in <i>visageAnalysisData.js</i> and <i>visageRecognitionData.js</i> scripts to improve compatilibity with other libararies and software (for example Unity).</br>
+In case of using FaceAnalysis or FaceRecognition it is necessary to call Module <b>VisageModule</b> and as such use it in the code.
+<ul>
+<pre class="prettyprint source"><code>
+ 
+&lt;script src="../../lib/visageSDK.js">&lt;/script>
+
+&lt;script>
+<b>VisageModule </b>= VisageModule({onRuntimeInitialized: onModuleInitialized});
+var preloadFiles = function() {
+	<b>VisageModule</b>.FS_createPreloadedFile('/', 'Head Tracker.cfg', "../../lib/Head Tracker.cfg", true, false);
+	<b>VisageModule</b>.FS_createPreloadedFile('/', licenseName, licenseURL, true, false); 	
+ };
+ <b>VisageModule</b>.preRun.push(preloadFiles);
+&lt;/script>
+</code></pre>
+</ul>
+</br>
+<i>visageAR</i>
+</br>
+<p>The order of applying rotations on the glasses 3D objects has been fixed to be equal to the tracker's (see <a href="FaceData.html#getFaceRotation">getFaceRotation</a>) which is 'YXZ'.</p>
+
+<h3>Sample changes:</h3>
+<p>FaceDetector and FaceTracker samples have been removed from visage|SDK HTML5 package.</p>
+<i>VisageTrackerUnityPlugin</i></br>
+
+<p>VisageTrackerUnityPlugin was updated so it includes all FaceTrack (including multiple face tracking) and FaceAnalysis functions.</br>
+The plugin is devided into two files: VisageTrackerUnityPlugin.jslib and VisageAnalyserUnityPlugin.jslib, both file can be found in www/lib folder. </br>
+Due to major changes, it is recommended to go through documentation before including VisageTrackerUnityPlugin to your existing project. </p>
+
+<p><i>ShowcaseDemo</i></p>
+Improved sample performance by moving FaceAnalysis functionality to a Web Worker (see <a href="module-VisageAnalyserUnityPlugin.html">analysisWorker.js file</a>).
+
+<br>
+<br>
+<br>
+
+<h2>visage|SDK 8.3.5959</h2>
+
+<h3>General changes:</h3>
+<p>Module object renamed to <b>VisageModule</b>. Automatic initialization and data download has been deprecated. In order to properly 
+initialize VisageModule object and start visageSDK data download, VisageModule object needs to be initialized manually. </p>
+Following code demonstrates:
+<ul>
+<li>how to initialize VisageModule object</li>
+<li>where to place the initialization code (after the script tag that loads visageSDK.js)</li>
+<li>how to pass the callback function (onModuleInitialized) to the VisageModule object that will be triggered when data has been downloaded and VisageModule initialized</li>
+<li>wrapping VisageModule in <i>Module</i> variable so the sample is compatible with previous releases
+</ul>
+<pre>
+&lt;script src="../../lib/visageSDK.js"></script>
+
+<b/>&lt;script>
+var Module = VisageModule({onRuntimeInitialized: onModuleInitialized})
+&lt;/script>
+</b>
+</pre>
+
+See additional examples within sample application code and in the API documentation (API->VisageTracker->Changing the location of the .data file section).
+
+<h3>Landmark detection changes:</h3>
+<ul>
+<li>Eyebrows (group 4) detection locations have been changed to the <b>upper contour of the eyebrow</b> to conform more closely to MPEG-4 standard</li>
+<li>Nose (group 9) facial landmarks <b>9.1</b> and <b>9.2</b> are no longer detected. Instead, facial landmarks <b>9.5</b> and <b>9.4</b> are detected and <b>9.1</b> and <b>9.2</b> are estimated from the fitted 3D model.</li>
+<li>Nose contour has been added (<b>group 14, points 21 - 25</b>)</li>
+</ul>
+For detailed illustration see <a href="images/mpeg-4_fba.png" target="_blank">MPEG-4 FBA</a>.
+
+<h3>Changes in configuration file:</h3>
+<p>Configuration file format had stayed the same.<p>
+
+jk_300 model has been set as a default model for pose and action unit estimation instead of candide3 model.
+
+<p>If you want to update your existing configuration files, it is recommended to copy the parameters values from
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+</p>
+
+<h3>Data files changes:</h3>
+visageSDK.data file, located in the folder where the application html file is located (e.g. <i>www/Samples/FaceTracker</i> folder), has been updated.
+
+<br>
+<br>
+<br>
+
+<h2>visage|SDK 8.2.5684</h2>
+
+<h3>API changes:</h3>
+<pre><i>VisageTracker:</i></pre>
+Due to the introduction of multitracking prototype of following methods has been changed:
+<ul>
+<li><pre>number VisageTracker.track(number frameWidth, 
+                           number frameHeight, 
+                           number p_imageData, 
+                           FaceData facedata, 
+                           number format = VISAGE_FRAMEGRABBER_FMT_RGB, 
+                           number origin = VISAGE_FRAMEGRABBER_ORIGIN_TL, 
+                           number widthStep = 0, 
+                           number timeStamp = -1);</pre>
+
+to:
+
+<pre><b>VectorInt</b> VisageTracker::track(number frameWidth, 
+                               number frameHeight, 
+                               number p_imageData, 
+                               <b>FaceDataVector</b> facedata, 
+                               number format = VISAGE_FRAMEGRABBER_FMT_RGB, 
+                               number origin = VISAGE_FRAMEGRABBER_ORIGIN_TL, 
+                               number widthStep = 0, 
+                               number timeStamp = -1, 
+                               <b>number maxFaces = 1</b>);</pre>
+</li>
+</ul>
+<pre><i>VisageGazeTracker:</i></pre>
+Prototype of the VisageGazeTracker' track function has changed and is the same as the VisageTracker' track function. <br/><br/>
+Note that <i>VisageGazeTracker</i> works on one face only. Parameter <b>maxFaces</b> is not used.
+<pre><i>VisageFaceRecognition:</i></pre>
+<ul>
+<li>New function added to VisageFaceRecognition class for determining descriptor size:<br/>
+<pre>VisageFaceRecognition.getDescriptorSize();</pre>
+</li>
+<li>Descriptor data type was changed from <b>VectorFloat</b> to <b>VectorShort</b>. Following function are affected:<br/>
+<pre>
+VisageFaceRecognition.extractDescriptor(FaceData facedata, number frameWidth, number frameHeight, number p_ImageData, <b>VectorShort</b> descriptor);
+VisageFaceRecognition.descriptorsSimilarity(<b>VectorShort</b> first_descriptor, <b>VectorShort</b> second_descriptor);
+VisageFaceRecognition.addDescriptor(<b>VectorShort</b> descriptor, string name);
+</pre>
+</li>
+
+</ul>
+
+
+<h3>Changes in configuration file format:</h3>
+<ul>
+<li><p><b>face_detector_sensitivity</b> parameter added. Controls face detector sensitivity (TPR - true positive rate) for VisageFeaturesDetector and for initialization phase of the Visage Tracker.
+</p></li>
+<li><p>Pose fitting model sensitivity for <b>z</b> translation(<b>pose_fitting_pose_sensitivity</b>) increased from 0.001 to 0.1</p></li>
+</ul>
+<br> For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+
+<h3>Data files changes:</h3>
+visageSDK.data file, located in the folder where the application html file is located (e.g. <i>www/Samples/FaceTracker</i> folder), has been updated.
+
+<br>
+<br>
+<br>
+
+<h2>visage|SDK 8.1.4407</h2>
+
+<h3>API changes:</h3>
+
+Prototype of following methods has been changed:
+<ul>
+<li>
+<pre>VisageTracker.setTrackerConfigurationFileName(const char* trackerConfigFile)</pre>
+
+to:
+
+<pre>VisageTracker.setTrackerConfigurationFile(const char* trackerConfigFile, bool au_fitting_disabled = false, bool mesh_fitting_disabled = false)</pre>
+</li>
+
+<li>
+<pre>VisageDetector.detectFacialFeatures(VsImage* frame, FaceData* output, int maxFaces = 1, float minFaceScale = 0.1f)</pre>
+
+to:
+
+<pre>VisageDetector.detectFacialFeatures(VsImage* frame, FaceData* output, int maxFaces = 1, float minFaceScale = 0.1f, float maxFaceScale = 1.0f)</pre>
+</li></ul>
+<h3>Changes in configuration file format:</h3>
+<ul>
+<li><p><b>process_eyes</b> configuration parameter changed to bit-flag type parameter. Controls gaze vector calculation and pupil points refinement. Setting
+the parameter to 1 enables the gaze calculations, setting it to 2 enables the pupil
+refinement and setting it to 3 enables both functionalities.
+</p></li>
+<li><p>Configuration parameters <b>min_face_scale</b> and <b>max_face_scale</b> added. If they are not listed in the configuration file default values will be used (0.15,1.0).
+</p></li>
+<li><p>Smoothing factor groups have been updated. 
+<ul>
+<li><p>New group for face contour smoothing has been added - <b>contour</b>.</p></li>
+<li><p><b>Mouth and chin</b> group has been renamed to <b>mouth</b> and now covers only mouth smoothing. Chin smoothing is moved to contour smoothing group.</p></li>
+</ul>
+</p></li>
+<li>Instead of one model three new separate models have been added: <i>pose fitting</i>, <i>au fitting</i> and <i>mesh fitting model</i>. 
+Old parameters have been modified and new parameters have been added. Changes in the configuration parameters related to the model are reflected in the table below:
+<br><br>
+<table border="1" style="width:100%">
+   <tr>
+    <td>OLD PARAMETER NAME</td>
+    <td>POSE FITTING MODEL</td> 
+    <td>AU FITTING MODEL</td>
+    <td>MESH FITTING MODEL</td>
+  </tr>
+  <tr>
+    <td>model_filename</td>
+    <td>pose_fitting_model</td> 
+    <td>au_fitting_model</td>
+    <td>mesh_fitting_model</td>
+  </tr>
+  <tr>
+    <td>fdp_filename</td>
+    <td>pose_fitting_fdp</td> 
+    <td>au_fitting_fdp</td>
+    <td>mesh_fitting_fdp</td>
+  </tr>
+  <tr>
+    <td>au_use</td>
+    <td>pose_fitting_au_use</td> 
+    <td>au_fitting_au_use</td>
+    <td>mesh_fitting_au_use</td>
+  </tr>
+  <tr>
+    <td>ekf_sensitivity</td>
+    <td>pose_fitting_au_sensitivity</td> 
+    <td>au_fitting_au_sensitivity</td>
+    <td>mesh_fitting_au_sensitivity</td>
+  </tr>
+  <tr>
+    <td>-</td>
+    <td>pose_fitting_su_use</td> 
+    <td>au_fitting_su_use</td>
+    <td>mesh_fitting_su_use</td>
+  </tr>
+  <tr>
+    <td>-</td>
+    <td>pose_fitting_su_sensitivity</td> 
+    <td>au_fitting_su_sensitivity</td>
+    <td>mesh_fitting_su_sensitivity</td>
+  </tr>
+   
+</table>
+<br> For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+</ul>
+
+<h3>Data files changes:</h3>
+visageSDK.data file, located in the folder where the application html file is located (e.g. <i>www/Samples/FaceTracker</i> folder), has been updated.
+<br>
+New model has been added - <b>jk_300</b>, in two additional files: <b>jk_300.wfm</b> and <b>jk_300.fdp</b>. For detailed information on how the new model 
+is used inside the visage|SDK consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a> section 2.3.
+
+<br>
+<br>
+<br>
+
+<h2>visage|SDK 8.0.3444</h2>
+
+<h3>API changes:</h3>
+
+<ul>
+
+<li>
+Global helper function for determining SDK version introduced:
+<pre>
+Module.getSDKVersion()
+</pre>
+</li>
+
+<li>
+<p><b>DetectStrip</b> API has been removed.</p>
+</li>
+
+<li>
+<p>All visage|SDK classes are now part of the global Module object.</p>
+</li>
+
+<li>
+<p><b>initializeLicenseManager()</b> function is no longer a member class of VisageTracker/VisageDetector/VisageFaceAnalyser but a member 
+class of the global Module object:
+<pre>
+Module.initializeLicenseManager("license_key_file")
+</pre>
+
+<p>In case of multiple license files call Module.initializeLicenseManager repeatedly.</p>
+
+<b>IMPORTANT:</b> Call this function <b>before</b> the constructor of visage|SDK class in order for licensing to work.
+</p>
+</li>
+
+<li><p><b>Tracker</b> 
+<ul>
+<li><p><b>Tracker</b> class has been renamed to <b>VisageTracker</b>.</p></li>
+<li><p><b>this.setConfigurationFile</b> has been renamed to <b>this.setTrackerConfigurationFile</b>.</p></li>
+<li><p>prototype of the track() function has been changed to:
+<pre>
+this.track(frameWidth,frameHeight,p_imageData,faceData,format,origin,widthStep,timeStamp)
+</pre>
+For additional information on the usage and the extra parameters consult the API documentation.
+</p></li>
+</ul></p></li>
+
+<li><p><b>Detector</b> 
+<ul>
+<li><p><b>Detector</b> class has been renamed to <b>VisageDetector</b>.</p></li>
+<li><p>prototype of the constructor has been changed:
+<pre>
+new Module.VisageDetector();
+</pre></p></li>
+<li><p>prototype of the detectFeatures() function has been changed:
+<pre>
+this.detectFeatures(frameWidth,frameHeight,p_imageData,faceDataVector,maxFaces,minFaceScale)
+</pre></p></li>
+</ul></p></li>
+
+<li><p><b>FaceAnalyser</b> 
+<ul>
+<li><p><b>FaceAnalyser</b> class has been renamed to <b>VisageFaceAnalyser</b>.</p></li>
+<li><p>prototype of all the <b>estimate()</b> functions has been changed:
+<pre>
+this.estimateAge(frameWidth,frameHeight,p_imageData,faceData);
+this.estimateGender(frameWidth,frameHeight,p_imageData,faceData);
+this.estimateEmotion(frameWidth,frameHeight,p_imageData,faceData,prob_estimates);
+</pre></p></li>
+</ul></p></li>
+
+<li><p><b>FaceData</b> 
+<ul>
+<li><p><b>FaceData</b> class has been reimplemented. Functions returning arrays or custom vector containers are prefixed with <i>get</i>:
+<pre>
+this.getFaceTranslation();
+this.getFaceRotation();
+(...)
+this.getShapeUnits();
+(...)
+this.getFeaturePoints3D();
+</pre>
+Instead of <b>screenSpaceGazePos</b> member FaceData contains the gazeData member encompassing all gaze relevant information:
+<pre>
+ScreenSpaceGazeData.index;
+ScreenSpaceGazeData.x;
+ScreenSpaceGazeData.y;
+ScreenSpaceGazeData.quality;
+ScreenSpaceGazeData.inState;
+</pre></p></li>
+</ul></p></li>
+</li>
+</ul>
+
+<p>
+<b>IMPORTANT</b>: Check the API documentation for major classes <b>FaceData</b>, <b>FDP</b>, <b>FeaturePoint</b>, <b>ScreenSpaceGazeData</b> usage as well
+as helper classes such as <b>VectorFloat</b>, <b>VectorInt</b>, <b>VectorString</b> and <b>FaceDataVector</b>. Examples of usage can be found in visage|SDK samples.
+</p>
+
+
+<h3>Changes in configuration files:</h3>
+
+<ul>
+<li><p>Smoothing factors groups and their default values have been changed (translation and rotation groups removed, new groups include eyebrows, mouth_and_chin, 
+pupils, eyelids and nose).
+<br></p></li>
+<li><p>Some parameters have been removed from configuration files since they are not used anymore. 
+Please consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a> to see complete list of parameters in configuration files. <br></p></li>
+</ul>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+
+<h3>Data files changes:</h3>
+visageSDK.data file, located in the folder where the application html file is located (e.g. <i>www/Samples/FaceTracker</i> folder), has been updated.
+
+<h3>Sample changes:</h3>
+
+<p>Due to compiler update to emscripten v1.35, HTML5 samples using visage|SDK must have additional code added to your application main 
+.html file. The additional code must be
+located inside of the script tag and included before the script tag loading visageSDK.js library. Example:
+<pre>
+&lt;script type="text/javascript"&gt;
+var Module = 
+{
+	onRuntimeInitialized: function()
+	{
+		onModuleInitialized();
+	}
+};
+&lt;/script&gt;
+&lt;script src="../../lib/visageSDK.js"&gt;&lt;/script&gt;
+</pre>
+Emscripten functions that use Module object such as 
+<pre>Module._malloc</pre> 
+and visage|SDK.js function such as
+<pre>m_Tracker.track()</pre>
+must not be called before the <i>OnModuleInitialized()</i> function is called.<br><br
+See <i>sampleTracker.html</i> line 903
+
+<h3>Licensing changes:</h3>
+
+<p>Unlicensed VisageDetector will return complete results but has a delay of 2 seconds for each call of detectFacialFeatures method.</p>
+
+<p>Unlicensed VisageFaceAnalyser has a delay of 2 seconds for each call of estimate function.</p>
+
+<br>
+
+<h2>visage|SDK 7.4.2500</h2>
+
+<h3>Changes in configuration files:</h3>
+
+<p>FFT, HT and <i>Facial Features Tracker - Asymmetric.cfg</i> configuration files have been removed. Two new configurations have been added to the <i>Samples/data</i> folder:</p>
+<ul>
+<li>Facial Features Tracker - High.cfg - for use with newer and faster processors (e.g. Intel i7, iPhone 6, ... ).</li>
+<li>Facial Features Tracker - Low.cfg - for use with older and slower processors (e.g. iPhone 4, iPhone 4S, ... ).</li>
+</ul>
+
+<h3>Changes in configuration file format:</h3>
+<ul>
+<li><p>New configuration optional parameters <b>high_prec_addition</b> and <b>tracking_preproc</b> added. If they are not listed in the configuration file default values will be used (1,1).</li>
+<li><p>Smoothing factor groups have been updated. Default values of smoothing factors have been changed in configuration files. <br> For detailed description of these changes consult <a href="VisageTracker Configuration Manual.pdf" target="_blank">VisageTracker Configuration Manual</a>.</p></li>
+<li><p>All configuration now use <i>candide3.wfm</i> model file. It is recommended to set the <b> model_filename</b> parameter in all existing configurations so it points to <i>candide3.wfm</i>.<p></li>
+</ul>
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+Facial Features Tracker - High.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+
+<h2>visage|SDK 7.3.1860</h2>
+
+<h3>API changes:</h3>
+
+<p>An additional parameter has been added to the FaceDetector detectFeatures method. The minFaceSize parameter is used to specify a lower limit to face size (in pixels) in a given image:<p>
+
+<pre>this.<a href="VisageDetector.html#detectFeatures" target="New">detectFeatures</a> = function(frameWidth, frameHeight, p_imageData, faceData);</pre> changed to:
+
+<pre>this.<a href="VisageDetector.html#detectFeatures" target="New">detectFeatures</a> = function(frameWidth, frameHeight, p_imageData, faceData, minFaceSize);</pre>
+
+<h3>Changes in configuration file format:</h3>
+
+<ul>
+<li>New configuration optional parameters <b>lbf_stage_modifier</b>, <b>lbf_nperturb</b> added. If they are not listed in the configuration file default values will be used (0, 5 in the order listed).</li>
+<li>New configuration optional parameter <b>max_work_size</b> added. If the parameter is not listed in the configuration file or if the supplied value is less than 100 or greater than 1080, default value 320 is used. </li>
+</ul>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+FFT - HighPerformance.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+
+<h3>Data files changes:</h3>
+
+<p>
+Data file is located in the folder where the application html file is located (e.g. <i>www/Samples/FaceTracker</i> folder). Copy the file to appropriate folder in any existing applications.<br/>
+</p>
+
+<h2>Changes in 7.2.1286</h2> 
+
+<p>This section covers all changes introduced in all releases since 7.1.744.</p>
+
+<h3>API changes:</h3>
+
+<p>Screen space gaze tracking API introduced.</p>
+
+<p>1. Screen space gaze tracking API methods added to the Tracker class:</p>
+
+<pre>this.initOnlineGazeCalibration = function();</pre>
+<pre>this.addGazeCalibrationPoint = function(x, y);</pre>
+<pre>this.finalizeOnlineGazeCalibration = function();</pre>
+<br/>
+ 
+<p>2. Added two members related to screen space gaze tracking to FaceData container class:</p>
+
+<pre>this.screenSpaceGazePos = [];</pre>
+<pre>this.screenSpaceGazeState;</pre>
+<br/>
+
+
+<h3>Changes in configuration file format:</h3>
+
+<ul>
+<li>New configuration optional parameters <b>max_work_eye_dist</b>, <b>work_buffer_width</b>, <b>work_buffer_height</b> added. If they are not listed in the configuration file default values will be used (60, 1024, 1024 in the order listed). For detailed description of these parameters consult VisageTracker Configuration Manual</li>
+<li><b>max_work_image_width</b> parameter is now obsolete</li>
+<li><b>screen_space_gaze</b> smoothing factor modifier added to the <b>smoothing_factors</b> parameter</li>
+<li>Four eyelids detections added to the <b>bdts_points_use</b> and <b>bdts_points_angle</b> parameters</li>
+<li><b>ekf_sensitivity value</b> for AU13(au_eye_closed) set to 100</li>
+</ul>
+
+<p>If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the 
+FFT - HighPerformance.cfg configuration file supplied in this package. 
+In all other cases, simply use the provided configuration files.
+</p>
+
+<h3>Sample changes:</h3>
+
+<p>
+New sample added: Gaze Tracker, demonstrates online screen space gaze tracking.
+</p>
+
+<h3>Other:</h3>
+
+<p>
+Tracking bug on high in plane rotations (z axis) fixed.
+</p>
+
+<h2>Changes in 7.1.744</h2>
+This section covers all changes introduced in all releases since 7.1b4.678.
+
+<h3>API changes:</h3>
+
+<p>this.drawResults = function(p_imageData) method added to the Detector class.</p>
+
+<h3>Changes in configuration file format:</h3>
+
+Parameter <b>bdts_trees_factor</b> has been introduced. Increase the value to achieve faster detection but note that the quality of detection will lower.</p>
+
+<h3>Sample changes:</h3>
+
+<p>For unlicensed use:</p>
+<ul>
+<li>FaceTracker, VirtualEyewearTryOn: 1 minute time trial added.</li>
+<li>FaceDetector: Detection results are drawn but no numeric results are returned.</li>
+</ul>
+
+<p>Start and Stop button removed. Tracking will start automatically when tracker is ready and all files have been downloaded.</p>
+
+<h3>Other:</h3>
+
+<p>Firefox freezes when no license is provided bug fixed.</p>
+
+<h2>Changes in 7.1b4.678</h2>
+This section covers all changes introduced in all releases since 7.1b1.579.
+
+<h3>API changes:</h3>
+
+<p>1. FaceData container class for tracking and detection results is introduced. TrackingData class is deprecated.</p>
+<br/>
+
+<p>2. Tracker.track() method is changed to accept FaceData parameter instead of TrackingData parameter. Interface is changed from:</p>
+<pre> this.track = function(frameWidth,frameHeight,imageData,trackingData) </pre>
+<p>to:</p>
+<pre> this.track = function(frameWidth,frameHeight,imageData,faceData) </pre>
+</br> 
+
+<p>3. Added 3 methods to the Tracker class:</p>
+<pre> this.getIPD = function() </pre>
+<pre> this.setIPD = function(IPD) </pre>
+<pre> this.detectStrip = function(IPDPointer) </pre>
+</br> 
+
+<p>4. Added Detector class with following methods:</p>
+<pre> this.detectFeatures = function(frameWidth,frameHeight,imageData,faceData) </pre>
+<pre> this.setConfigurationFile = function(configFilename) </pre>
+<pre> this.initializeLicenseManager = function(licenseKey) </pre>
+</br> 
+
+<h3>Changes in configuration file format:</h3>
+
+
+<ul>
+<li>Parameters <b>leye_closure_au</b> and <b>reye_closure_au</b> have been introduced to separate eye closure of left and right eye. 
+These parameters override value set by eye_closure_au parameter. It is necessary to use either these or <b>eye_closing_au</b>. For detailed description of these parameters consult VisageTracker Configuration Manual</li>
+</ul>
+
+If you want to update your existing configuration files, it is recommended to copy the values for these new parameters from the Facial_Features_Tracker_-_Asymmetric.cfg configuration file supplied in this package. In all other cases, simply use the provided configuration files.
+
+<h3>Data files changes:</h3>
+
+<ul>
+<li>Candide model was changed <b>(candide*.wfm and candide*.fdp)</b>. Added new vertex at center between the eyes. Expanded fdp group 12. Fdp point 12.1 corresponds to newly added vertex.</li>
+</ul>
+
+<ul>
+<li>Candide-exp model was changed <b>(candide-exp.wfm)</b>. Eye closure action unit was divided into separated action units for left and right eye.</li>
+</ul>
+</p>
+</body>
+</html>

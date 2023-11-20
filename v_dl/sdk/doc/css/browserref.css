@@ -1,0 +1,78 @@
+table.browserref
+{
+border-collapse:collapse;width:100%;
+}
+
+table.browserref tr:nth-child(even)	{background-color:#ffffff;}
+table.browserref tr:nth-child(odd)  {background-color:#ffffff;}
+table.browserref tr.fixzebra        {background-color:#ffffff;}
+
+table.browserref th{
+height:32px;background-repeat:no-repeat;background-position:center center;border:2px solid #666666;background-color:#ffffff;font-weight:normal;color:#555555;padding:5px 5px 5px 5px;vertical-align:middle;
+}
+
+table.browserref td{
+border:2px solid #666666;text-align:center;padding:5px;vertical-align:top;
+}
+
+table.browserref th:first-child,table.browserref td:first-child{padding-left:16px}
+
+table.browserref .bsIE       {background-image:url('../images/compatible_ie.gif');}
+table.browserref .bsEdge     {background-image:url('../images/compatible_edge.gif');}
+table.browserref .bsFirefox  {background-image:url('../images/compatible_firefox.gif')}
+table.browserref .bsChrome   {background-image:url('../images/compatible_chrome.gif');}
+table.browserref .bsSafari   {background-image:url('../images/compatible_safari.gif');}
+table.browserref .bsOpera    {background-image:url('../images/compatible_opera.gif')}
+table.browserref .bsDesktop  {background-image:url('../images/compatible_pc.gif'); }
+table.browserref .bsAndroid  {background-image:url('../images/compatible_android.gif');}
+table.browserref .bsIphone   {background-image:url('../images/compatible_iphone.gif'); }
+
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+    border: 2px solid #ccc;
+    background-color: #ffffff;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: 2px solid #ccc;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #0071bc;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 5px;
+}

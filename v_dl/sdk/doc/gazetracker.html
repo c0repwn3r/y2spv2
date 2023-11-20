@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+<link href="css/browserref.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Gaze Tracker sample project</h1>
+<p>
+Gaze Tracker sample uses the <a href="index_api.html#visageVision-t"><em>VisageSDK</em></a> API to implement a simple application which demonstrates screen space gaze tracking.
+</p>
+
+<h2>Installing and running the project</h2>
+
+<p>
+The project must be installed on a web server in order to run (it can not run from a local disk). For a quick trial from Visage Technologies web server, click 
+<a href="https://visagetechnologies.com/demo/" target="_blank">here</a> and choose <b>Gaze Tracker</b>.
+</p>
+<p>
+To install the application on your own web server, upload folders lib and Samples to your web server. To run the application access the Samples/GazeTracker/gazeTracker.html page via a web browser.
+</p>
+<p>
+The application must be licensed in order to function. Licensing is based on License Key Files. To obtain the License Key File:  
+<ol>
+<li>Contact your Visage Technologies contact person in order to obtain a license key.</li>
+<li>Copy the obtained license key file into your application folder (e.g. Samples/GazeTracker).</li>
+<li>Edit GazeTracker/GazeTracker.html. Replace the "dev_html5.vlc" in variables <i>licenseName</i> and <i>licenseURL</i> at the bottom of the file with the name of your license key file. </li>
+<li>NOTE: License Key File must be preloaded before registration calling VisageModule.FS_createPreloadedFile() function.
+An example of how this is done in the sample: 
+<pre class="prettyprint source"><code>
+VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+</code>
+</ol> 
+</p>
+<p>
+For further information please read <a href="licensing.html" target="_blank">licensing</a> section of the documentation.
+</p>
+
+<h2>Using the sample application</h2>
+<ul>
+<li>Running the sample requires a recent browser.</li>
+<li>The SDK needs to download its data files before using the application.</li>
+<li>Allow the application to access your camera by choosing "Allow" in the browser's pop-up bar.</li>
+<li>Look straight at the camera. Tracking will start.</li>
+<li>Once the tracker has initialized you can start the calibration phase of screen space gaze estimation.</li>
+<li>In the calibration phase, the application displays a calibration point as the red dot. By clicking on the dot, the position of the dot will change.</li>
+<li>After all calibration points are clicked, the gaze tracking system is calibrated and the estimation phase starts. Calibration continues optionally so that the results can be improved upon.</li>
+<li>In the estimation phase, the application draws the estimated gaze location as a blue dot on the screen.</li>
+</li>
+</ul> 
+
+<h2>Implementation overview</h2>
+<p>
+Gaze Tracker is implemented in HTML and JavaScript using the VisageSDK API for face tracking and screen space gaze estimation, getUserMedia API to access the camera and native canvas methods for rendering. 
+Face tracking results are updated using requestAnimationFrame API.
+</p>
+
+<h2>Browser compatibility</h2>
+<p>
+Gaze Tracker sample is tested on the recent browsers on Windows, Mac, Android and iPhone platforms.
+Results are represented in the following table (<b>NOTE: Application is not adapted to mobile devices.</b>).
+</p>
+
+<script>
+
+function platform(platformName) {
+    var i;
+    var x = document.getElementsByClassName("browser");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; 
+    }
+    document.getElementById(platformName).style.display = "block"; 
+}
+</script>
+
+
+<div id="Desktop" class="browser">
+ <table class="browserref notranslate">
+  <tr>
+    <th></th>
+    <th style="width:15%;" class="bsChrome" title="Chrome"></th>
+    <th style="width:15%;" class="bsFirefox" title="FireFox"></th>
+    <th style="width:15%;" class="bsOpera" title="Opera"></th>
+    <th style="width:15%;" class="bsEdge" title="Edge"></th></th>
+    <th style="width:15%;" class="bsSafari" title="Safari"></th></th>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsDesktop" title="Desktop"></th>
+    <td style="background-color:#99cc99">96</td>
+    <td style="background-color:#99cc99">91</td>
+    <td style="background-color:#99cc99">81</td>
+    <td style="background-color:#99cc99">88</td>
+    <td style="background-color:#99cc99">14</td>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsAndroid" title="Android"></th>
+    <td style="background-color:#99cc99">95</td>
+    <td style="background-color:#99cc99">93</td>
+    <td style="background-color:#99cc99">64</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsIphone" title="Iphone"></th>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#99cc99">14</td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

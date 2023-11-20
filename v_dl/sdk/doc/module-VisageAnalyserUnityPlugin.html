@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: VisageAnalyserUnityPlugin</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Module: VisageAnalyserUnityPlugin</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageAnalyserUnityPlugin
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description"><br/>The VisageAnalyserUnityPlugin is a native plugin (see <a href=https://docs.unity3d.com/Manual/NativePlugins.html>Native Plugins</a>)written in JavaScript for Unity. The plugin exposes face analysis features of visage|SDK for use in Unity WebGL build.<br/>	<br/>The plugin code is placed in VisageAnalyserUnityPlugin.jslib file and can be found in /lib folder.<br/>	<br/><h3>&emsp;Dependencies </h3>The plugin depends on visageSDK.js file that loads visageSDK.data and visageAnalysisData.js that loads visageAnalysisData.data. Therefore, visageSDK.js has to be loaded along with visageAnalysisData.js script by calling <a href="module-VisageTrackerUnityPlugin.html#_preloadExternalJS">_preloadExternalJS</a>function with the scripts' path relative to the main .html file.<br>For example, if visageAnalysisData.js is placed in the same folder as the main .html file:<pre class="prettyprint source"><code>	VisageTrackerNative._preloadExternalJS("visageSDK.js.js");	VisageTrackerNative._preloadExternalJS("visageAnalysisData.js");</code></pre>visageAnalysisData.data file, can be placed at any location on the server relative to the WEBGL build outputed main index.html file,by setting the data path using <a href="module-VisageTrackerUnityPlugin.html#_setDataPath">_setDataPath</a> function. <br/>Note that calling the <a href="module-VisageTrackerUnityPlugin.html#_setDataPath">_setDataPath</a> function will change the search path of all .data files.<h3>&emsp;Usage </h3>For the functions to be accessible from C#, a C# wrapper interface is used.The example can be seen in the following function:<pre class="prettyprint source"><code>	[DllImport("__Internal")]	public static extern void _initAnalyser(string initCallback);</code></pre>The usage is demonstrated in VisageTrackerUnityDemo sample, VisageTrackerNative.HTML5.cs file. All C# scripts are located in Assets/Scripts folder of the project. <br/>The frame that will be forwarded to the functions for estimating age, gender and emotions has to be processed before using VisageTracker.<br/><br/><h3>&emsp;Callbacks</h3>Generally, it is common to use callback functions in JavaScript, due to its asynchronous nature. <br/>Within the plugin, some functions are implemented so they expect a <b>callback function name</b> as a parameter.Callback functions are defined in C# code.Examples can be seen in <a href="module-VisageAnalyserUnityPlugin.html#_initAnalyser">_initAnalyser</a> function.<br/><br/></div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+        
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="_initAnalyser"><span class="type-signature">&lt;static> </span>_initAnalyser<span class="signature">(callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Initializes VisageAnalyser.<br/>In order to use VisageAnalyser functions visageAnalysisData.data must be preloaded with visageAnalysisData.js script by calling <a href="module-VisageTrackerUnityPlugin.html#_preloadExternalJS">_preloadExternalJS</a> functionat the very beginning of the code execution. The recommendation is to call this function in Awake() function in Unity.Parameter <i>callback</i> is name of function defined in Unity script.An example of a callback function definition and <a href="module-VisageAnalyserUnityPlugin.html#_initAnalyser">_initAnalyser</a> function call:<pre class="prettyprint source"><code>	//callback function	void initAnalyserCallback()	{		Debug.Log("AnalyserInited");		AnalyserInitialized = true;	}	//call of the _initAnalyser() function:	VisageTrackerNative._initAnalyser("initAnalyserCallback");</code></pre><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><b>the name</b> of the callback function.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_analyseImage"><span class="type-signature">&lt;static> </span>_analyseImage<span class="signature">(faceIndex, options, resultsArray)</span><span class="type-signature"> &rarr; {<a href="global.html#VFAReturnCode">VFAReturnCode</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Performs the specified face analysis tasks on a given image.<br/>This function is primarily intended for performing face analysis on a single image, or consecutive unrelated images.As such, it outputs raw, unfiltered estimation data without smoothing or averaging.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Bitwise combination of <a href="global.html#VFAFlags">VFAFlags</a> which determines the analysis operations to be performed.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>resultsArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">12-dimension float array where the results of the performed face analysis will be stored. Array elements correspond with <a href="AnalysisData.html">AnalysisData</a> class elements.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Return code indicating status of performed face analysis.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="global.html#VFAReturnCode">VFAReturnCode</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_analyseStream"><span class="type-signature">&lt;static> </span>_analyseStream<span class="signature">(faceIndex, options, resultsArray)</span><span class="type-signature"> &rarr; {<a href="global.html#VFAReturnCode">VFAReturnCode</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Performs the specified face analysis tasks on a given frame.<br/>This function is primarily intended for performing face analysis on a continuous stream of related frames, such as a video or camera feed.Sampling face analysis data from multiple frames can increase estimation accuracy by averaging the result over multiple frames.Internally, the suitability of frames chosen for analysis is continually evaluted based on head pose and overall tracking quality.This guarantees that the analysis buffer is always working with the best available frames, ensuring highest possible estimation accuracy.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Bitwise combination of <a href="global.html#VFAFlags">VFAFlags</a> which determines the analysis operations to be performed.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>resultsArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">12-dimension float array where the results of the performed face analysis will be stored. Array elements correspond with <a href="AnalysisData.html">AnalysisData</a> class elements.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Return code indicating status of performed face analysis.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="global.html#VFAReturnCode">VFAReturnCode</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_resetStreamAnalysis"><span class="type-signature">&lt;static> </span>_resetStreamAnalysis<span class="signature">(faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Resets face analysis.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:30 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

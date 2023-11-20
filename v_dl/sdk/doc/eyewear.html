@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+<link href="css/browserref.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Virtual Eyewear Try-on sample project</h1>
+<p>
+Virtual Eyewear Try-on sample uses the <a href="visar_api.html"><em>VisageAR</em></a> API to implement a simple augmented reality application for virtual try-on of eyeglasses.
+</p>
+
+<h2>Installing and running the project</h2>
+
+<p>
+The project must be installed on a web server in order to run (it can not run from a local disk). For a quick trial from Visage Technologies web server, click 
+<a href="https://visagetechnologies.com/demo/" target="_blank">here</a> and choose <b>Virtual Eyewear Try-on</b>.
+</p>
+<p>
+To install the application on your own web server, upload folders lib and Samples to your web server. To run the application access the Samples/VirtualEyewearTryOn/eyewear.html page via a web browser.
+</p>
+<p>
+The application must be licensed in order to function. Licensing is based on License Key Files. To obtain the License Key File:
+<ol>
+<li>Contact your Visage Technologies contact person in order to obtain a license key.</li>
+<li>Copy the obtained license key file into your application folder (e.g. samples/VirtualEyewearTryOn).</li>
+<li>Edit VirtualEyewearTryOn/eyewear.html. Replace the "dev_html5.vlc" in variables <i>licenseName</i> and <i>licenseURL</i> at the bottom of the file with the name of your license key file.
+<li>NOTE: License Key File must be preloaded before registration calling VisageModule.FS_createPreloadedFile() function.
+An example of how this is done in the sample: 
+<pre class="prettyprint source"><code>
+VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+</code> </li>
+</ol> 
+</p>
+<p>
+For further information please read <a href="licensing.html" target="_blank">licensing</a> section of the documentation.
+</p>
+
+<h2>Using the sample application</h2>
+<ul>
+<li>Running the sample requires a recent browser.</li>
+<li>The SDK needs to download its data files before using the application.</li>
+<li>Allow the site to access your camera by choosing "Allow" in the browser's pop-up bar.</li>
+<li>Look straight at the camera and glasses will appear.</li>
+<li>Other glasses models are chosen using the choice bar.</li>
+<li>Adjust the inter-pupillary distance by changing IPD value in the upper right corner to influence the tracker z-axis translation and 
+calibrate the size of the glasses, so they appear in real-life size with respect 
+to your face.</li>
+</ul> 
+
+<h2>Implementation overview</h2>
+<p>
+Virtual Eyewear Try-on is implemented in HTML and JavaScript using the 
+<a class="el" href="VisageAR.html" title="VisageAR...">VisageAR API</a> for rendering and face tracking,  <a href="https://threejs.org/">three.js</a> library
+and <a href="https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia" target="_PARENT">MediaDevices.getUserMedia()</a> API to access camera. 
+</br>
+For information on preparing models for use with VisageAR see the <a href="doc/modeling_guide.pdf">AR modelling guide</a>.
+</p>
+
+
+<h2>Browser compatibility</h2>
+<p>
+Virtual Eyewear Try-on sample is tested on the recent browsers on Windows, Mac, Android and iPhone platforms.
+Results are represented in the following table (<b>NOTE: Application is not adapted to mobile devices.</b>).
+</p>
+
+<script>
+
+function platform(platformName) {
+    var i;
+    var x = document.getElementsByClassName("browser");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; 
+    }
+    document.getElementById(platformName).style.display = "block"; 
+}
+</script>
+
+
+<div id="Desktop" class="browser">
+ <table class="browserref notranslate">
+  <tr>
+    <th ></th>
+    <th style="width:15%;" class="bsChrome" title="Chrome"></th>
+    <th style="width:15%;" class="bsFirefox" title="FireFox"></th>
+    <th style="width:15%;" class="bsOpera" title="Opera"></th>
+    <th style="width:15%;" class="bsEdge" title="Edge"></th></th>
+    <th style="width:15%;" class="bsSafari" title="Safari"></th></th>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsDesktop" title="Desktop"></th>
+    <td style="background-color:#99cc99">96</td>
+    <td style="background-color:#99cc99">91</td>
+    <td style="background-color:#99cc99">81</td>
+    <td style="background-color:#99cc99">88</td>
+    <td style="background-color:#99cc99">14</td>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsAndroid" title="Android"></th>
+    <td style="background-color:#99cc99">95</td>
+    <td style="background-color:#99cc99">93</td>
+    <td style="background-color:#99cc99">64</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsIphone" title="Iphone"></th>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#99cc99">14</td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

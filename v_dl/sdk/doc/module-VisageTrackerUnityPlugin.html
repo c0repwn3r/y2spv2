@@ -1,0 +1,6419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: VisageTrackerUnityPlugin</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Module: VisageTrackerUnityPlugin</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageTrackerUnityPlugin
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+            <div class="description"><br/>The VisageTrackerUnityPlugin is a native plugin (see <a href=https://docs.unity3d.com/Manual/NativePlugins.html>Native Plugins</a>)written in JavaScript for Unity. The plugin exposes face tracking features of visage|SDK for use in Unity WebGL build.<br/>	<br/>The plugin code is placed in VisageTrackerUnityPlugin.jslib file and can be found in /lib folder.<br/>	<br/><h3>&emsp;Dependencies </h3>The plugin depends on visageSDK.js file that loads visageSDK.data. The script should be included to the project by calling <a href="module-VisageTrackerUnityPlugin.html#_preloadExternalJS">_preloadExternalJS</a> functionat the very beginning of the code execution. The recommendation is to call this function in Awake() function in Unity.For example, if visageSDK.js is placed in the same folder as the main .html file:<pre class="prettyprint source"><code>	VisageTrackerNative._preloadExternalJS("visageSDK.js");</code></pre><br/>Data files, including all files with .data extension and .wasm extension can be placed at any location on the server relative to the WEBGL build outputed main index.html file,by setting the data path using <a href="module-VisageTrackerUnityPlugin.html#_setDataPath">_setDataPath</a> function. If the path is not specified, they are presumed to be located in the same folder where the WEBGL build outputed main index.html file is.Additional information on changing the location of the data file can be seen on the following link:<a href="VisageTracker.html#trackDep">VisageTracker Dependencies</a><br/><br/><h3>&emsp;Usage </h3>For the functions to be accessible from C#, a C# wrapper interface is used.The example can be seen in the following function:<pre class="prettyprint source"><code>	[DllImport("__Internal")]	public static extern void _openCamera(int width, int height, int mirrored, string onSucessCallbackCamera, string onErrorCallbackCamera);</code></pre>The usage is demonstrated in VisageTrackerUnityDemo sample, VisageTrackerNativ.HTML5.cs file. All C# scripts are located in Assets/Scripts folder of the project. <br/>In order to use VisageTrackerUnity plugin in Unity projects visageSDK.js must be included in output index.html file (see <a href="trackerunity.html#BuildUnity">link</a>).<br/><br/><h3>&emsp;Callbacks</h3>Generally, it is common to use callback functions in JavaScript, due to its asynchronous nature. <br/><br/>Within the plugin, some functions are implemented so they expect a <b>callback function name</b> as a parameter.Callback functions are defined in C# code.Examples can be seen in <a href="module-VisageTrackerUnityPlugin.html#_getCameraInfo">_getCameraInfo</a> function.<br/><br/></div>
+        
+        
+        
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+        
+        
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="_setDataPath"><span class="type-signature">&lt;static> </span>_setDataPath<span class="signature">(dataPath)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stores the location of data files relative to the main index.html file.<br/>It has to be called before using any of the functionalities from visage|SDK. The recommendation for calling this function is within the function Awake() in Unity. <br/>If the function was called with an arbitrary path, it will change the location for all <i>.data</i> files and <i>visageSDK.wasm</i> file.<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>dataPath</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the path to the data files.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_preloadFile"><span class="type-signature">&lt;static> </span>_preloadFile<span class="signature">(fileURL)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stores urls and names of the files that need to be preloaded into the file system.It is expected that the url for each file will be relative to the main index.html file position.It has to be called before using any of the functionalities from visage|SDK. The recommendation for calling this function is within the function Awake() in Unity. <br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fileURL</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name and path to the file.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_preloadExternalJS"><span class="type-signature">&lt;static> </span>_preloadExternalJS<span class="signature">(fileURL)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stores URL and name of visageSDK library and data loading scripts into the file system.It is expected that the url will be relative to the main index.html file position.It has to be called before using any of the functionalities from visage|SDK. The recommendation for calling this function is within the function Awake() in Unity. <br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>fileURL</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name and path to the script file.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_initializeLicense"><span class="type-signature">&lt;static> </span>_initializeLicense<span class="signature">(license)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Initializes the license. It is recommended to initialize the license in the Awake() function within the unity script.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>license</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">license url as relative path from the main index.html file to the directory that contains license file(s) (e.g. licenseFilePath = "StreamingAssets/Visage Tracker/471-308-776-250-553-231-598-221-624-198-522.vlc";). <br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_initTracker"><span class="type-signature">&lt;static> </span>_initTracker<span class="signature">(config, numFaces, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Initializes VisageTracker.<br/>To change the configuration file, <a href="module-VisageTrackerUnityPlugin.html#_initTracker">_initTracker</a> function should be called again.Callback function is called once the tracker is initialized.<br>Parameter <i>config</i> is string that represent the path to the tracker configuration file.<br>Example, if the configuration file is located in StreamingAssets/Visage Tracker folder:<pre class="prettyprint source"><code>	configFilePath = "StreamingAssets/Visage Tracker/Head Tracker.cfg";</code></pre>Parameter <i>callback</i> is name of function defined in Unity script.An example of a callback function definition and _initTracker() function call:<pre class="prettyprint source"><code>	//callback function	public void CallbackInitTracker()	{		Debug.Log("TrackerInited");		trackerInited = true;	}	//call of the _initTracker() function:	VisageTrackerNative._initTracker(config, MAX_FACES, "CallbackInitTracker");</code></pre><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>config</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name and path to the tracker configuration file (.cfg; default configuration file is provided in lib folder; for further details see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>).</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>numFaces</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">The maximum number of faces that will be tracked.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><b>the name</b> of the callback function.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_openCamera"><span class="type-signature">&lt;static> </span>_openCamera<span class="signature">(camWidth, camHeight, isMirrored, onSuccessCallbackCamera, onErrorCallbackCamera)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Closes camera if it is already opened.<br/>If the camera is initialized successfully onSuccessCallbackCamera callback function is called, otherwise onErrorCallbackCamera callback function is called.Mirrors the frame if isMirrored parameter is set to 1.<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>camWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">camera frame width.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>camHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">camera frame height.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>isMirrored</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">1 or 0; if set to 1 frames will be mirrored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onSuccessCallbackCamera</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name of the callback function that is called if camera is successfully initalized.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>onErrorCallbackCamera</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name of the callback function that is called if initialization camera fails.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_closeCamera"><span class="type-signature">&lt;static> </span>_closeCamera<span class="signature">()</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Stops camera streaming.<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    If camera is already closed returns false, otherwise returns true.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_grabFrame"><span class="type-signature">&lt;static> </span>_grabFrame<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Captures current frame to be used for face tracking and binding on given texture. Needs to be called before <a href="module-VisageTrackerUnityPlugin.html#_track">_track</a> and <a href="module-VisageTrackerUnityPlugin.html#_bindTexture">_bindTexture</a> functions.<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getTrackerStatus"><span class="type-signature">&lt;static> </span>_getTrackerStatus<span class="signature">(trackStatus, length)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns tracker status.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>trackStatus</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array that will be filled with tracking statuses for each of the tracked faces.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">length of trackStatus array, should be equal to the number of faces given to the _initTracker() function(smaller of equal to 10).</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_track"><span class="type-signature">&lt;static> </span>_track<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Performs face tracking on the captured frame (see <a href="module-VisageTrackerUnityPlugin.html#_grabFrame">_grabFrame</a>) and returns tracking status.<a href="module-VisageTrackerUnityPlugin.html#_openCamera">_openCamera</a> and <a href="module-VisageTrackerUnityPlugin.html#_initTracker">_initTracker</a> functionsneed to succeed before calling <a href="module-VisageTrackerUnityPlugin.html#_track">_track</a>.<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_bindTexture"><span class="type-signature">&lt;static> </span>_bindTexture<span class="signature">(texture)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Update the passed texture with the current captured frame image data (see <a href="module-VisageTrackerUnityPlugin.html#_grabFrame">_grabFrame</a>).The function expects the pointer to the created texture to be passed.<br>Example:<pre class="prettyprint source"><code>	private Texture2D texture = null;	texture = new Texture2D(TexWidth, TexHeight, TextureFormat.RGBA32, false);	VisageTrackerNative._bindTexture(texture.GetNativeTexturePtr());</code></pre><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>texture</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Pointer to an texture.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getCameraInfo"><span class="type-signature">&lt;static> </span>_getCameraInfo<span class="signature">(camFocus, imgWidth, imgHeight)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Assigns values to the given camera info parameters.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>camFocus</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">parameter to which focal distance of the camera will be assigned.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>imgWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">parameter to which width of the frame will be assigned.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>imgHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">parameter to which height of the frame will be assigned. <br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getHeadTranslation"><span class="type-signature">&lt;static> </span>_getHeadTranslation<span class="signature">(translation, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Translation of the head from the camera. Parameter <i>translatation</i> is 3-dimensional array which will be filled x, y and z head translation coordinates for the particular face given with <i>faceIndex</i> parameter.The coordinate system is such that when looking towards the camera, the direction of x is to the left, y iz up, and z points towards the viewer. The global origin (0,0,0) is placed at the camera. The reference point on the head is in the center between the eyes.This variable is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will fill translation array with -10000 values.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>translation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">3D array in which the head translation values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getHeadRotation"><span class="type-signature">&lt;static> </span>_getHeadRotation<span class="signature">(rotation, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Rotation of the head. <br/>Parameter <i>rotation</i> is three-dimensional array which will be filled x, y and z head rotation coordinates for the particular face given with <i>faceIndex</i> parameter.<br/>This is the estimated rotation of the head, in radians. Rotation is expressed with three values determining the rotations around the three axes x, y and z, in radians. This means that the values represent the pitch, yaw and roll of the head, respectively. The zero rotation (values 0, 0, 0) corresponds to the face looking straight ahead along the camera axis. Positive values for pitch correspond to head turning down. Positive values for yaw correspond to head turning right in the input image. Positive values for roll correspond to head rolling to the left in the input image. The values are in radians.<br/>This variable is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will fill rotation array with 0 values.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">3D array in which the head rotation values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getHeadRotationApparent"><span class="type-signature">&lt;static> </span>_getHeadRotationApparent<span class="signature">(rotation, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Rotation of the head relative to the camera. <br/>Parameter <i>rotationApparent</i> is three-dimensional array which will be filled x, y and z apparent head rotation coordinates for the particular face given with <i>faceIndex</i> parameter.<br/>This is the estimated apparent rotation of the head, in radians. Rotation is expressed with three values determining the rotations around the three axes x, y and z, in radians. This means that the values represent the pitch, yaw and roll of the head, respectively. The zero apparent rotation (values 0, 0, 0) corresponds to the face looking straight into the camera i.e. a frontal face. Positive values for pitch correspond to head turning down. Positive values for yaw correspond to head turning right in the input image. Positive values for roll correspond to head rolling to the left in the input image. The values are in radians.<br/>This variable is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will fill rotation array with 0 values.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rotation</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">3D array in which the head rotation values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceBoundingBox"><span class="type-signature">&lt;static> </span>_getFaceBoundingBox<span class="signature">(rectangle, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Face bounding box.<br/>Parameter <i>rectangle</i> is a VsRect structure whose members represent x and y coordinates of the upper-left corner and the width and height of the box.All members are expressed in pixels.<br/>This is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will fill VsRect values with -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>rectangle</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">VsRect</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Structure where face bounding box's coordinates and size will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFP_START_GROUP_INDEX"><span class="type-signature">&lt;static> </span>_getFP_START_GROUP_INDEX<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Index of the first feature point group.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    2<br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFP_END_GROUP_INDEX"><span class="type-signature">&lt;static> </span>_getFP_END_GROUP_INDEX<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Index of the last feature point group.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    15<br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getGroupSizes"><span class="type-signature">&lt;static> </span>_getGroupSizes<span class="signature">(groupSizeArray, length)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Get the size of all feature point groups.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>groupSizeArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the size of each group will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">length of groupSizeArray array.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFeaturePoints3DRelative"><span class="type-signature">&lt;static> </span>_getFeaturePoints3DRelative<span class="signature">(N, groups, indices, positions3D, defined, detected, quality, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the 3D coordinates relative to the face origin, placed at the center between eyes in meters, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>Returned coordinates are in the local coordinate system of the face, with the origin (0,0,0) placed at the center between the eyes. The x-axis points laterally towards the side of the face, y-xis points up and z-axis points into the face.<br/>Function returns position for N feature points in the N*3-dimensional <i>positions</i> array, an indication of whether the point is defined as 0 and 1 in the N-dimensional <i>defined</i> array and detected as 0 and 1 in the N-dimensional <i>detected</i> array. The quality of each point as value between 0 and 1 is returned in <i>quality</i> array.For each point, its group and index are specifically listed in the <i>groups</i> and <i>indices</i> arrays.<br/>An example of use: <pre class="prettyprint source"><code>	// an example for points 2.1, 8.3 and 8.4	const int N;	int[] groups = new int[N] {2, 8, 8};	int[] indices = new int[N]{ 1, 3, 4 };	float[] positions3D = new float[3*N];	int[] defined = new int[N];	int[] detected = new int[N];	float[] quality = new float[N];	for (int faceIndex = 0; faceIndex < MAX_FACES; faceIndex++)	{		VisageTrackerNative._getFeaturePoints3DRelative(N, groups, indices, positions3D, defined, detected, quality, faceIndex);	}<b>NOTE:</b> quality information is returned exclusively within _getFeaturePoints2D() function. Therefore, this function will always return -1 for the quality of each point.</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">number of feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>groups</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the groups of the feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>indices</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the indices of the feature points within the groups.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>positions3D</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N*3-dimensional array filled with resulting facial feature points positions.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>defined</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is defined. Value 1 is assigned to defined points, and 0 to undefined points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>detected</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is detected. Value 1 is assigned to detected points, and 0 to undetected points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>quality</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value from 0 to 1, where 0 is the worst and 1 is the best quality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFeaturePoints3D"><span class="type-signature">&lt;static> </span>_getFeaturePoints3D<span class="signature">(N, groups, indices, positions3D, defined, detected, quality, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the global 3D feature point position in meters, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>The coordinate system is such that when looking towards the camera, the direction of x is to the left, y iz up, and z points towards the viewer. The global origin (0,0,0) is placed at the camera.<br/>Function returns position for N feature points in the N*3-dimensional <i>positions</i> array, an indication of whether the point is defined as 0 and 1 in the N-dimensional <i>defined</i> array and detected as 0 and 1 in the N-dimensional <i>detected</i> array. The quality of each point as value between 0 and 1 is returned in <i>quality</i> array.For each point, its group and index are specifically listed in the <i>groups</i> and <i>indices</i> arrays.<br/>An example of use: <pre class="prettyprint source"><code>	// an example for points 2.1, 8.3 and 8.4	const int N;	int[] groups = new int[N] {2, 8, 8};	int[] indices = new int[N]{ 1, 3, 4 };	float[] positions3D = new float[3*N];	int[] defined = new int[N];	int[] detected = new int[N];	float[] quality = new float[N];	for (int faceIndex = 0; faceIndex < MAX_FACES; faceIndex++)	{		VisageTrackerNative._getFeaturePoints3D(N, groups, indices, positions3D, defined, detected, quality, faceIndex);	}<b>NOTE:</b> quality information is returned exclusively within _getFeaturePoints2D() function. Therefore, this function will always return -1 for the quality of each point.</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">number of feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>groups</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the groups of the feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>indices</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the indices of the feature points within the groups.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>positions3D</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N*3-dimensional array filled with resulting facial feature points positions.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>defined</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is defined. Value 1 is assigned to defined points, and 0 to undefined points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>detected</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is detected. Value 1 is assigned to detected points, and 0 to undetected points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>quality</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value from 0 to 1, where 0 is the worst and 1 is the best quality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFeaturePoints2D"><span class="type-signature">&lt;static> </span>_getFeaturePoints2D<span class="signature">(N, groups, indices, positions2D, defined, detected, quality, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the feature points position in normalized 2D screen coordinates, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>The 2D feature point coordinates are normalised to image size so that the lower left corner of the image has coordinates 0,0 and upper right corner 1,1.<br/>Function returns position for N feature points in the N*2-dimensional <i>positions</i> array, an indication of whether the point is defined as 0 and 1 in the N-dimensional <i>defined</i> array and detected as 0 and 1 in the N-dimensional <i>detected</i> array. The quality of each point as value between 0 and 1 is returned in <i>quality</i> array.For each point, its group and index are specifically listed in the <i>groups</i> and <i>indices</i> arrays.<br/>An example of use: <pre class="prettyprint source"><code>	// an example for points 2.1, 8.3 and 8.4	const int N;	int[] groups = new int[N] {2, 8, 8};	int[] indices = new int[N]{ 1, 3, 4 };	float[] positions2D = new float[2*N];	int[] defined = new int[N];	int[] detected = new int[N];	float[] quality = new float[N];	for (int faceIndex = 0; faceIndex < MAX_FACES; faceIndex++)	{		VisageTrackerNative._getFeaturePoints2D(N, groups, indices, positions2D, defined, detected, quality, faceIndex);	}</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>N</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">number of feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>groups</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the groups of the feature points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>indices</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array of the indices of the feature points within the groups.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>positions2D</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N*2-dimensional array filled with resulting facial feature points positions.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>defined</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is defined. Value 1 is assigned to defined points, and 0 to undefined points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>detected</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value that indicates whether the point is detected. Value 1 is assigned to detected points, and 0 to undetected points.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>quality</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">N-dimensional array filled for every feature point with a value from 0 to 1, where 0 is the worst and 1 is the best quality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getAllFeaturePoints3DRelative"><span class="type-signature">&lt;static> </span>_getAllFeaturePoints3DRelative<span class="signature">(featurePointArray, length, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns for all feature points the position in 3D coordinates relative to the face origin, placed at the center between eyes in meters, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>Returned coordinates are in the local coordinate system of the face, with the origin (0,0,0) placed at the center between the eyes. The x-axis points laterally towards the side of the face, y-xis points up and z-axis points into the face.<br/>For example, first feature point is 2.1, therefore first six values in featurePointArray array will be filled with the following values:<pre class="prettyprint source"><code>	featurePointArray = [x_(2.1), y_(2.1), z_(2.1), defined_(2.1), detected_(2.1), quality_(2.1), ...]</code></pre><br/>An example of use in Unity: <pre class="prettyprint source"><code>	//array which will be filled with values	public float[] featurePointArray = new float[1000];		//call of the _getAllFeaturePoints3DRelative() function	VisageTrackerNative._getAllFeaturePoints3DRelative(featurePointArray, featurePointArray.Length, faceIndex);	</code></pre><b>NOTE:</b> quality information is returned exclusively within _getAllFeaturePoints2D() function. Therefore, this function will always return -1 for the quality of each point.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>featurePointArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the position in x, y and z coordinates, indication whether the point is defined and detected and feature point quality will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">length of featurePointArray.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getAllFeaturePoints3D"><span class="type-signature">&lt;static> </span>_getAllFeaturePoints3D<span class="signature">(featurePointArray, length, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns for all feature points the global 3D position in meters, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>The coordinate system is such that when looking towards the camera, the direction of x is to the left, y iz up, and z points towards the viewer. The global origin (0,0,0) is placed at the camera.<br/>For example, first feature point is 2.1, therefore first six values in featurePointArray array will be filled with the following values:<pre class="prettyprint source"><code>	featurePointArray = [x_(2.1), y_(2.1), z_(2.1), defined_(2.1), detected_(2.1), quality_(2.1), ...]</code></pre>An example of use in Unity: <pre class="prettyprint source"><code>	//array which will be filled with values	public float[] featurePointArray = new float[1000];		//call of the _getAllFeaturePoints3D() function	VisageTrackerNative._getAllFeaturePoints3D(featurePointArray, featurePointArray.Length, faceIndex);</code></pre><b>NOTE:</b> quality information is returned exclusively within _getAllFeaturePoints2D() function. Therefore, this function will always return -1 for the quality of each point.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>featurePointArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the position in x, y and z coordinates, indication whether the point is defined and detected and feature point quality will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">length of featurePointArray.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getAllFeaturePoints2D"><span class="type-signature">&lt;static> </span>_getAllFeaturePoints2D<span class="signature">(featurePointArray, length, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns for all feature points the position in normalized 2D screen coordinates, indicator whether the point is defined, indicator whether the point is detected or estimatedand feature point quality for the given faceIndex. <br/>The 2D feature point coordinates are normalised to image size so that the lower left corner of the image has coordinates 0,0 and upper right corner 1,1.<br/>For example, first feature point is 2.1, therefore first five values in featurePointArray array will be filled with the following values:<pre class="prettyprint source"><code>	featurePointArray = [x_(2.1), y_(2.1), defined_(2.1), detected_(2.1), quality_(2.1), ...]</code></pre>An example of use in Unity: <pre class="prettyprint source"><code>	//array which will be filled with values	public float[] featurePointArray = new float[1000];		//call of the _getAllFeaturePoints2D() function	VisageTrackerNative._getAllFeaturePoints2D(featurePointArray, featurePointArray.Length, faceIndex);</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>featurePointArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the position in normalized 2D screen coordinates, indication whether the point is defined and detected and feature point quality will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>length</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">length of featurePointArray.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelVertexCount"><span class="type-signature">&lt;static> </span>_getFaceModelVertexCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Number of vertices in the 3D face model. <br/>This variable is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will be set to 0.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    If tracker is tracking, returns vertex count, otherwise 0.<br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelVertices"><span class="type-signature">&lt;static> </span>_getFaceModelVertices<span class="signature">(vertices, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Array of vertex coordinates of the 3D face model. <br/>The coordinates are in the local coordinate system of the face, with the origin (0,0,0) placed at the center between the eyes. The x-axis points laterally towards the side of the face, y-axis points up and z-axis points into the face.<br/>Function returns vertices position in the vertexNumber*3-dimensional <i>vertices</i> array, where vertexNumber is value obtained from _getFaceModelVertexCount() function, for the particular faceIndex.<br/>An example of use: <pre class="prettyprint source"><code>	//define MaxVertices value that will be larger than the real number of vertices	public const int MaxVertices = 1024;	private float[] vertices = new float[MaxVertices * 3];		//call of _getFaceModelVertices() function	 VisageTrackerNative._getFaceModelVertices(vertices, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>vertices</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the values of vertex coordinates will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelVerticesProjected"><span class="type-signature">&lt;static> </span>_getFaceModelVerticesProjected<span class="signature">(verticesProjected, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Array of projected (image space) vertex coordinates of the 3D face model. <br/>The 2D coordinates are normalised to image size so that the lower left corner of the image has coordinates 0,0 and upper right corner 1,1.<br/>Function returns vertices position in the vertexNumber*2-dimensional <i>verticesProjected</i> array, where vertexNumber is value obtained from _getFaceModelVertexCount() function, for the particular faceIndex.<br/>An example of use: <pre class="prettyprint source"><code>	//define MaxVertices value that will be larger than the real number of vertices	public const int MaxVertices = 1024;	private float[] verticesProjected = new float[MaxVertices * 2];		//call of _getFaceModelVerticesProjected() function	 VisageTrackerNative._getFaceModelVerticesProjected(verticesProjected, faceIndex);</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>verticesProjected</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the values of projected vertex coordinates will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelTriangleCount"><span class="type-signature">&lt;static> </span>_getFaceModelTriangleCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Number of triangles in the 3D face model. This variable is set only while tracker is tracking (TRACK_STAT_OK), otherwise it will be set to 0.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    If tracker is tracking, returns triangle count, otherwise 0.<br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelTriangles"><span class="type-signature">&lt;static> </span>_getFaceModelTriangles<span class="signature">(triangles, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Triangles array for the 3D face model. <br/>Each triangle is described by three indices into the list of vertices (see _getFaceModelVertices() function).<br/>Function returns triangles coordinates in the triangleNumber*3-dimensional <i>triangles</i> array, where triangleNumber is value obtained from _getFaceModelTriangleCount() function, for the particular faceIndex.An example of use: <pre class="prettyprint source"><code>	//define MaxTriangles value that will be larger than the real number of triangles	public const int MaxTriangles = 2048;	private int[] triangles = new int[MaxTriangles * 3];		//call of _getFaceModelTriangles() function	VisageTrackerNative._getFaceModelTriangles(triangles, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>triangles</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which values of triangle coordinates will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceModelTextureCoords"><span class="type-signature">&lt;static> </span>_getFaceModelTextureCoords<span class="signature">(texCoord, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Texture coordinates for the 3D face model. A pair of u, v coordinates for each vertex.<br/>Function returns texture coordinates in the vertexNumber*2-dimensional <i>texCoord</i> array, where vertexNumber is value obtained from _getFaceModelVertices() function, for the particular faceIndex.<br/>An example of use: <pre class="prettyprint source"><code>	//define MaxVertices value that will be larger than the real number of vertices	public const int MaxVertices = 1024;	private float[] texCoords = new float[MaxVertices * 2];		//call of _getFaceModelTextureCoords() function	VisageTrackerNative._getFaceModelTextureCoords(texCoord, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>texCoord</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which values of texture coordinates will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_setIPD"><span class="type-signature">&lt;static> </span>_setIPD<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets the inter pupillary distance.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getIPD"><span class="type-signature">&lt;static> </span>_getIPD<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the current inter pupillary distance (IPD) setting.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Current setting of inter pupillary distance (IPD) in meters.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_setTrackerConfigurationFile"><span class="type-signature">&lt;static> </span>_setTrackerConfigurationFile<span class="signature">(trackerConfigFile, au_fitting_disabled, mesh_fitting_disabled)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Sets tracking configuration.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>trackerConfigFile</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name of the tracker configuration file.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>au_fitting_disabled</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">disables the use of the 3D model used to estimate action units. If set to true, estimation of action units shall not be performed, and action units related data will not be available (_getActionUnits() etc.). Disabling will result in a small performance gain.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>mesh_fitting_disabled</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">disables the use of the fine 3D mesh. If set to true, the 3D mesh shall not be fitted and the related information shall not be available (_getFaceModelVertices() etc.). Disabling will result in a small performance gain.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getTrackingQuality"><span class="type-signature">&lt;static> </span>_getTrackingQuality<span class="signature">(faceIndex)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns tracking quality level. <br/>This variable is set while tracker is running. If tracking status is TRACK_STAT_OFF, the return value will be -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Estimated tracking quality level for the current frame. The value is between 0 and 1.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFrameRate"><span class="type-signature">&lt;static> </span>_getFrameRate<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the frame rate of the tracker, in frames per second, measured over last 10 frames. <br/>This variable is set while tracker is running. If tracking status is TRACK_STAT_OFF, the return value will be -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    The frame rate of the tracker.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getTimeStamp"><span class="type-signature">&lt;static> </span>_getTimeStamp<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns timestamp of the current video frame. <br/>This variable is set while tracker is running. If tracking status is TRACK_STAT_OFF, the return value will be -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Timestamp of the current video frame.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getActionUnitCount"><span class="type-signature">&lt;static> </span>_getActionUnitCount<span class="signature">()</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Number of facial action units. This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set (see VisageTracker Configuration Manual for details),  otherwise it will be set to 0.Number of action units that are defined for current face model.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Number of action units.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getGazeQuality"><span class="type-signature">&lt;static> </span>_getGazeQuality<span class="signature">(faceIndex)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        The session level gaze tracking quality. Quality is returned as a value from 0 to 1, where 0 is the worst and 1 is the best quality. The quality is 0 also when the gaze tracking is off or calibrating. This variable is set while tracker is running. If tracking status for given faceIndex is TRACK_STAT_OFF, the return value will be -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Value from 0 to 1.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getScreenSpaceGazeData"><span class="type-signature">&lt;static> </span>_getScreenSpaceGazeData<span class="signature">(index, gaze, quality, inState, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        ScreenSpaceGazeData is a container structure used to hold the gaze point location, current state of screen space gaze tracking system and gaze tracking estimation quality parameters for the current frame. This class is used both to store the calibration points during the calibration phase and the estimation results during the estimation phase. ScreenSpaceGazeData will be returned in index, gaze, quality, inState parameters for the given faceIndex.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">index of the video frame.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>gaze</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">coordinates of screen space gaze normalized to screen width and height. x = 0 corresponds to the left-most point and 1 to the right-most points of the screen. Defaults to 0.5. y = 0 corresponds to the top-most point and 1 to the bottom-most points of the screen. Defaults to 0.5.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>quality</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the frame level gaze tracking quality.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>inState</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Flag indicating the state of the gaze estimator for the current frame. If inState is 0 the estimator is off and position is default. If inState is 1 the estimator is calibrating and returns calibration data for the current frame. If inState is 2 the estimator is estimating and returns the estimated screen space gaze coordinates. 	If inState is -1 the estimator is calibrating but the tracking/screen space gaze estimation failed for the current frame (position is default) If inState is -2 the estimator is estimating but the tracking/screen space gaze estimation failed for the current frame (position is default)</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getFaceScale"><span class="type-signature">&lt;static> </span>_getFaceScale<span class="signature">(faceIndex)</span><span class="type-signature"> &rarr; {Number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Scale of face bounding box. This variable is set while tracker is running. If tracking status for given faceIndex is TRACK_STAT_OFF, the return value will be -1.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Value between 0.0 and 1.0.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getEyeClosure"><span class="type-signature">&lt;static> </span>_getEyeClosure<span class="signature">(closure, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns discrete eye closure value. <br/>Function returns eye closure value in the 2-dimensional <i>closure</i>.An example of use: <pre class="prettyprint source"><code>		private int[] closure = new int[2];		//call of _getEyeClosure() function	 VisageTrackerNative._getEyeClosure(closure, faceIndex);	  </code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>closure</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the eye closure values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getIrisRadius"><span class="type-signature">&lt;static> </span>_getIrisRadius<span class="signature">(radius, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns iris radius values in px for the given faceIndex. <br/>Function returns iris radius value in the 2-dimensional <i>radius</i>.An example of use: <pre class="prettyprint source"><code>		private float[] radius = new float[2];		//call of _getIrisRadius() function	 VisageTrackerNative._getIrisRadius(radius, faceIndex);	  </code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>radius</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the iris radius values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getActionUnitsNames"><span class="type-signature">&lt;static> </span>_getActionUnitsNames<span class="signature">(auIndex)</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Name of facial Action Unit at given index. This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set (see VisageTracker Configuration Manual for details), otherwise the return value will be an empty string.
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>auIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">index of specific action unit in the current tracker configuration.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Name of the action unit for a given index according to the configuration used
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getActionUnits"><span class="type-signature">&lt;static> </span>_getActionUnits<span class="signature">(actionUnits, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of current values for facial action units, one value for each action unit. This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set (see VisageTracker Configuration Manual for details).The action units used by the tracker are defined in the 3D face model file.<br/>Function returns actionUnits values in the auCount-dimensional <i>actionUnits</i> array, where auCount is value obtained from _getActionUnitCount() function, for the particular faceIndex.An example of use: <pre class="prettyprint source"><code>	//define auCount value that will be larger than the real number of action units	public const int auCount = 1024;	private float[] actionUnits = new float[AUCOUNT];		//call of _getActionUnits() function	 VisageTrackerNative._getActionUnits(actionUnits, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>actionUnits</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">array in which the action unit values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getActionUnitsUsed"><span class="type-signature">&lt;static> </span>_getActionUnitsUsed<span class="signature">(auIndex)</span><span class="type-signature"> &rarr; {Boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Used facial Action Units. This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set (see VisageTracker Configuration Manual for details).
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>auIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">index of specific action unit in the current tracker configuration.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    True if action unit is used, false if action unit is not used. <br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getGazeDirectionGlobal"><span class="type-signature">&lt;static> </span>_getGazeDirectionGlobal<span class="signature">(gazeDirection, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Global gaze direction, taking into account both head pose and eye rotation. This variable is set only while tracker is tracking (TRACK_STAT_OK). This is the current estimated gaze direction relative to the camera axis. Direction is expressed with three values determining the rotations around the three axes x, y and z, i.e. pitch, yaw and roll. Values (0, 0, 0) correspond to the gaze direction parallel to the camera axis. Positive values for pitch correspond to gaze turning down. Positive values for yaw correspond to gaze turning right in the input image. Positive values for roll correspond to face rolling to the left in the input image, see illustration below. <br/>The values are in radians. <br/>Function returns gaze direction values in the 3-dimensional <i>gazeDirection</i> array.An example of use: <pre class="prettyprint source"><code>		private float[] gazeDirection = new float[3];		//call of _getGazeDirectionGlobal() function	 VisageTrackerNative._getGazeDirectionGlobal(gazeDirection, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>gazeDirection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">3D array in which the gaze direction values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="_getGazeDirection"><span class="type-signature">&lt;static> </span>_getGazeDirection<span class="signature">(gazeDirection, faceIndex)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Gaze direction. This variable is set only while tracker is tracking (TRACK_STAT_OK). This is the current estimated gaze direction relative to the person's head. Direction is expressed with two values x and y, in radians. Values (0, 0) correspond to person looking straight. X is the horizontal rotation with positive values corresponding to person looking to his/her left. <br/>Y is the vertical rotation with positive values corresponding to person looking down. Function returns gaze direction values in the 2-dimensional <i>gazeDirection</i> array.An example of use: <pre class="prettyprint source"><code>		private float[] gazeDirection = new float[2];		//call of _getGazeDirection() function	 VisageTrackerNative._getGazeDirection(gazeDirection, faceIndex);	</code></pre>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>gazeDirection</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">2D array in which the gaze direction values will be stored.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceIndex</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">value between 0 and MAX_FACES-1, used to access the data of a particular tracked face.<br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:30 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Face Tracker for HTML5 DEMO</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="keywords" content="face tracking, facial tracking, head tracking, face detection, facial animation, character animation, virtual characters, virtual humans, avatar, avatars, digital characters, virtual human, virtual person, virtual actor, lip-synching, lip synching, lip-synchronization, lip synchronization, lip sync, lip synch, lip-sync, MPEG-4 FBA, FBA" />
+
+<link rel="stylesheet" href="css/TrackDetect.css" type="text/css" media="all" />
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400italic,700,700italic' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<script src="../../lib/three.min.js"></script>
+<script src="MTLLoader.js"></script>
+<script src="OBJLoader.js"></script>
+
+</head>
+<body style="background-color: white; margin: 0px;">
+	<div id="cinema" >
+		<div id="outer-container">
+			<div id="tracktext">
+				<p class="whitetextcenter" align="center">TRACKER: Single-face tracking, higher performance and accuracy.</p>
+			</div>
+			<div id="detecttext">
+				<p class="whitetextcenter" align="center">DETECTOR: Multiple face detection, lower performance and accuracy.</p>
+			</div>
+
+			<div id="downloadinfo" align="center">
+				<div  id="status" align="center">Downloading...</div>
+				<div id="loadbar">
+					<progress value="0" max="100" id="progress" hidden=1></progress>
+				</div>
+			</div>
+
+			<div id="inner-container">
+				<img id="logogrey" src="../../lib/logotype.png">
+				<canvas id="canvas"></canvas>
+				<canvas id="bgcanvas" width="640" height="480" style="display:none"></canvas>
+				<video class="video" id="webcam" width="640px" height="480px" autoplay playsinline></video>
+			</div>
+		</div>
+
+		<div id="right-container">
+
+			<div id="optionbox">
+				<br>
+				<div>
+					<a href="#" class="tooltip">
+						<button type="Button" class="button" id="ToggleTD" onclick="ToggleTrackDetect();">Switch to Detector</button>
+						<span id="tooltiptext">DETECTOR: Multiple face detection, lower performance and accuracy.</span>
+					</a>
+				</div>
+				<br>
+				<div class="toolbox" id="confDropDown">
+					<select id="myList" onchange="testConfig()">
+						<option>Head Tracker.cfg</option>
+						<option>Facial Features Tracker.cfg</option>
+						<option>Facial Features Tracker - With Ears.cfg</option>
+					</select>
+				</div>
+				<br>
+				<label class="inputButton" id="inputButton" style ="display:none">
+					UPLOAD IMAGE!
+					<input id="file" type='file' name='image' accept='image/*' onchange='openFile(event)' style ="display:none">
+				</label>
+				<img id = "image" style ="display:none">
+				<br><br><br>
+				<div class="whitetext">DRAW OPTIONS:</div>
+				<div class="specific">
+					<div>
+						<div class="whitetext">
+							<input type="checkbox" checked="checked" onclick="toggleFeaturePoints();">
+							FEATURE POINTS
+						</div>
+					</div>
+					<div>
+						<div class="whitetext">
+							<input type="checkbox" id="irisChb" onclick="toggleIrisRadius();">
+							IRIS RADIUS
+						</div>
+					</div>
+					<div id="optionEars">
+						<div class="whitetext">
+							<input type="checkbox" id="earsChb" onclick="toggleEarsTracking();">
+							EARS
+						</div>
+					</div>
+					<div id="optionGaze">
+						<div class="whitetext">
+							<input type="checkbox" id="gazeChb" onclick="toggleGaze();">
+							GAZE
+						</div>
+					</div>
+					<div id="optionFMA">
+						<div class="whitetext">
+							<input type="checkbox" checked="checked" onclick="toggleFMA();">
+							FACE MODEL AXIS
+						</div>
+					</div>
+					<div id="optionWireframe">
+						<div class="whitetext">
+							<input id="WireframeCheck" type="checkbox" onclick="toggleWireframe();">
+							WIREFRAME
+						</div>
+					</div>
+					<div id="optionTiger">
+						<div class="whitetext">
+							<input id="TigerCheck" type="checkbox" onclick="toggleTiger();">
+							TIGER MODEL
+						</div>
+					</div>
+					<div>
+						<div class="whitetext">
+							<input type="checkbox" checked="checked" onclick="toggleGTQ();">
+							GLOBAL TRACKING QUALITY
+						</div>
+					</div>
+					<div>
+						<div class="whitetext">
+							<input type="checkbox" checked="checked" onclick="togglePPTQ();">
+							FEATURE POINT QUALITY
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="whitetext">FACE ANALYSIS:</div>
+				<div class="specific">
+					<div>
+						<div class="whitetext">
+							<input type="checkbox" onclick="toggleGender();">
+							GENDER
+						</div>
+						<div class="whitetext">
+							<input type="checkbox" onclick="toggleAge();">
+							AGE
+						</div>
+						<div class="whitetext">
+							<input type="checkbox" onclick="toggleEmotions();">
+							EMOTIONS
+						</div>
+					</div>
+				</div>
+				<br>
+				<div class="whitetext" id="textRecognition">FACE RECOGNITION:</div>
+				<div class="specific" id="optionRecognition">
+					<div id="col">
+						<div class="whitetextright">
+							<input type="checkbox" onclick="toggleMatch();" id="match">
+							MATCH FACES
+							<br>
+							<input type="checkbox" onclick="toggleFreeze();" id="freeze">
+							FREEZE GALLERY
+							<br>
+							<a class="material-icons" id="info" title="To rename an identity, &#013;click on its current name, &#013;type in a new name, &#013;and press the enter key to confirm."
+							style ="display:none;font-size:20px">info</a>
+						</div>
+						<div class='square-box' id="squareBox" style ="display:none">
+							<div class='square-content' id="box">	</div>
+						</div>
+					</div>
+					<br>
+						<div class="whitetext">
+							<button type="Button" class="buttonrec" id="loadGal" onclick="onClickLoadGallery();">LOAD</button>
+							<button type="Button" class="buttonrec" id="saveGal" onclick="onClickSaveGallery();">SAVE</button>
+							<button type="Button" class="buttonrec" id="clearGal" onclick="onClickClearGallery();">CLEAR</button>
+						</div>
+				</div>
+			</div>
+
+			<div id="data" style= "padding: 10px">
+				<p class="whitetext"><b>RESULTS:</b></p>
+				<p class="whitetext">FRAME RATE: <b id="boldStuff">29.3fps</b> </p>
+				<p class="vanishing">TRANSLATION: <b id="myTrans">----</b> </p>
+				<p class="vanishing">ROTATION: <b id="myRot">----</b> </p>
+				<p class="vanishing">STATUS: <b id="myStat">[TRACK_STAT_OFF]</b> </p>
+			</div>
+
+			<a href="http://www.visagetechnologies.com">
+				<img src="../../lib/logotype.png" id="logosmall">
+			</a>
+		</div>
+	</div>
+
+<script src="../../lib/bezier-spline.js"></script>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
+
+<script src="../../lib/visageRendering.js"></script>
+
+<script type='text/javascript'>
+
+function toggleSlider() {
+if ($("#panelThatSlides").is(":visible")) {
+	$("#contentThatFades").fadeOut(600, function(){
+		$("#panelThatSlides").slideUp();
+	});
+}
+if ($("#panelThatSlides2").is(":visible")) {
+	$("#contentThatFades2").fadeOut(600, function(){
+		$("#panelThatSlides2").slideUp();
+	});
+}
+else {
+	$("#panelThatSlides").slideDown(600, function(){
+		$("#contentThatFades").fadeIn();
+	});
+}
+}
+
+//VARS
+//**********
+var fpsOut = document.getElementById('boldStuff');
+var transOutput = document.getElementById('myTrans'),
+	rotOutput = document.getElementById('myRot'),
+	statOutput = document.getElementById('myStat'),
+	canvas = document.getElementById('canvas');
+
+//GUI draw control
+var drawAge = true;
+var drawGender = true;
+var drawEmotions = true;
+var recognize = false;
+
+var mWidth = 0,
+	mHeight = 0;
+
+//VisageDetector
+var minFaceScale = 0;
+var numOfFaces;
+
+var MODE_DETECT = 1;
+var MODE_TRACK = 0;
+var activeMode = MODE_TRACK;
+
+var canCon = canvas.getContext('2d', {willReadFrequently: true});
+var startTracking = false;
+var firstRun = true;
+var trackerNotOK = false;
+
+//FPS Control
+var fps = 30;
+var now = 0;
+var then = Date.now();
+var interval = 1000/fps;
+var delta;
+var lastUpdate = 0;
+var	fpsFilter = 50;
+
+//Constants
+var numberOfEmotions = 7;
+
+//Face analysis filter
+var EmotionListTrack = [];
+var EmotionListDetect = [];
+var filterFrameFPS = 10;
+var AgeDetect = -1;
+var AgeTrack = -1;
+var GenderTrack = -1;
+var GenderDetect = -1;
+
+//time in seconds in witch the data for emotion, gender and age filter is gathered
+var emotionFilterTime = 0.5;
+var genderFilterTime = 1;
+var ageFilterTime = 5;
+
+//3D model
+var meshCreated = false;
+var faceModelGeometry;
+var faceModelMesh;
+
+
+//Gender control (ON/OFF)
+function toggleGender()
+{
+	drawGender = !drawGender;
+}
+
+//Emotion control (ON/OFF)
+function toggleEmotions()
+{
+	drawEmotions = !drawEmotions;
+}
+
+//Age control (ON/OFF)
+function toggleAge()
+{
+	drawAge = !drawAge;
+}
+
+//FPS - Refreshes FPS display every 1000ms
+setInterval(function(){
+	fpsOut.innerHTML = fps.toFixed(1) + "fps";
+}, 10);
+
+function testConfig(){
+	var mylist=document.getElementById("myList");
+	var cfgPath = mylist.options[mylist.selectedIndex].text;
+	if(activeMode == MODE_TRACK)
+	{
+		m_Tracker.setTrackerConfiguration(cfgPath);
+	}
+
+	// triggers recreation of the wireframe mesh inside draw3DModel() function
+	// changing the model within configuration file affects the sizes of arrays in the FaceData used for creating mesh
+	meshCreated = false;
+
+	updateGUI();
+}
+
+//Updates GUI elements: IRIS RADIUS, EARS and GAZE according to used configuration file chosen via configuration drop down menu.
+function updateGUI()
+{
+	if(!m_Tracker)
+		return;
+
+	var cfg = m_Tracker.getConfiguration();
+
+    statusIrisRadius = (cfg.getProcessEyes() >=2) ? true : false;
+    document.getElementById("irisChb").checked = statusIrisRadius;
+    //
+    statusEars = (cfg.getRefineEars() == 1) ? true : false;
+    document.getElementById("earsChb").checked = statusEars;
+    //
+    statusGaze = (cfg.getProcessEyes() == 1 || cfg.getProcessEyes() == 3) ? true : false;
+    document.getElementById("gazeChb").checked = statusGaze;
+
+	m_Tracker.setConfiguration(cfg);
+	cfg.delete();
+}
+
+//controls the drawing of facial features (tracker and detector)
+var statusFeaturePoints = true;
+function toggleFeaturePoints()
+{
+	statusFeaturePoints = !statusFeaturePoints;
+}
+
+
+//controls the drawing of iris radius (tracker)
+var statusIrisRadius = false;
+function toggleIrisRadius()
+{
+	statusIrisRadius = !statusIrisRadius;
+
+    cfg = m_Tracker.getConfiguration();
+
+    if(statusIrisRadius)
+    {
+        // set process_eyes parameter bitflag to 1
+        cfg.setProcessEyes(cfg.getProcessEyes() | 2);
+    }
+    else
+    {
+        // set process_eyes parameter parameter bitflag to 0
+        cfg.setProcessEyes(cfg.getProcessEyes() & 1);
+
+    }
+
+    m_Tracker.setConfiguration(cfg);
+    cfg.delete();
+}
+
+
+//controls the drawing of eye gaze (tracker)
+var statusGaze = false;
+function toggleGaze()
+{
+	statusGaze = !statusGaze;
+
+	cfg = m_Tracker.getConfiguration();
+
+    if(statusGaze)
+    {
+        // set first bit of process_eyes parameter to 1
+        cfg.setProcessEyes(cfg.getProcessEyes() | 1);
+    }
+    else
+    {
+        // set first bit of  process_eyes parameter to 0
+        cfg.setProcessEyes(cfg.getProcessEyes() & 2);
+    }
+
+     m_Tracker.setConfiguration(cfg);
+     cfg.delete();
+
+    return statusGaze;
+}
+
+
+//controls the loding of model with ears and drawing ears points
+var statusEars = false;
+function toggleEarsTracking()
+{
+	statusEars = !statusEars;
+
+	cfg = m_Tracker.getConfiguration();
+
+    if(statusEars)
+    {
+        if(cfg.getRefineEars() !== 1)
+        {
+            //Load models with ears
+            cfg.setMeshFittingModel("vft/fm/jk_300_wEars.wfm");
+            cfg.setMeshFittingFdp("vft/fm/jk_300_wEars.fdp");
+
+            //Enable ears refining
+            cfg.setRefineEars(1);
+
+            //Enable ears smoothing
+            var smoothingFactors = cfg.getSmoothingFactors();
+            //Ears smoothing factor is the last value in smoothingFactors array
+            smoothingFactors[smoothingFactors.length - 1] = 1.5;
+            //
+            cfg.setSmoothingFactors(smoothingFactors);
+        }
+    }
+    else
+    {
+        if(cfg.getRefineEars() !== 0)
+        {
+            //Remove the model with ears
+            cfg.setMeshFittingModel("vft/fm/jk_300.wfm");
+            cfg.setMeshFittingFdp("vft/fm/jk_300.fdp");
+            cfg.setRefineEars(0);
+        }
+    }
+
+    m_Tracker.setConfiguration(cfg);
+    cfg.delete();
+
+
+	// triggers recreation of the wireframe mesh inside draw3DModel() function
+	// changing the model within configuration file affects the sizes of arrays in the FaceData used for creating mesh
+	meshCreated = false;
+}
+
+
+//controls the drawing of face model axis (tracker)
+var statusFMA = true;
+function toggleFMA()
+{
+	statusFMA = !statusFMA;
+}
+
+//controls the drawing global tracking quality indicator
+var statusGTQ = true;
+function toggleGTQ()
+{
+	statusGTQ = !statusGTQ;
+}
+
+//controls the drawing tracking quality per point
+var statusPPTQ = true;
+function togglePPTQ()
+{
+	statusPPTQ = !statusPPTQ;
+}
+
+var statusWireframe = false;
+function toggleWireframe()
+{
+	statusWireframe = !statusWireframe;
+	if(statusWireframe)
+	{
+		if(!statusTiger)
+		{
+			if(meshCreated)
+				scene.add(faceModelMesh);
+		}
+		else
+		{
+			statusTiger = !statusTiger;
+			document.getElementById("TigerCheck").checked = false;
+		}
+	}
+	else
+	{
+		if(!statusTiger)
+		{
+			if(meshCreated)
+			{
+				scene.remove(faceModelMesh);
+				renderer.render(scene, v_camera);
+			}
+		}
+	}
+	change3dModel();
+}
+
+var statusTiger = false;
+function toggleTiger()
+{
+	statusTiger = !statusTiger;
+	if(statusTiger)
+	{
+		if(!statusWireframe)
+		{
+			if(meshCreated)
+				scene.add(faceModelMesh);
+		}
+		else
+		{
+			statusWireframe = !statusWireframe;
+			document.getElementById("WireframeCheck").checked = false;
+		}
+	}
+	else
+	{
+		if(!statusWireframe)
+		{
+			if(meshCreated)
+			{
+				scene.remove(faceModelMesh);
+				renderer.render(scene, v_camera);
+			}
+		}
+	}
+	change3dModel();
+}
+
+
+var currentOpacity;
+
+var trackerStates = ["TRACK_STAT_OFF","TRACK_STAT_OK","TRACK_STAT_RECOVERING","TRACK_STAT_INIT"];
+
+var ppixels,
+	pixels;
+
+
+var objLoaded = false;
+var tempUV;
+var textureTiger;
+var tigerMaterialLoaded = false;
+var materialTiger;
+
+//reads the static texture coordinates and loads the texture
+function initializeTiger()
+{
+	var textureLoader = new THREE.TextureLoader();
+	textureTiger = textureLoader.load('tiger_texture.png', function ( texture ) {
+
+		materialTiger = new THREE.MeshBasicMaterial({ map:texture, transparent: true });
+		tigerMaterialLoaded = true;
+	});
+
+	materialWireframe = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true});
+}
+
+//changes model texture
+function change3dModel()
+{
+	if(statusTiger && meshCreated)
+	{
+		faceModelMesh.material = materialTiger;
+		faceModelMesh.material.needsUpdate = true;
+	}
+	if(statusWireframe && meshCreated)
+	{
+		faceModelMesh.material = materialWireframe;
+		faceModelMesh.material.needsUpdate = true;
+	}
+}
+
+//initializes the 3d scene and creates the canvas used in rendering
+function initialize3dScene()
+{
+	//var FOV = Math.atan(mHeight/mWidth/TfaceData.cameraFocus)/3.14*360;
+	var container = document.getElementById('inner-container');
+	scene = new THREE.Scene();
+	v_camera = new THREE.PerspectiveCamera( 36.869, mWidth/mHeight, 0.001, 30 );
+	//v_camera = new THREE.PerspectiveCamera( FOV, mWidth/mHeight, 0.001, 30 );
+	v_camera.lookAt(new THREE.Vector3(0, 0, -1));
+	renderer = new THREE.WebGLRenderer({ alpha: true });
+	renderer.setSize(mWidth, mHeight);
+	container.appendChild( renderer.domElement );
+}
+
+//Recognition control: matches faces with faces in gallery (ON/OFF)
+function toggleMatch()
+{
+	recognize = !recognize;
+	showHideGallery();
+	workerRecognition.postMessage(
+		{
+			aTopic: 'trackStatus'
+		});
+	workerRecognitionAvailable = false;
+}
+
+//Recognition control: freezes recognition (ON/OFF)
+var statusFrozen = false;
+function toggleFreeze()
+{
+	statusFrozen = !statusFrozen;
+}
+
+// Recognition varaibles
+var displayName = "?";
+var workerRecognitionAvailable = true;
+var resetInProgress = false;
+var clearInProgress = false;
+var recognitionInitialized = false;
+var gallery = [];
+var personIndex = 0;
+// Recognition buttons
+var loadGalButton = document.getElementById('loadGal');
+var saveGalButton = document.getElementById('saveGal');
+var clearGalButton = document.getElementById('clearGal');
+
+//Changes name in the gallery on ENTER pressed
+function changeNameInGallery()
+{
+	disableRecognitionButtons();
+	//
+	var changedNames = {};
+	for(var i = 0; i < personIndex; ++i)
+	{
+		var newName = document.getElementById("block"+(i+1)).value;
+		if(newName != gallery[i])
+		{
+			if(displayName == gallery[i])
+			{
+				displayName = newName;
+			}
+			changedNames[gallery[i]] = newName;
+		}
+	}
+	workerRecognition.postMessage(
+	{
+		aTopic: 'changeName',
+		changedNames: changedNames
+
+	});
+	workerRecognitionAvailable = false;
+}
+
+function updateGalleryNames()
+{
+	for(var i = 0; i < personIndex; ++i)
+	{
+		name = document.getElementById("block"+(i+1)).value;
+		if(name != gallery[i])
+		{
+			gallery[i] = name;
+		}
+	}
+}
+
+//Adds name for recognized face to the gallery
+function addNameToGallery(name)
+{
+	++personIndex;
+	var input = document.createElement("input");
+	input.id = "block" +  personIndex;
+	input.spellcheck = false;
+	box.appendChild(input);
+	document.getElementById("block" +  personIndex)
+	.addEventListener("keyup", function(event) {
+	event.preventDefault();
+	if (event.keyCode == 13) {
+		changeNameInGallery();
+	}});
+	document.getElementById("block" + personIndex).value = name;
+}
+
+//Shows gallery if MATCH FACES is checked
+function showHideGallery()
+{
+	if(document.getElementById('match').checked)
+	{
+		document.getElementById('squareBox').style.display = 'block';
+		document.getElementById('info').style.display = 'block';
+	}
+	else
+	{
+		document.getElementById('squareBox').style.display = 'none';
+		document.getElementById('info').style.display = 'none';
+	}
+}
+
+//disables load, save and clear buttons while any of these actions are performing
+function disableRecognitionButtons()
+{
+	loadGalButton.disabled = true;
+	saveGalButton.disabled = true;
+	clearGalButton.disabled = true;
+}
+
+//enables load, save and clear buttons when any of these actions are done
+function enableRecognitionButtons()
+{
+	loadGalButton.disabled = false;
+	saveGalButton.disabled = false;
+	clearGalButton.disabled = false;
+}
+
+//Loads gallery from IndexedDB
+function onClickLoadGallery()
+{
+	disableRecognitionButtons();
+	//
+	workerRecognition.postMessage(
+	{
+		aTopic: 'loadGallery'
+	});
+	//
+	workerRecognitionAvailable = false;
+}
+
+//Saves gallery to IndexedDB
+function onClickSaveGallery()
+{
+	disableRecognitionButtons();
+	//
+	//if name in gallery shown in recognition box is different than visage recognition gallery the names will be changed before saving
+	changeNameInGallery();
+	//
+	workerRecognition.postMessage(
+	{
+		aTopic: 'saveGallery'
+	});
+	//
+	workerRecognitionAvailable = false;
+}
+
+//Clears gallery
+function onClickClearGallery()
+{
+	disableRecognitionButtons();
+	//
+	gallery = [];
+	displayName = "?";
+	//
+	clearInProgress = true;
+	//
+	workerRecognition.postMessage(
+	{
+		aTopic: 'clearGallery'
+	});
+	//
+	workerRecognitionAvailable = false;
+}
+
+//Checks output from recognition worker
+function handleMessageFromWorkerRecognition(msg)
+{
+	switch (msg.data.aTopic)
+	{
+		case 'results recieved':
+			// recognition is waiting to be reset (i.e. different face entered the screen)
+			if (resetInProgress || clearInProgress)
+			{
+				displayName = "?";
+				break;
+			}
+			//
+			var recognizedName = msg.data.recognizedName;
+			if(recognizedName !== "?")
+			{
+				if(gallery.includes(recognizedName))
+				{
+					var index = gallery.indexOf(recognizedName)
+					displayName = document.getElementById("block"+(index+1)).value;
+				}
+				else
+				{
+					gallery.push(recognizedName);
+					displayName = recognizedName;
+					addNameToGallery(recognizedName);
+				}
+			}
+			else
+			{
+				displayName = recognizedName;
+			}
+			workerRecognitionAvailable = true;
+			break;
+		case 'initialization done':
+			recognitionInitialized = true;
+			break;
+		case 'recognition reset':
+			workerRecognitionAvailable = true;
+			resetInProgress = false;
+			break;
+		case 'gallery loaded':
+			var nameArray = msg.data.nameArray;
+			if(nameArray.length > 0)
+			{
+				document.getElementById('box').innerHTML = " ";
+				personIndex = 0;
+				for(var i = 0; i < nameArray.length; ++i)
+				{
+					gallery[i] = nameArray[i];
+					addNameToGallery(nameArray[i]);
+				}
+			}
+			workerRecognitionAvailable = true;
+			enableRecognitionButtons();
+			break;
+		case 'gallery saved':
+			workerRecognitionAvailable = true;
+			enableRecognitionButtons();
+			break;
+		case 'gallery cleared':
+			clearInProgress = false;
+			personIndex = 0;
+			document.getElementById('box').innerHTML = " ";
+			workerRecognitionAvailable = true;
+			enableRecognitionButtons();
+			break;
+		case 'name changed':
+			updateGalleryNames();
+			workerRecognitionAvailable = true;
+			enableRecognitionButtons();
+			break;
+		default:
+			throw 'no aTopic on incoming message to ChromeWorker';
+	}
+}
+
+var workerAnalysisAvailable = true;
+var analyserInitialized = false;
+
+//Checks output from analysis worker
+function handleMessageFromWorkerAnalysis(msg)
+{
+  switch (msg.data.aTopic)
+	{
+		case 'analysis results track':
+			EmotionListTrack = msg.data.emotions;
+			GenderTrack = msg.data.gender;
+			AgeTrack = msg.data.age;
+			workerAnalysisAvailable = true;
+			break;
+		case 'initialization done':
+			analyserInitialized = true;
+			workerAnalysisAvailable = true;
+			break;
+		case 'analysis reset':
+			EmotionListTrack = msg.data.emotions;
+			GenderTrack = msg.data.gender;
+			AgeTrack = msg.data.age;
+			workerAnalysisAvailable = true;
+			break;
+		case 'analysis results detect':
+			EmotionListDetect = msg.data.emotions;
+			GenderDetect = msg.data.gender;
+			AgeDetect = msg.data.age;
+			workerAnalysisAvailable = true;
+			if(drawEmotions || drawGender || drawAge)
+			{
+				drawAnalysisResults(EmotionListDetect, GenderDetect, AgeDetect, numOfFaces);
+			}
+			break;
+		default:
+			throw 'no aTopic on incoming message to ChromeWorker';
+		}
+}
+
+
+/*
+*Draws an image from cam on the canvas.
+*/
+function drawFrame()
+{
+	canCon.drawImage(video,0,0,mWidth,mHeight);
+}
+
+/*
+*Takes the pixel data from canvas, sends them to the tracker and, depending on the result, draws the results.
+*/
+function trackFrame()
+{
+	if(!trackFrameStart)
+		return;
+
+	//Access pixel data
+	imageData = canCon.getImageData(0,0, mWidth, mHeight).data;
+
+	//Save pixel data to preallocated buffer
+	for(i=0; i<imageData.length; i+=1)
+	{
+		pixels[i] = imageData[i];
+	}
+
+	if (startTracking===true)
+	{
+		trackerReturnState = m_Tracker.track(
+			mWidth, mHeight, ppixels, TfaceDataArray,
+			VisageModule.VisageTrackerImageFormat.VISAGE_FRAMEGRABBER_FMT_RGBA.value,
+			VisageModule.VisageTrackerOrigin.VISAGE_FRAMEGRABBER_ORIGIN_TL.value,
+			0,
+			-1,
+			maxFacesTracker
+		);
+	}
+
+	//Draw based upon data if tracker status is OK and respective controls
+	if (startTracking===true && trackerReturnState[0]===VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value)
+	{
+		TfaceData = TfaceDataArray.get(0);
+
+		if(statusFeaturePoints)
+		{
+			if (statusPPTQ)
+				drawFaceFeatures(TfaceData, true);
+			else
+				drawFaceFeatures(TfaceData);
+		}
+		if(statusGaze)
+		{
+			drawGaze(TfaceData);
+		}
+		if(statusFMA)
+		{
+			drawFaceModelAxes(TfaceData);
+		}
+		if(statusGTQ)
+		{
+			drawTrackingQualityBar(TfaceData.trackingQuality);
+		}
+		if(statusIrisRadius)
+		{
+			drawIrises(TfaceData, mWidth, mHeight);
+		}
+		//
+		var imageDataBuffer = imageData.buffer;
+
+		//serialize FaceData object to buffer
+		var faceDataBuffer = TfaceDataArray.get(0).serializeBuffer();
+		//copy buffer from native memory to javascript memory to increase postMessage() performance
+		faceDataBufferJS = new Float32Array(faceDataBuffer);
+
+		if(recognize)
+		{
+			var x = (1 - TfaceData.getFeaturePoints2D().getFPPos(11,2)[0])*canvas.width;
+			var y = (1 - TfaceData.getFeaturePoints2D().getFPPos(11,2)[1])*canvas.height;
+
+			drawName(x,y,displayName);
+
+			//make copy of imageData buffer
+			var imageDataBufferRecognition = copy(imageDataBuffer);
+			//make copy of FaceData buffer
+			var faceDataBufferRecognition = copy(faceDataBufferJS.buffer);
+
+			//update recognition display
+			if(workerRecognitionAvailable && recognitionInitialized)
+			{
+				workerRecognition.postMessage(
+				{
+					aTopic: 'sendFrameTrack',
+					inFaceData : faceDataBufferRecognition,
+					imageData: imageDataBufferRecognition,
+					statusFrozen: statusFrozen
+				},
+				[
+					faceDataBufferRecognition,
+					imageDataBufferRecognition
+				]);
+				workerRecognitionAvailable = false;
+			}
+		}
+
+		//update analysis display
+		if(workerAnalysisAvailable && analyserInitialized && (drawEmotions || drawGender || drawAge))
+		{
+			var trackerStatusJSON = "";
+
+			trackerStatusJSON = JSON.stringify(trackerReturnState);
+
+			//make copy of imageData buffer
+			var imageDataBufferAnalysis = copy(imageDataBuffer);
+			//make copy of FaceData buffer
+			var faceDataBufferAnalysis = copy(faceDataBufferJS.buffer);
+
+			var analyserControlOptions = [drawEmotions, drawGender, drawAge];
+			var analyserControlOptionsJSON = JSON.stringify(analyserControlOptions);
+
+			workerAnalysis.postMessage(
+			{
+				aTopic: 'sendFrameTrack',
+				analyserControlOptions: analyserControlOptionsJSON,
+				inFaceData : faceDataBufferAnalysis,
+				imageData: imageDataBufferAnalysis,
+				numFaces: trackerStatusJSON
+			},
+			[
+				faceDataBufferAnalysis,
+				imageDataBufferAnalysis
+			]);
+			workerAnalysisAvailable = false;
+		}
+
+		//Draws the selected 3d face model
+		if(initialized3D)
+		{
+			if((statusWireframe || statusTiger) && tigerMaterialLoaded)
+			{
+				draw3DModel();
+			}
+		}
+		else
+		{
+			initializeTiger();
+			initialized3D = true;
+		}
+
+		transOutput.innerHTML = "[" + TfaceData.getFaceTranslation()[0].toFixed(2) + "," + TfaceData.getFaceTranslation()[1].toFixed(2) + "," + TfaceData.getFaceTranslation()[2].toFixed(2) + "]";
+		rotOutput.innerHTML = "[" + TfaceData.getFaceRotation()[0].toFixed(2) + "," + TfaceData.getFaceRotation()[1].toFixed(2) + "," + TfaceData.getFaceRotation()[2].toFixed(2) + "]";
+	}
+
+	if (trackerReturnState[0] !== VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value)
+	{
+		trackerNotOK = true;
+
+		scene.remove(faceModelMesh);
+		renderer.render(scene, v_camera);
+		meshCreated = false;
+
+		if(workerAnalysisAvailable)
+		{
+			workerAnalysis.postMessage(
+			{
+					aTopic: 'trackStatus',
+					faceIndex: 0
+			});
+			workerAnalysisAvailable = false;
+		}
+	}
+
+	if(recognize)
+	{
+		//Reset face recognition
+		if(!resetInProgress && trackerNotOK)
+		{
+			workerRecognition.postMessage(
+			{
+				aTopic: 'trackStatus'
+			});
+			trackerNotOK = false;
+			resetInProgress = true;
+			displayName = "?";
+		}
+	}
+
+	if(drawEmotions || drawGender || drawAge)
+	{
+		drawAnalysisResults(EmotionListTrack, GenderTrack, AgeTrack, maxFacesTracker);
+	}
+
+	statOutput.innerHTML = "[" + trackerStates[trackerReturnState[0]] + "]";
+}
+
+/*
+* Makes copy of one buffer to another. This step is necessary if the same buffer will be sent to two or more web workers
+* (https://developer.mozilla.org/en-US/docs/Web/API/Worker/postMessage).
+*/
+function copy(src)  {
+	var dst = new ArrayBuffer(src.byteLength);
+	new Uint8Array(dst).set(new Uint8Array(src));
+	return dst;
+}
+
+var img;
+var imageAspectRatio;
+var canvasAspectRatio;
+var renderableHeight, renderableWidth, xStart, yStart;
+var rAF;
+
+//Loads the image on which detection will be performed
+var openFile = function(file) {
+
+	var input = file.target;
+	var reader = new FileReader();
+	reader.onload = function(){
+		var dataURL = reader.result;
+		img = document.getElementById('image');
+		img.onload = function(){
+		clearCanvas();
+		detectFrame();
+		}
+		img.src = dataURL;
+	};
+	reader.readAsDataURL(input.files[0]);
+	var imageFile = document.getElementById('file');
+	imageFile.value = '';
+};
+
+//Clears drawn image
+function clearCanvas()
+{
+	canCon.clearRect(0, 0,  mWidth, mHeight);
+	canvas.style.display = "none";
+	canvas.style.background = "transparent";
+}
+
+//Draws loaded image
+function drawImageOnCanvas()
+{
+	imageAspectRatio = img.width / img.height;
+	canvasAspectRatio = canvas.width / canvas.height;
+	renderableHeight, renderableWidth, xStart, yStart;
+
+	// If image's aspect ratio is less than canvas's fit on height
+	// and place the image centrally along width
+	if(imageAspectRatio < canvasAspectRatio) {
+		renderableHeight = canvas.height;
+		renderableWidth = img.width * (renderableHeight / img.height);
+		xStart = (canvas.width - renderableWidth) / 2;
+		yStart = 0;
+	}
+	// If image's aspect ratio is greater than canvas's fit on width
+	// and place the image centrally along height
+	else if(imageAspectRatio > canvasAspectRatio) {
+		renderableWidth = canvas.width
+		renderableHeight = img.height * (renderableWidth / img.width);
+		xStart = 0;
+		yStart = (canvas.height - renderableHeight) / 2;
+	}
+	else {
+		renderableHeight = canvas.height;
+		renderableWidth = canvas.width;
+		xStart = 0;
+		yStart = 0;
+	}
+	canCon.drawImage(img, xStart, yStart, renderableWidth, renderableHeight);
+}
+
+//Performs detection and analysis on given image
+function detectFrame()
+{
+	if(!detectFrameStart)
+		return;
+
+	canvas.style.display = "block";
+	drawImageOnCanvas();
+
+	//Access pixel data
+	imageData = canCon.getImageData(0,0, mWidth, mHeight).data;
+
+
+	//Save pixel data to preallocated buffer
+	for(i=0; i<imageData.length; i+=1)
+	{
+		pixels[i] = imageData[i];
+	}
+
+	if (startDetecting===true)
+	{
+		numOfFaces = m_Detector.detectFeatures(mWidth, mHeight, ppixels, DfaceDataArray, maxFacesDetector, minFaceScale);
+	}
+	//Draw based upon data
+	if (startDetecting===true && numOfFaces > 0)
+	{
+		if(workerAnalysisAvailable && analyserInitialized)
+		{
+			var DfaceData;
+			var DfaceDataJson = "";
+
+			for(var i = 0; i < numOfFaces; ++i)
+			{
+				DfaceData = DfaceDataArray.get(i);
+				DfaceDataJson += DfaceData.serializeJson() + "||";
+			}
+
+			var imageDataBuffer = imageData.buffer;
+
+			workerAnalysis.postMessage(
+			{
+				aTopic: 'sendFrameDetect',
+				inFaceData : DfaceDataJson,
+				imageData: imageDataBuffer,
+				numFaces: numOfFaces
+			},
+			[
+				imageDataBuffer
+			]);
+			workerAnalysisAvailable = false;
+		}
+
+		for (var i = 0; i < numOfFaces; i++)
+		{
+			if(statusFeaturePoints)
+			{
+				if (statusPPTQ)
+				{
+					drawFaceFeatures(DfaceDataArray.get(i), true);
+				}
+				else
+				{
+					drawFaceFeatures(DfaceDataArray.get(i));
+				}
+			}
+			if(statusIrisRadius)
+			{
+				drawIrises(DfaceDataArray.get(i), mWidth, mHeight);
+			}
+		}
+
+		if(statusGTQ)
+		{
+			var DqualitySum = 0;
+			for (var i = 0; i < numOfFaces; i++)
+				{
+					DqualitySum += DfaceDataArray.get(i).trackingQuality;
+				}
+			var Dquality= DqualitySum/numOfFaces;
+			drawTrackingQualityBar(Dquality);
+		}
+	}
+}
+
+//Draws analysis results
+function drawAnalysisResults(emotionList, genderList, ageList, faces)
+{
+	for (var i = 0; i < faces; i++)
+	{
+		if(activeMode == MODE_TRACK)
+			if(trackerReturnState[i] !== VisageModule.VisageTrackerStatus.TRACK_STAT_OK.value)
+				continue;
+
+		//displays gender, age and emotion data
+		canCon.translate(mWidth, 0);
+		canCon.scale(-1, 1);
+		drawGenderAgeEmotions(emotionList[i], genderList[i], ageList[i], i, activeMode);
+		canCon.translate(mWidth, 0);
+		canCon.scale(-1, 1);
+	}
+}
+
+
+/*
+*Method that is called on every frame via requestAnimationFrame mechanism.
+*Draws camera image on the canvas, takes the pixel data, sends them to the tracker and finally, depending on the result, draws the results.
+*Rudimentary timing is implemented to be activated on button click and it also checks for duplicate frames.
+*/
+function processFrame()
+{
+	rAF = requestAnimationFrame(processFrame);
+
+	now = Date.now();
+	delta = now - then;
+
+	if(firstRun)
+	{
+		firstRun = false;
+		trackText.style.display = "block";
+		opacityControl();
+
+		if(typeof renderer !== "undefined")
+		{
+			rendererSize = renderer.getSize();
+			if(mWidth !== rendererSize[0])
+				renderer.setSize(mWidth, mHeight);
+		}
+	}
+
+	//Limit frame rate according to the fps variable
+	if (delta > interval)
+	{
+		then = now - (delta % interval);
+
+		drawFrame();
+
+		//If tracker is used
+		if(activeMode == MODE_TRACK)
+		{
+			trackFrame();
+		}
+
+		//Calculate FPS
+		filterFrameFPS = 1000 / ((now=new Date) - lastUpdate);
+		fps += (filterFrameFPS - fps) / fpsFilter;
+		lastUpdate = now;
+
+		decOpacity();
+	}
+	return;
+}
+//Function called when tracking/detecting is started/resumed
+function StartTracker(){
+
+	startTracking = true;
+}
+
+function StopTracker(){
+	startTracking = false;
+}
+
+function StartDetector(){
+
+	startDetecting = true;
+}
+
+function StopDetector(){
+	startDetecting = false;
+}
+
+/*
+**Info text fade-out controls
+*/
+var decOpacityEnabled = false;
+var decTime = 5;
+
+function decOpacity()
+{
+	if(currentOpacity > 0 && decOpacityEnabled)
+		{
+			currentOpacity = Math.max(currentOpacity - 1/(fps*decTime), 0);
+			detectText.style.opacity = currentOpacity;
+			trackText.style.opacity = currentOpacity;
+		}
+	else
+	{
+	decOpacityEnabled = false;
+	}
+}
+
+function opacityControl()
+{
+	currentOpacity = 1.00;
+	detectText.style.opacity = currentOpacity;
+	trackText.style.opacity = currentOpacity;
+	setTimeout(function(){
+		decOpacityEnabled = true;
+	}, 2000);
+}
+
+/*
+***Tracker and detector swich contol
+*/
+var detectText = document.getElementById('detecttext');
+var trackText = document.getElementById('tracktext');
+
+function ToggleTrackDetect(){
+	var results = document.getElementsByClassName('vanishing');
+	if(workerAnalysisAvailable)
+	{
+		workerAnalysis.postMessage(
+		{
+				aTopic: 'trackStatus',
+				faceIndex: 0
+		});
+		workerAnalysisAvailable = false;
+	}
+	if(activeMode == MODE_TRACK){
+		activeMode = MODE_DETECT;
+		document.getElementById("tooltiptext").innerHTML = "TRACKER: Single-face tracking, higher performance and accuracy.";
+		document.getElementById('inputButton').style.display = 'inline-block';
+		document.getElementById('optionGaze').style.display = "none";
+		document.getElementById('optionEars').style.display = "none";
+		document.getElementById('optionFMA').style.display = "none";
+		document.getElementById('optionWireframe').style.display = "none";
+		document.getElementById('optionTiger').style.display = "none";
+		document.getElementById('optionRecognition').style.display = "none";
+		document.getElementById('textRecognition').style.display = "none";
+		document.getElementById('confDropDown').style.display = "none";
+
+		scene.remove(faceModelMesh);
+
+		renderer.render(scene, v_camera);
+		for(i=0; i<results.length; i++)
+		{
+			results[i].style.display = "none";
+		}
+		document.getElementById('ToggleTD').innerHTML = "Switch to Tracker";
+		detectText.style.display = "block";
+		trackText.style.display = "none";
+
+
+		workerAnalysis.postMessage(
+		{
+			aTopic: 'trackStatus',
+			faceIndex: 0
+		});
+
+		opacityControl();
+		StopTracker();
+		cancelAnimationFrame(rAF);
+		StopCamera();
+		clearCanvas();
+		initial();
+		StartDetector();
+	}
+	else if(activeMode == MODE_DETECT){
+		activeMode = MODE_TRACK;
+		document.getElementById("tooltiptext").innerHTML = "DETECTOR: Multiple face detection, lower performance and accuracy.";
+		document.getElementById('inputButton').style.display = 'none';
+		document.getElementById('optionGaze').style.display = "inline";
+		document.getElementById('optionEars').style.display = "inline";
+		document.getElementById('optionFMA').style.display = "inline";
+		document.getElementById('optionWireframe').style.display = "inline";
+		document.getElementById('optionTiger').style.display = "inline";
+		document.getElementById('optionRecognition').style.display = "block";
+		document.getElementById('textRecognition').style.display = "inline";
+		document.getElementById('confDropDown').style.display = "block";
+
+		if(statusWireframe || statusTiger){
+			scene.add(faceModelMesh);
+		}
+		for(i=0; i<results.length; i++)
+		{
+			results[i].style.display = "inline";
+		}
+
+		document.getElementById('ToggleTD').innerHTML = "Switch to Detector";
+		detectText.style.display = "none";
+
+		clearCanvas();
+
+		if(typeof img !== 'undefined')
+			img.src = '';
+
+		firstRun = true;
+		StopDetector();
+		StartCamera();
+		initial();
+		StartTracker();
+	}
+}
+
+var m_Tracker;
+var trackerReturnState;
+var m_Detector;
+var TfaceDataArray;
+var DfaceDataArray;
+var TfaceData;
+var DfaceData;
+var TfaceDataJson = "";
+var DfaceDataJson = "";
+var maxFacesTracker = 1;
+var maxFacesDetector = 10;
+var imageData;
+
+var TfaceDataNoseOld = new Array();
+
+var video = document.getElementById('webcam');
+
+//Handlers for camera communication
+//callback methods for getUserMedia : deniedStream, errorStream, startStream
+//**************************************************************************
+
+//Alerts the user when there is no camera
+function deniedStream(){
+	alert("Camera access denied!");
+}
+//Pushes error to the console when there is error with camera access
+function errorStream(e){
+	if (e){
+		console.error(e);
+	}
+}
+
+function initial(){
+	var logogrey = document.getElementById('logogrey');
+	logogrey.style.display = "none";
+	var canvas = document.getElementById('canvas');
+	canvas.style.display = "block";
+	/*var logo = document.getElementById("logotype");
+	logo.style.visibility='visible';*/
+}
+
+var scene;
+var v_camera;
+var renderer;
+var geometry;
+var materialWireframe;
+var cube;
+var initialized3D = false;
+var trackFrameStart = false;
+var detectFrameStart = false;
+
+function onModuleInitialized()
+{
+	if (mWidth === 0)
+	{
+		setTimeout(onModuleInitialized, 100);
+		return
+	}
+
+	initialize3dScene();
+	initial();
+
+	ppixels = VisageModule._malloc(mWidth*mHeight*4);
+	pixels = new Uint8ClampedArray(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
+
+	//set up tracker and licensing, valid license needs to be provided
+	VisageModule.initializeLicenseManager(licenseName);
+	m_Tracker = new VisageModule.VisageTracker("Head Tracker.cfg");
+	TfaceDataArray = new VisageModule.FaceDataVector();
+	for (var i = 0; i < maxFacesTracker; ++i)
+	{
+		TfaceDataArray.push_back(new VisageModule.FaceData());
+	}
+
+	//set up detector and licensing, valid license needs to be provided
+	m_Detector = new VisageModule.VisageDetector("Face Detector.cfg");
+	DfaceDataArray = new VisageModule.FaceDataVector();
+	for (var i = 0; i < maxFacesDetector; ++i)
+	{
+		DfaceDataArray.push_back(new VisageModule.FaceData());
+	}
+
+	for(var i = 0; i < maxFacesTracker; ++i)
+	{
+		EmotionListTrack[i] = [0,0,0,0,0,0,0];
+		AgeTrack[i] = -1;
+		GenderTrack[i] = -1;
+
+	}
+
+	for(var i = 0; i < maxFacesDetector; ++i)
+	{
+		EmotionListDetect[i] = [0,0,0,0,0,0,0];
+		AgeDetect[i] = -1;
+		GenderDetect[i] = -1;
+	}
+
+	if(activeMode == MODE_TRACK)
+		StartTracker();
+	else if (activeMode == MODE_DETECT)
+		StartDetector();
+
+	//Use request animation frame mechanism - slower but with smoother animation
+	trackFrameStart = true;
+	detectFrameStart = true;
+}
+
+var backgroundCanvas = document.getElementById('bgcanvas');
+var bgCanCon = backgroundCanvas.getContext('2d');
+
+
+//Is triggered when cam stream is successfully fetched
+//NOTE: Can be buggy, try to increase the value from 1000ms to some higher value in that case
+function startStream(stream)
+{
+	//added hidden canvas due to problems with the drawImage() function on Safari browser
+	bgCanCon.drawImage(video,0,0);
+	video.addEventListener('canplay', function DoStuff() {
+		bgCanCon.drawImage(video,0,0);
+		video.removeEventListener('canplay', DoStuff, true);
+		setTimeout(function() {
+			video.play();
+
+			canvas.width = Math.min(video.videoWidth, Math.max(document.documentElement.clientWidth/2,0));
+			canvas.height = Math.min(video.videoHeight, Math.max(Math.round(video.videoHeight*(document.documentElement.clientWidth/2)/video.videoWidth),0));
+
+			mWidth = canvas.width;
+			mHeight = canvas.height;
+
+			if(typeof workerRecognition === 'undefined')
+			{
+				createWorkerRecognition();
+			}
+
+			if(typeof workerAnalysis === 'undefined')
+			{
+				createWorkerAnalysis();
+			}
+
+			processFrame();
+		}, 1000);
+	}, true);
+
+
+	video.srcObject = stream;
+	video.play();
+}
+
+(function() {
+	var i = 0,
+		lastTime = 0,
+		vendors = ['ms', 'moz', 'webkit', 'o'];
+
+	while (i < vendors.length && !window.requestAnimationFrame) {
+		window.requestAnimationFrame = window[vendors[i] + 'RequestAnimationFrame'];
+		window.cancelAnimationFrame =
+		  window[vendors[i]+'CancelAnimationFrame'] || window[vendors[i]+'CancelRequestAnimationFrame'];
+		i++;
+	}
+	if (!window.requestAnimationFrame) {
+		alert("RequestAnimationFrame mechanism is not supported by this browser.");
+	}
+}());
+
+
+function StartCamera()
+{
+	//Here is where the stream is fetched
+	try {
+		navigator.mediaDevices.getUserMedia({
+			video: true,
+			audio: false
+		}).then(startStream).catch(deniedStream);
+		} catch (e) {
+			try {
+				navigator.mediaDevices.getUserMedia('video', startStream, deniedStream);
+			} catch (e) {
+				errorStream(e);
+			}
+		}
+}
+
+
+function StopCamera()
+{
+	video.srcObject.getVideoTracks()[0].stop();
+}
+
+StartCamera();
+
+function createWorkerRecognition()
+{
+	workerRecognition = new Worker("recognitionWorker.js");
+	workerRecognition.addEventListener('message', handleMessageFromWorkerRecognition);
+	workerRecognition.postMessage(
+	{
+		aTopic: 'resolution',
+		mWidth: mWidth,
+		mHeight: mHeight
+	});
+}
+
+function createWorkerAnalysis()
+{
+	workerAnalysis = new Worker("analysisWorker.js");
+	workerAnalysis.addEventListener('message', handleMessageFromWorkerAnalysis);
+	workerAnalysis.postMessage(
+	{
+		aTopic: 'resolution',
+		mWidth: mWidth,
+		mHeight: mHeight,
+		maxFacesTracker: maxFacesTracker,
+		maxFacesDetector: maxFacesDetector
+	});
+}
+
+</script>
+
+
+
+<script>
+licenseName = "dev_html5.vlc"
+licenseURL = "dev_html5.vlc"
+var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
+VisageModule = {
+	locateFile: locateFile,
+	preRun: [function() {
+		VisageModule.FS_createPreloadedFile('/', 'Facial Features Tracker.cfg', "../../lib/Facial Features Tracker.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', 'Facial Features Tracker - With Ears.cfg', "../../lib/Facial Features Tracker - With Ears.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', 'Head Tracker.cfg', "../../lib/Head Tracker.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', 'Face Detector.cfg', "../../lib/Face Detector.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+		VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") });
+
+	}],
+
+	onRuntimeInitialized: onModuleInitialized
+}
+
+</script>
+
+<script src="../../lib/visageSDK.js"></script>
+<script src="../../lib/visageEarsRefinerData.js"></script>
+</body>
+
+</html>

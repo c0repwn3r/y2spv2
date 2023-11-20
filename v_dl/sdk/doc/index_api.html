@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+</head><link href="css/main.css" rel="stylesheet" type="text/css" />
+<body>
+<div class="header">
+  <div class="headertitle">
+  <h1>API</h1> 
+  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock">
+<p>
+The following sections provide an overview of key functionalities of Visage|SDK and give links to most important classes and relevant sample projects.
+The detailed information is found in the documentation of each class, reached through links in this section or links on the side menu.
+</p>
+<p>
+Visage|SDK includes following main functionalities:
+<ul>
+<li>Facial feature tracking</li>
+<li>Facial feature detection</li>
+<li>Face analysis</li>
+<li>Face recognition</li>
+</ul> 
+
+Visage|SDK also provides a high-level API for augmented reality (AR), allowing very simple implementation
+of AR applications such as virtual eyewear try-on.
+</p>
+<p>
+<h2><a class="anchor" id="visageVision-t"></a>
+Configuring neural network runners</h1>
+All listed APIs use configurable neural networks to process and analyze facial images.<br/><br/>
+
+Additional configuration file <b>NeuralNet.cfg</b> is provided in <i>www/lib</i> folder. 
+It allows for specifying the desired backend that the runner will use for inference.
+<br/>
+Following backends values are supported:
+<ul>
+<li> <b>WEBGL</b> - allowing GPU-assisted neural network running 
+<li> <b>WASM</b>  - allowing CPU-accelerated neural network running with supported SIMD instructions
+<li> <b>AUTO</b>  - will choose the best backend in the given environment (WEBGL or WASM)
+</ul>
+<br/>
+To choose desired backend make sure to preload <b>NeuralNet.cfg</b> file to virtual file system. Default backend is AUTO.<br/><br/>
+
+
+
+
+More information about configuring neural network runners can be found in <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>, chapter 3. Configuring neural network runners.<br/><br/>
+
+The following sections provide an overview of the APIs and give links to most important classes.
+</p>
+
+<h1><a class="anchor" id="visageVision-t"></a>
+Facial features tracking (visageSDK.js)</h1>
+<p>
+Visage tracker tracks multiple faces and facial features in video sequences and outputs 3D head pose, facial expression, gaze direction, facial feature points and full textured 3D face model. 
+The tracker is fully configurable in terms of performance, quality, tracked features and facial actions, as well as other options, 
+allowing in effect a variety of customized trackers suited to different applications. Several common configurations are delivered. 
+Details about configuring the tracker can be found in the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageTracker.html" title="VisageTracker is a head/facial features tracker capable of tracking facial features in video.">VisageTracker</a>: Tracks multiple faces and facial features.</li>
+<li><a class="el" href="VisageConfiguration.html" title="VisageConfiguration is a class used to change, apply, load and save configuration parameters used by VisageTracker.">VisageConfiguration</a>: Used to change, apply, load and save configuration parameters used by VisageTracker.</li>
+<li><a class="el" href="FaceData.html" title="FaceData data structure, used as container for all tracking results. ">FaceData</a>: Used to return tracking results from the tracker.</li>
+</ul>
+<p><br/>
+
+<h1><a class="anchor" id="visageVision-d"></a>
+Facial features detection (visageSDK.js)</h1>
+<p>
+The class VisageDetector detects faces and facial features in input images.
+The results are, for each detected face, the 3D head pose, the coordinates of facial feature points, e.g. chin tip, nose tip, lip corners etc. and 3D face model fitted to the face.
+The results are returned in one or more FaceData objects, one for each detected face.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageDetector.html" title="VisageDetector is a face/facial features detector capable of detecting facial features in still images.">VisageDetector</a>: Detects faces and facial features in still images.</li>
+<li><a class="el" href="FaceData.html" title="FaceData data structure, used as container for all detection results. ">FaceData</a>: Used to return detection results from detector.</li>
+</ul>
+<p><br/>
+
+<h1><a class="anchor" id="visageVision-g"></a>
+Screen space gaze tracking (visageSDK.js)</h1>
+<p>
+The class VisageGazeTracker adds screen space gaze tracking on top of facial features/head tracking.
+Screen space gaze tracking feature estimates gaze position (the location on the screen where the user is looking) in normalized screen coordinates.
+Estimations are returned as part of a FaceData object.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageGazeTracker.html" title="VisageGazeTracker is a face/facial features detector capable of estimating gaze position (the location on the screen where the user is looking) in normalized screen coordinates.">VisageGazeTracker</a>: Estimates gaze position (the location on the screen where the user is looking) in normalized screen coordinates.</li>
+<li><a class="el" href="FaceData.html" title="FaceData data structure, used as container for all detection results. ">FaceData</a>: Used to return tracking results from the gaze tracker.</li>
+</ul>
+<p><br/>
+
+<h1><a class="anchor" id="visageVision-a"></a>
+Facial feature analysis (visageSDK.js)</h1>
+<p>
+The class VisageFaceAnalyser contains face analysis algorithms capable of estimating gender and emotion from facial images.
+For gender estimation it returns estimated gender and for emotions estimation it returns the probability of each of estimated facial emotions: anger, disgust, fear, happiness, sadness, surprise and neutral.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageFaceAnalyser.html" title="Face analyser capable of estimating age, gender and emotion from facial images.">VisageFaceAnalyser</a>: Estimates age, gender and emotion from facial images.</li>
+<li><a class="el" href="FaceData.html" title="Used to pass the necessary facial image data to VisageFaceAnalyser functions. ">FaceData</a>: Used to pass the necessary facial image data to VisageFaceAnalyser functions.</li>
+<li><a class="el" href="AnalysisData.html" title=" Used to return analysis results.">AnalysisData</a>:  Used to return analysis results.</li>
+</ul>
+<p><br/>
+
+<h1><a class="anchor" id="visageVision-fr"></a>
+Face recognition (visageSDK.js)</h1>
+<p>
+The class VisageFaceRecognition contains a face recognition algorithm capable of measuring similarity between human faces and recognizing a person's identity from frontal facial image (yaw angle approximately from -20 to 20 degrees) by comparing it to previously stored faces.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageFaceRecognition.html" title="Face analyser capable of estimating gender and emotion from frontal facial images (yaw between -20 and 20 degrees).">VisageFaceRecognition</a>:  Measures similarity between human faces and recognizes a person's identity from frontal facial images (yaw angle approximately from -20 to 20 degrees).</li>
+</ul>
+<p><br/>
+<h1><a class="anchor" id="visageVision-li"></a>
+Liveness (visageSDK.js)</h1>
+<p>
+Liveness system is used to differentiate between a live person in the live video stream, as opposed to a still image. It is used in combination 
+with face recognition to verify that the person is actually in front of the camera. This is accomplished by prompting a person to perform a
+specific set of facial actions and verifying that the actions have actually been performed. System allows you to use the following actions:
+eyebrows raise, blink, smile.
+</p>
+<p><b>Main classes</b></p>
+<ul>
+<li><a class="el" href="VisageLivenessBlink.html">VisageLivenessBlink</a>: Implementation of action which verifies that blink was performed.</li>
+<li><a class="el" href="VisageLivenessSmile.html">VisageLivenessSmile</a>: Implementation of action which verifies that smile was performed.</li>
+<li><a class="el" href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a>: Implementation of action which verifies that eyebrows raise was performed.</li>
+</ul>
+<p><br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+ <br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+ </p>
+</div></div><!-- contents -->
+
+</body>
+</html>

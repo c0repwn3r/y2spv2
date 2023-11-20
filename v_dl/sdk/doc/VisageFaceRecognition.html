@@ -1,0 +1,2277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: VisageFaceRecognition</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: VisageFaceRecognition</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageFaceRecognition
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="VisageFaceRecognition"><span class="type-signature"></span>new VisageFaceRecognition<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        VisageFaceRecognition class contains a face recognition algorithm capable of measuring similarity between human faces and recognizing a person's identity 
+from frontal facial images (yaw angle approximately from -20 to 20 degrees) by comparing face descriptors.
+<br/><br/>
+The face descriptor is a condensed representation of a face, stored in a <a href="VectorShort.html">VectorShort</a> object. The size of descriptor can be obtained 
+by calling function <a href="VisageFaceRecognition.html#getDescriptorSize">getDescriptorSize()</a>, from now on in the text referred to as size_descriptor.
+<br/><br/>
+To extract descriptors from facial image, method <a href="VisageFaceRecognition.html#extractDescriptor">extractDescriptor()</a> is provided.   
+Similarity between two faces is calculated as distance between their face descriptors and returned as a value between 0 (no similarity) 
+and 1 (maximum similarity) using <a href="VisageFaceRecognition.html#descriptorsSimilarity">descriptorsSimilarity()</a>.
+<br/><br/>
+
+For a person to be recognized, its identity has to be stored beforehand. Database of stored face descriptors will be referred to as face recognition gallery.
+<br/>
+For smaller sets of face descriptors (up to several hundred), higher-level API for recognizing person's identity using face recognition gallery is provided. 
+The gallery is an array of face descriptors, with a corresponding array of names, so that the gallery may contain n descriptors and a corresponding name for each descriptor. 
+To perform recognition, the face descriptor extracted from the input image is then compared with face descriptors from the gallery and the similarity between the input face 
+descriptor and all face descriptors from the gallery is calculated in order to find the face(s) from the gallery that are most similar to the input face. 
+The VisageFaceRecognition class includes the following set of functions for manipulating the gallery, including adding, 
+removing, naming descriptors in the gallery as well as loading and saving the gallery to file:
+<ul>
+<li><a href="VisageFaceRecognition.html#addDescriptor">addDescriptor()</a></li>
+<li><a href="VisageFaceRecognition.html#getDescriptorCount">getDescriptorCount()</a></li>
+<li><a href="VisageFaceRecognition.html#getDescriptorName">getDescriptorName()</a></li>
+<li><a href="VisageFaceRecognition.html#replaceDescriptorName">replaceDescriptorName()</a></li>
+<li><a href="VisageFaceRecognition.html#removeDescriptor">removeDescriptor()</a></li>
+<li><a href="VisageFaceRecognition.html#saveGallery">saveGallery()</a></li>
+<li><a href="VisageFaceRecognition.html#loadGallery">loadGallery()</a></li>
+<li><a href="VisageFaceRecognition.html#resetGallery">resetGallery()</a></li>
+<li><a href="VisageFaceRecognition.html#recognize">recognize()</a></li>
+</ul>
+<br/>
+
+The gallery is stored in <b>IndexedDB</b> browser's database system. This storage is persistent across sessions until it is explicitly deleted within the browser. The gallery is saved as a simple <i>txt</i> file under <i>/vis_data</i> folder and as such it is not intended to be used to save large number of face descriptors. The current implementation of gallery is only a demonstration of how Face Recognition API can be used and it is recommended to implement more efficient solution for scenarios which require large face recognition gallery. 
+<br/><br/>
+<br/><br/>
+
+Face recognition is based on the <a href="FaceData.html">FaceData</a> obtained from the 
+<a href="VisageTracker.html">VisageTracker</a> or <a href="VisageDetector.html">VisageDetector</a> API.
+<br/><br/>
+
+<b>Note</b>: After the end of use VisageFaceRecognition object needs to be deleted to release the allocated memory. Example:
+<pre class="prettyprint source"><code>
+&lt;script>
+m_Recognition = new VisageModule.VisageFaceRecognition();
+...
+m_Recognition.delete();
+&lt;/script>
+</code></pre>
+<br/><br/>
+
+<h5>Dependencies</h5>
+<br/>
+VisageFaceRecognition requires algorithm data file, neural network configuration file and license key file
+to be preloaded to virtual file system. Data and neural network configuration file can be found in the <i>www/lib</i> folder.
+<br/><br/>
+
+<h6>Data files</h6>
+An external loader script <b>visageRecognitionData.js</b> is provided for preloading the <b>visageRecognitionData.data</b> file.
+<br/><br/>
+
+<u id="changeLocation"><i>Changing the location of data files</u></i>
+<br/>
+By default, loader scripts expect the <b>.data</b> files to be in the same location as <b>the application's main html file</b>, 
+while <b>visageSDK.wasm</b> is expected to be in the same location as <b>visageSDK.js</b> library file.
+However, location of the <i>.data</i> and <i>.wasm</i> files can be changed.
+<br/>
+The code example below shows how to implement <i>locateFile</i> function and how to set it as an attribute to the VisageModule object.
+<br/><br/>
+
+<h6>Configuration file and license key files</h6>
+Configuration file and the license key files are preloaded using VisageModule's  API function assigned to the <i>preRun</i> attribute:
+<pre><code>
+      VisageModule.FS_createPreloadedFile(parent, name, url, canRead, canWrite)
+</code></pre>
+where <i>parent</i> and <i>name</i> are the path on the virtual file system and the name of the file, respectively.
+</br></br>
+
+</br></br>
+
+<h5>visage|SDK initialization order</h5>
+<br/>
+The order in which the VisageModule is declared and library and data scripts are included is important.
+<br/>
+<ul>
+<li> First, <b>VisageModule</b> object is declared
+<ul>
+  <li> including preloading of the configuration files, license files and possibly, changing the location of data files
+</ul>
+<li> then <b>visageSDK.js</b> library script is included and
+<li> last, <b>visageRecognitionData.js</b> external data loader script is included
+</ul>
+<br/><br/>
+
+
+Sample usage - changing data files location and script including order:
+<br/>
+<pre class="prettyprint source"><code>
+&lt;script>
+licenseName = "lic_web.vlc"
+licenseURL = "lic_web.vlc"
+
+var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
+
+VisageModule = {
+
+  locateFile: locateFile,
+
+  preRun: [function() {
+      VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+      VisageModule.FS_createPreloadedFile('/', 'Head Tracker.cfg', "../../lib/Head Tracker.cfg", true, false);
+      VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+
+  }],
+
+  onRuntimeInitialized: onModuleInitialized
+}
+&lt;/script>
+
+
+&lt;script src="../../lib/visageSDK.js"> &lt;/script>
+&lt;script src="../../lib/visageRecognitionData.js"> &lt;/script>
+</code></pre>
+<br/>
+<br/><br/>
+
+<b> VisageFaceRecognition class implementation in Web Worker </b>
+<br/><br/>
+VisageFaceRecognition class can be implemented in a separate thread in relation to the VisageTracker class resulting in better performance. 
+<br/><br/>
+To send the whole FaceData object from VisageTracker to Recognition Worker, convert FaceData object use one of the provided conversion pair functions:
+<ul> 
+<li> <a href="FaceData.html#serializeJson">FaceData.serializeJson()</a> - <a href="FaceData.html#deserializeJson">FaceData.deserializeJson()</a>
+<li> <a href="FaceData.html#serializeJson">FaceData.serializeAnalysis()</a> - <a href="FaceData.html#deserializeJson">FaceData.deserializeAnalysis()</a>
+<li> <a href="FaceData.html#serializeJson">FaceData.serializeBuffer()</a> - <a href="FaceData.html#deserializeJson">FaceData.deserializeBuffer()</a>
+</ul>
+</br><br/>
+
+<b>Note: </b> The worker thread as well as the main thread has to load the <i>visageSDK.js</i> script
+and additional <i>visageRecognitionData.js</i>. 
+
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="extractDescriptor"><span class="type-signature"></span>extractDescriptor<span class="signature">(faceData, frameWidth, frameHeight, p_imageData, descriptor)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Extracts the face descriptor for face recognition from a facial image. Prior to using this function, it is neccessary to process the facial image or video frame using VisageTracker or VisageFeaturesDetector and pass the obtained facial data to this function. 
+<br/><br/>
+<br/>
+Sample usage:
+<br/>
+<pre class="prettyprint source"><code>
+
+// ... initialize visageFaceRecognition object ...
+// ... create a face data object ...
+// ... initialize and call VisageTracker/VisageFeaturesDetector on the image ...
+//
+// construct a VectorShort object to pass to the extractDescriptor method
+var descriptor = new Module.VectorShort();
+//
+// call extractDescriptor and pass the faceData input parameter, image data and information and a short vector to be populated
+var success = visageFaceRecognition.extractDescriptor(faceData, mWidth, mHeight, ppixels, descriptor);
+if (success)
+{
+  // ... descriptor is populated and ready to be used ...
+  // read the first element
+  var first = descriptor.get(0);
+}
+// when done using descriptor clear memory
+descriptor.delete();
+</code></pre>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FaceData.html">FaceData</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><a href="FaceData.html">FaceData</a> instance. Facial data obtained from VisageTracker or VisageFeaturesDetector.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Width of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Height of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>p_imageData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Pointer to image pixel data, size of the array must correspond to frameWidth and frameHeight</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorShort.html">VectorShort</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">size_descriptor-dimensional array of short. The resulting face descriptor is returned in this array.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="VectorShort.html">VectorShort</a></li>
+        
+            <li><a href="FaceData.html">FaceData</a></li>
+        
+            <li><a href="VisageTracker.html">VisageTracker</a></li>
+        
+            <li><a href="VisageDetector.html">VisageDetector</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    status - 1 on success, 0 on failure.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="descriptorsSimilarity"><span class="type-signature"></span>descriptorsSimilarity<span class="signature">(first_descriptor, second_descriptor)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Calculates similarity between two descriptors.
+<br/><br/>
+The function returns a float value between 0 and 1. Two descriptors are equal if the similarity is 1. Two descriptors are completely different if the similarity is 0.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>first_descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorShort.html">VectorShort</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorShort object, size of size_descriptor, obtained from extractDescriptor function which contains the first face descriptor information.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>second_descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorShort.html">VectorShort</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorShort object, size of size_descriptor, obtained from extractDescriptor function which contains the second face descriptor information</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="VisageFaceRecognition.html#extractDescriptor">extractDescriptor()</a></li>
+        
+            <li><a href="VectorShort.html">VectorShort</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    similarity - Value between 0 and 1, 1 means full similarity and 0 means full diversity.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="recognize"><span class="type-signature"></span>recognize<span class="signature">(descriptor, n, names, similarities)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Compare a face to all faces in the current gallery and return n names of the most similar faces.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorShort.html">VectorShort</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorShort object, size of size_descriptor, obtained from extractDescriptor function which contains the first face descriptor information.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>n</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Number of names and similarities to be returned.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>names</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorString.html">VectorString</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorString object containing names of n faces from the gallery that are most similar to the input image, ascending by similarity.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>similarities</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorFloat.html">VectorFloat</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorFloat object. The function will return the similarity values for the n most similar faces in this array, corresponding to the names array. The values are sorted, with the largest similarity value first.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="VisageFaceRecognition.html#extractDescriptor">extractDescriptor()</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    compared_faces - number of compared faces.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="addDescriptor"><span class="type-signature"></span>addDescriptor<span class="signature">(faceData, frameWidth, frameHeight, p_imageData, name)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Extracts a face descriptor from the input RGBA image and adds it to the gallery.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FaceData.html">FaceData</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><a href="FaceData.html">FaceData</a> instance. Input parameter.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Width of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Height of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>p_imageData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Pointer to image pixel data, size of the array must correspond to frameWidth and frameHeight</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Descriptor name to be added to the gallery.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    success - 1 on success, 0 on failure. The function may fail if the face is not found in the image.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="addDescriptor"><span class="type-signature"></span>addDescriptor<span class="signature">(descriptor, name)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Adds face descriptor to the gallery.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>descriptor</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VectorShort.html">VectorShort</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">VectorShort object, size of size_descriptor, obtained from extractDescriptor function which contains the first face descriptor information.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Descriptor name to be added to the gallery.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    success - 1 on success, 0 on failure.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getDescriptorCount"><span class="type-signature"></span>getDescriptorCount<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns number of descriptors in the gallery.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    num_descriptors - Number of descriptors in the gallery
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getDescriptorName"><span class="type-signature"></span>getDescriptorName<span class="signature">(index)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns the name of a descriptor at the given index in the gallery.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Gallery index</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    name - Name of the descriptor at the given index in the gallery.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">string</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getDescriptorSize"><span class="type-signature"></span>getDescriptorSize<span class="signature">()</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Returns size of an array which should be allocated for storing the descriptor.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    size_descriptor - Size of descriptor
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="replaceDescriptorName"><span class="type-signature"></span>replaceDescriptorName<span class="signature">(name, index)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Replaces the name of a descriptor at the given index in the gallery with new name.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">New descriptor name</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Index of descriptor in the gallery</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    success - 1 on success, 0 on failure. The function may fail if index is out of range.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="removeDescriptor"><span class="type-signature"></span>removeDescriptor<span class="signature">(index)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Removes a descriptor at the given index from the gallery. The remaining descriptors in the gallery above the given index (if any) are shifted down in the gallery array by one place, filling the gap created by removing the descriptor.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>index</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Index of descriptor in the gallery</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    success - 1 on success, 0 on failure. The function may fail if index is out of range.
+<br/><br/>
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="saveGallery"><span class="type-signature"></span>saveGallery<span class="signature">(file_name, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Save gallery to the file.
+<br/><br/>
+The file format:<br/>
+&lt;name_of_the_face_in_the_image_1>;&lt;elements_of_the_<a href="VisageFaceRecognition.html#getDescriptorSize">getDescriptorSize()</a>_dimensional_face_descriptor_separated_by_a_space><br/>
+&lt;name_of_the_face_in_the_image_2>;&lt;elements_of_the_<a href="VisageFaceRecognition.html#getDescriptorSize">getDescriptorSize()</a>_dimensional_face_descriptor_separated_by_a_space><br/>
+(...)<br/>
+&lt;name_of_the_face_in_the_image_n>;&lt;elements_of_the_<a href="VisageFaceRecognition.html#getDescriptorSize">getDescriptorSize()</a>_dimensional_face_descriptor_separated_by_a_space><br/>
+<br/><br/>
+This function is asynchronous and uses Emscripten IDBFS file system API. IDBFS uses browsers' IndexedDB in order to persist data. 
+<br/><br/>
+Since saveGallery is asynchronous a callback function needs to be provided to notify the user when the function is complete. The callback function is expected to have two parameters - name and status. Parameter name returns name of txt file in which gallery is saved while parameter status returns 1 on success and 0 on function failure.
+<br/>
+Sample usage:
+<br/>
+<pre class="prettyprint source"><code>
+visageFaceRecognition.saveGallery("test_recognition.txt", 
+function(name, status)
+{   
+   // ... do something based on status ...
+}
+);
+</code></pre>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>file_name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Name of the file (including path if needed) from which the gallery will be loaded.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Callback function which will be called when saving is complete
+<br/><br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="loadGallery"><span class="type-signature"></span>loadGallery<span class="signature">(file_name, callback)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Load gallery from file. The entries from the loaded gallery are appended to the current gallery. If it is required to replace existing gallery with the loaded one, call <a href="VisageFaceRecognition.html#resetGallery">resetGallery()</a> first.
+<br/><br/>
+This function is asynchronous and uses Emscripten IDBFS file system API. IDBFS uses browsers' IndexedDB in order to persist data.
+<br/><br/>
+Since loadGallery is asynchronous a callback function needs to be provided to notify the user when the function is complete. The callback function is expected to have two parameters - name and status. Parameter name returns name of txt file in which gallery is saved while parameter status returns 1 on success and 0 on function failure.
+<br/><br/>
+Sample usage:
+<br/>
+<pre class="prettyprint source"><code>
+visageFaceRecognition.loadGallery("test_recognition.txt", 
+function(name, status)
+{   
+   // ... do something based on status ...
+}
+);
+</code></pre>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>file_name</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Name of the file (including path if needed) from which the gallery will be loaded.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Callback function which will be called when loading is complete
+<br/><br/></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="resetGallery"><span class="type-signature"></span>resetGallery<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Clear all face descriptors from the gallery.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:29 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

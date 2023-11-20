@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<h1>Integrating visage|SDK into Unity project</h1>
+
+<p>
+visage|SDK allows easy integration with Unity 3D game engine using <a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a> 
+and <a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a>, 
+wrappers that expose VisageTracker's and VisageFaceAnalyser's functionalities for use in managed programming language such as C#.<br/>
+In order to use visage|SDK in your own Unity project, libraries and selected data files need to be included. 
+Unity sample application <a href="trackerunity.html">VisageTrackerUnityDemo</a> is provided in visage|SDK as 
+a ready-to-build project with all necessary dependencies and can be used as a reference.<br/><br/> 
+Following steps are required to integrate visage|SDK in your own project:
+<ul>
+<p>Pre-build step:</p>
+<ul>
+<li>Following libraries need to be added to the project:
+<ul>
+<li>VisageTrackerUnityPlugin.jslib (located in <i>www/lib</i> folder)</li>
+<li>VisageAnalyserUnityPlugin.jslib (located in <i>www/lib</i> folder)</li>
+</ul>
+</li>
+<li>Following files and folders (located in <i>www/lib</i>) need to be copied to the project's assets:
+<ul>
+<li>tracker configuration file (e.g. Head Tracker.cfg)</li>
+<li>neural net configuration file (i.e. NeuralNet.cfg)</li>
+</ul>
+<li>license key file</li>
+</li>
+</ul>
+</ul>
+<ul>
+<p>Post-build step:</p>
+<ul>
+<li>The following files need to be copied to the same folder as the index.html file: 
+<ul>
+<li>visageAnalysisData.data (located in <i>www/lib</i> folder)</li>
+<li>visageAnalysisData.js (located in <i>www/lib</i> folder)</li>
+<li>visageSDK.data (located in <i>www/lib</i> folder)</li>
+<li>visageSDK.wasm (located in <i>www/lib</i> folder)</li>
+<li>visageSDK.js (located in <i>www/lib</i> folder)</li>
+</ul>
+</ul>
+</li>
+<br><br>
+<li>Modify index.html output file to expose <b>unityInstance</b> to the global variable <b>unityGame</b>:
+<pre class="prettyprint source"><code>
+&lt;body>
+    &lt;script>
+    ...
+    <b>var unityGame;</b>
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((unityInstance) => {
+        loadingBar.style.display = "none";
+        <b>unityGame = unityInstance;</b>
+        fullscreenButton.onclick = () => {
+          unityInstance.SetFullscreen(1);
+        };
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+    &lt;/script>
+&lt;/body>
+</code></pre>
+</li>
+</ul>
+
+</body>

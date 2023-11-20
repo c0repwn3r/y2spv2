@@ -1,0 +1,3923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: FaceData</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: FaceData</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    FaceData
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="FaceData"><span class="type-signature"></span>new FaceData<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Face data structure, used as container for all face tracking and detection results.
+<br/><br/>
+This structure is passed as parameter of the <a href="VisageTracker.html#track">Tracker.track()</a> or <a href="VisageDetector.html#detectFeatures">Detector.detectFeatures()</a> method.
+The method copies latest tracking or detection results into it.
+<br/><br/>
+When filling the structure with data some members are filled while some are left undefined depending on tracking/detection status. 
+<br/><br/>
+<b>Note</b>: After the end of use FaceData object needs to be deleted to release the allocated memory. Example:
+<pre class="prettyprint source"><code>
+&lt;script>
+faceData = new VisageModule.FaceData();
+...
+faceData.delete();
+&lt;/script>
+</code></pre>
+<br/><br/>
+
+<h5 id="ww">Communicating with Web Workers</h5>
+It is sometimes necessary to pass FaceData information from the UI thread to a background thread (Web Worker). For example, extracting a face descriptor with 
+FaceRecongition API is a computationally demanding task and will block the UI thread. It is recommended to utilize a worker thread to do the work of face
+descriptor extraction and communicate the results back to the UI thread. 
+<br/><br/>
+Since face descriptor extraction takes FaceData information as input and UI thread and background worker thread do not have shared memory, FaceData information
+must be prepared (serialized) so it can be sent via postMassage interface. FaceData class offers 3 different helper methods for serialization/deserialization:
+<ul>
+<li><a href="FaceData.html#serializeJson">FaceData.serializeJson()</a>/<a href="FaceData.html#deserializeJson">FaceData.deserializeJson()</a></li>
+<li><a href="FaceData.html#serializeBuffer">FaceData.serializeBuffer()</a>/<a href="FaceData.html#deserializeBuffer">FaceData.deserializeBuffer()</a> </li>
+<li><a href="FaceData.html#serializeAnalysis">FaceData.serializeAnalysis()</a>/<a href="FaceData.html#deserializeAnalysis">FaceData.deserializeAnalysis()</a></li>
+</ul>
+<br/>
+<a href="FaceData.html#serializeJson">FaceData.serializeJson()</a> method returns FaceData information as a JSON formatted string. This method performs the slowest
+but can easily be used to string along multiple FaceData objects. 
+<br/><br/>
+<a href="FaceData.html#serializeBuffer">FaceData.serializeBuffer()</a> method returns FaceData information as a TypedArray. This method exploits the structured clone
+algorithm to transfer data to a background worker thread more efficiently and features better performance. 
+<br/>
+Note that in order to fully utilize the performance
+boost, the TypedArray returned from the <a href="FaceData.html#serializeBuffer">FaceData.serializeBuffer()</a> method should be first copied to a local javascript
+TypedArray before it is sent via postMessage().
+<br/><br/>
+<a href="FaceData.html#serializeAnalysis">FaceData.serializeAnalysis()</a> method returns a compact version of FaceData information as a TypedArray. This method utilizes
+the same principles as <a href="FaceData.html#serializeBuffer">FaceData.serializeBuffer()</a> method but retrieves the relevant data to FaceAnalysis only (age, gender,
+emotion estimation and face recognition). It is recommended to use this method in cases where WebWorker performs FaceAnalyis or FaceRecognition exclusively.
+<br/><br/>
+Example code can be found under methods' description.
+<br/><br/>
+It is important to remember that when structured clone algorithm is used to transfer data, ownership of the data is also being transfered to a background
+worker. If the ownership of an object is transferred, it becomes unusable (neutered) in the context it was sent from and becomes available only to the worker it
+was sent to. Thus, when sending FaceData information to multiple web workers be sure to clone the array for every background worker thread first. Example: 
+<pre class="prettyprint source"><code>
+...
+//Access pixel data from canvas element
+imageData = canCon.getImageData(0,0, mWidth, mHeight).data;
+...
+//Create view to pixel data
+var imageDataBuffer = imageData.buffer;
+//
+var imageDataBufferWorker1 = copy(imageDataBuffer);
+var imageDataBufferWorker2 = copy(imageDataBuffer);
+
+//send image data to web worker 1:
+worker1.postMessage(
+{
+	imageData: imageDataBufferWorker1
+},
+[
+	imageDataBufferWorker1
+]);
+
+//send image data to web worker 2:
+worker2.postMessage(
+{
+	imageData: imageDataBufferWorker2
+},
+[
+	imageDataBufferWorker2
+]);
+
+function copy(src)  
+{
+	var dst = new ArrayBuffer(src.byteLength);
+	new Uint8Array(dst).set(new Uint8Array(src));
+	return dst;
+}
+...
+</code></pre>
+<br/><br/> 
+<h5>Obtaining tracking data</h5>
+
+The tracker returns these main classes of data: 
+<br/>
+<ul>
+<li>3D head pose</li>
+<li>facial expression</li>
+<li>gaze direction</li>
+<li>facial feature points</li>
+<li>full 3D face model</li>
+</ul>
+<br/>
+The tracker status is returned as the return value of the <a href="VisageTracker.html#track">Tracker.track()</a> function. 
+The following table describes the possible states of the tracker, and lists active member variables (those that are filled with data) 
+for each status.
+<br/><br/>
+<table>
+<tr><td width="100"><b>TRACKER STATUS</b></td><td><b>DESCRIPTION</b></td><td><b>ACTIVE VARIABLES</b></td></tr>
+<tr><td>0 (TRACK_STAT_OFF)</td><td>There has been an error in reading the given image, i.e. passed image data array does not correspond to initialized buffer sizes, or there has been a licensing error.</td>
+<td>N/A</td></tr>
+<tr><td>1 (TRACK_STAT_OK)</td><td>Tracker is tracking normally.</td>
+<td>
+trackingQuality,
+frameRate,
+cameraFocus,
+faceTranslation,
+faceRotation,
+faceRotationApparent,
+faceAnimationParameters,
+actionUnitCount,
+actionUnitsUsed,
+actionUnits,
+actionUnitsNames,
+featurePoints3D,
+featurePoints3DRelative,
+featurePoints2D,
+faceModelVertexCount,
+faceModelVertices,
+faceModelVerticesProjected,
+faceModelTriangleCount,
+faceModelTriangles,
+faceModelTextureCoords
+</td></tr>
+<tr><td>2 (TRACK_STAT_RECOVERING)</td><td>Tracker has lost the face and is attempting to recover and continue tracking. If it can not recover within the time defined by the parameter recovery_timeout in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker configuration file</a>, the tracker will fully re-initialize (i.e. it will assume that a new user may be present).</td>
+<td>
+frameRate,
+cameraFocus</td></tr>
+<tr><td>3 (TRACK_STAT_INIT)</td><td>Tracker is initializing. The tracker enters this state immediately when it is started, or when it has lost the face and failed to recover (see TRACK_STAT_RECOVERING above). The initialization process is configurable through a number of parameters in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker configuration file.</a></td>
+<td>
+frameRate,
+cameraFocus
+</table>
+<br/>
+
+<b>Smoothing</b>
+
+<br/><br/>
+The tracker can apply a smoothing filter to tracking results to reduce the inevitable tracking noise. Smoothing factors are adjusted separately for different parts of the face. 
+The smoothing settings in the supplied tracker configurations are adjusted conservatively to avoid delay in tracking response, yet provide reasonable smoothing. 
+For further details please see the smoothing_factors parameter array in the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a>.
+<br/><br/>
+
+<h5>Obtaining detection data</h5>
+
+The detector returns these main classes of data for each detected face: 
+<br/>
+<ul>
+<li>3D head pose</li>
+<li>gaze direction</li>
+<li>eye closure</li>
+<li>facial features points</li>
+<li>full 3D face model, textured</li>
+</ul>
+<br/>
+Detection result is returned from  <a href="VisageDetector.html#detectFeatures">Detector.detectFeatures()</a> method.
+The following table describes possible output from the detector and the list of active variables (those that are filled with data). All other variables are left undefined.
+<br/><br/>
+<table>
+<tr><td width="100"><b>DETECTION RESULT</b></td><td><b>DESCRIPTION</b></td><td><b>ACTIVE VARIABLES</b></td></tr>
+<tr><td> 0 </td><td>Detector did not find any faces in the image, i.e. passed image data array does not correspond to initialized buffer sizes, or there has been a licensing error.</td>
+<td>N/A</td></tr>
+<tr><td> N > 0</td><td>Detector detected N faces in the image.</td>
+<td>
+<b>For first N FaceData objects in the array:</b>
+cameraFocus,
+faceTranslation,
+faceRotation,
+faceRotationApparent
+featurePoints3D,
+featurePoints3DRelative,
+featurePoints2D,
+faceModelVertexCount,
+faceModelVertices,
+faceModelVerticesProjected,
+faceModelTriangleCount,
+faceModelTriangles,
+faceModelTextureCoords
+<br/>
+<b>For other FaceData objects in the array:</b>
+N/A
+</td></tr>
+</table>
+<br/>
+
+<h5>Returned data</h5> 
+
+The following sections give an overview of main classes of data that may be returned in FaceData by the tracker or the detector, and pointers to specific data members.
+<br/><br/>
+<b>3D head pose</b>
+<br/><br/>
+The 3D head pose consists of head translation and rotation. It is available as absolute pose of the head with respect to the camera.
+<br/>
+The following member variables return the head pose:
+<br/>
+<ul>
+<li><a href="FaceData.html#getFaceTranslation">faceTranslation</a></li>
+<li><a href="FaceData.html#getFaceRotation">faceRotation</a></li>
+<li><a href="FaceData.html#getFaceRotationApparent">faceRotationApparent</a></li>
+</ul>
+Both Tracker and Detector return the 3D head pose.
+<br/><br/>
+<b>Facial expression</b>
+<br/><br/>
+Facial expression is available in a form of Action Units.
+<br/><br/>
+Action Units (AUs) are the internal representation of facial motion used by the tracker. It is therefore more accurate to use the AUs directly.
+It should be noted that AUs are <a href="doc/VisageTracker Configuration Manual.pdf">fully configurable</a> in the tracker configuration files (specifically, in the 3D model file, .wfm).
+<br/><br/>
+The following member variables return Action Units data:
+<br/>
+<ul>
+<li><a href="FaceData.html#actionUnitCount">actionUnitCount</a></li>
+<li><a href="FaceData.html#getActionUnitsUsed">actionUnitsUsed</a></li>
+<li><a href="FaceData.html#getActionUnits">actionUnits</a></li>
+<li><a href="FaceData.html#getActionUnitsNames">actionUnitsNames</a></li>
+</ul>
+Only Tracker returns the facial expression; Detector leaves these variables undefined.
+<br/><br/>
+<b>Gaze direction and eye closure</b>
+<br/><br/>
+Gaze direction is available in local coordinate system of the person's face or global coordinate system of the camera.
+Eye closure is available as binary information (OPEN/CLOSED).
+<br/><br/>
+The following member variables return gaze direction and eye closure:
+<br/>
+<ul>
+<li><a href="FaceData.html#getGazeDirection">gazeDirection</a></li>
+<li><a href="FaceData.html#getGazeDirectionGlobal">gazeDirectionGlobal</a></li>
+<li><a href="FaceData.html#getEyeClosure">eyeClosure</a></li>
+</ul>
+Only Tracker returns gaze direction and eye closure; Detector leaves these variables undefined. 
+<br/><br/>
+<b>Facial feature points</b>
+<br/><br/>
+2D or 3D coordinates of facial feature points, as defined by the <a href="doc/MPEG-4 FBA Overview.pdf">MPEG-4 FBA standard</a>, are available.
+<br/><br/>
+3D coordinates are available in global coordinate system or relative to the origin of the face (i.e. the point in the centre between the eyes in the input image).
+<br/><br/>
+Facial features are available through the following member variables:
+<br/>
+<ul>
+<li><a href="FaceData.html#getFeaturePoints3D">featurePoints3D</a></li>
+<li><a href="FaceData.html#getFeaturePoints3DRelative">featurePoints3DRelative</a></li>
+<li><a href="FaceData.html#getFeaturePoints2D">featurePoints2D</a></li>
+</ul>
+Both VisageTracker and VisageDetector return facial feature points.
+<br/><br/>
+<b>3D face model</b>
+<br/><br/>
+The 3D face model is fitted in 3D to the face in the current image/video frame. The model is a single textured 3D triangle mesh.
+The texture of the model is the current image/video frame. 
+<br/><br/>
+The 3D face model is fully configurable and can even be replaced by a custom model; it can also be disabled for performance reasons if not required. Please see the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for further details. The default model is illustrated in the following image:
+<br/><br/>
+This means that, when the model is drawn using the correct perspective it exactly recreates the facial part of the image. 
+The correct perspective is defined by <a href="FaceData.html#cameraFocus">camera focal length</a>, 
+width and height of the input image or the video frame, model <a href="FaceData.html#getFaceRotation">rotation</a> and <a href="FaceData.html#getFaceTranslation">translation</a>. 
+<br/><br/>
+There are multiple potential uses for the face model. Some ideas include, but are not limited to:
+<br/>
+<ul>
+<li>Draw textured model to achieve face paint or mask effect.</li>
+<li>Draw the 3D face model into the Z buffer to achieve correct occlusion of virtual objects by the head in AR applications.</li>
+<li>Use texture coordinates to cut out the face from the image.</li>
+<li>Draw the 3D face model from a different perspective than the one in the actual video.</li>
+<li>Insert the 3D face model into another video or 3D scene.</li>
+</ul>
+<br/><br/>
+Note that the vertices of the face model may not always exactly correspond to the facial feature points obtained from tracking/detection (featurePoints3D). 
+For applications where the precise positioning of the facial feature points is recommended (e.g. virtual make-up), it is important to use the featurePoints3D and not the face model.
+<br/><br/>
+The 3D face model is contained in the following members:
+<br/>
+<ul>
+<li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a></li>
+<li><a href="FaceData.html#getFaceModelVertices">faceModelVertices</a></li>
+<li><a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a></li>
+<li><a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+<li><a href="FaceData.html#getFaceModelTextureCoords">faceModelTextureCoords</a></li>
+</ul>
+Both Tracker and Detector return the 3D face model, if the mesh_fitting_model parameter in the configuration file is set (see 
+<a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).
+<br/><br/>
+<br/><br/>
+<h6>Screen space gaze position</h6>
+Screen space gaze position is available if the tracker was provided with calibration repository and screen space gaze estimator is working in real time mode. 
+Otherwise tracker returns default screen space gaze data. Default gaze position is centre of screen. Default estimator state is off (ScreenSpaceGazeData.inState == 0). Please refer to <a href="VisageGazeTracker.html">VisageGazeTracker</a> 
+documentation for instructions on usage of screen space gaze estimator.
+<br/><br/>
+Screen space gaze position is contained in member <a href="FaceData.html#gazeData">gazeData</a>.
+<br/><br/>
+Only face tracker returns screen space gaze position.
+<br/><br/>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="trackingQuality"><span class="type-signature"></span>trackingQuality<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Tracking quality level.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+Estimated tracking quality level for the current frame. The value is between 0 and 1.
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="frameRate"><span class="type-signature"></span>frameRate<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The frame rate of the tracker, in frames per second, measured over last 10 frames.
+<br/><br/>
+<i>This variable is set while tracker is running, i.e. while tracking status is not TRACK_STAT_OFF. Face detector leaves this variable undefined.</i>
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="timeStamp"><span class="type-signature"></span>timeStamp<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Time stamp of the current video frame.
+<br/><br/>
+<i>This variable is set while tracker is running, i.e. while tracking status is not TRACK_STAT_OFF.
+Face detector leaves this variable undefined.</i>
+<br/><br/>
+It returns the value passed to timeStamp argument in <a href="VisageTracker.html#track">track</a> method if it is different than -1, 
+otherwise it returns time, in milliseconds, measured from the moment when tracking started.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="shapeUnitCount"><span class="type-signature"></span>shapeUnitCount<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Number of facial Shape Units.
+<br/><br/>
+<i>This variable is set while tracker is running, i.e. while tracking status is not TRACK_STAT_OFF or if the detector has detected a face 
+and only if au_fitting_model parameter in the configuration file is set (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+Number of shape units that are defined for current face model.
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getShapeUnits">shapeUnits</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="actionUnitCount"><span class="type-signature"></span>actionUnitCount<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Number of facial action units.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set 
+(see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details). Face detector leaves this variable undefined.</i>
+<br/><br/>
+Number of action units that are defined for current face model.
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getActionUnits">actionUnits</a></li>
+        
+            <li><a href="FaceData.html#getActionUnitsUsed">actionUnitsUsed</a></li>
+        
+            <li><a href="FaceData.html#getActionUnitsNames">actionUnitsNames</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="cameraFocus"><span class="type-signature"></span>cameraFocus<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Focal distance of the camera, as configured in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker/detector configuration</a> file.
+<br/><br/>
+<i>This variable is set while tracker is running (any status other than TRACK_STAT_OFF), or if the detector has detected a face.</i>
+<br/><br/>
+Focal length of a pinhole camera model used as approximation for the camera used to capture the video in which tracking is performed. The value is defined as 
+distance from the camera (pinhole) to an imaginary projection plane where the smaller dimension of the projection plane is defined as 2, and the other dimension
+is defined by the input image aspect ratio. Thus, for example, for a landscape input image with aspect ratio of 1.33 the imaginary projection plane has height 2 
+and width 2.66.
+<br/><br/>
+This value is used for 3D scene set-up and accurate interpretation of tracking data.
+<br/><br/>
+Corresponding FoV (field of view) can be calculated as follows:
+<br/><br/>
+fov = 2 * atan( size / (2*cameraFocus) ), where size is 2 if width is larger than height and 2*height/width otherwise.
+<br/><br/>
+This member corresponds to the camera_focus parameter in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker/detector configuration</a> file.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="faceModelVertexCount"><span class="type-signature"></span>faceModelVertexCount<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Number of vertices in the 3D face model.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFaceModelVertices">faceModelVertices</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="faceModelTriangleCount"><span class="type-signature"></span>faceModelTriangleCount<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Number of triangles in the 3D face model. 
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#getFaceModelVertices">faceModelVertices</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="gazeQuality"><span class="type-signature"></span>gazeQuality<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        The session level gaze tracking quality.
+<br/><br/>
+Quality is returned as a value from 0 to 1, where 0 is the worst and 1 is the best quality. The quality is 0 also when the gaze tracking is off or calibrating.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="gazeData"><span class="type-signature"></span>gazeData<span class="type-signature"> :<a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Structure holding screen space gaze position and quality for current frame.
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK). Face detector leaves this variable undefined.</i>
+<br/><br/>
+Position values are dependent on estimator state. Please refer to <a href="VisageGazeTracker.html">VisageGazeTracker</a> and <a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a> documentation for more details. 
+<br/><br/>
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="faceScale"><span class="type-signature"></span>faceScale<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Scale of face bounding box expressed in pixels.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="getFaceTranslation"><span class="type-signature"></span>getFaceTranslation<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Translation of the head from the camera.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+Translation is expressed with three coordinates x, y, z. 
+The coordinate system is such that when looking towards the camera, the direction of x is to the left, y iz up, and z points towards 
+the viewer - see illustration below. The global origin (0,0,0) is placed at the camera. 
+The reference point on the head is in the centre between the eyes.
+<br/><br/>
+<img src="images/coord-camera.png" >
+<br/><br/>
+If the value set for the camera focal length in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker configuration</a> file
+corresponds to the real camera used, the returned coordinates shall be in meters; otherwise the scale of the translation values is not known, 
+but the relative values are still correct (i.e. moving towards the camera results in smaller values of z coordinate).
+<br/><br/>
+<b>Aligning 3D objects with the face</b>
+<br/><br/>
+The translation, rotation and the camera focus value together form the 3D coordinate system of the head in its current position
+and they can be used to align 3D rendered objects with the head for AR or similar applications.
+<br/><br/>
+The relative facial feature coordinates (featurePoints3DRelative)
+can then be used to align rendered 3D objects to the specific features of the face, like putting virtual eyeglasses on the eyes. Samples projects demonstrate how to do this, including full source code.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFaceRotation">faceRotation</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceRotation"><span class="type-signature"></span>getFaceRotation<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Rotation of the head.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK).</i>
+<br/><br/>
+This is the current estimated rotation of the head, in radians.
+Rotation is expressed with three values determining the rotations
+around the three axes x, y and z, in radians. This means that the values represent
+the pitch, yaw and roll of the head, respectively. The zero rotation
+(values 0, 0, 0) corresponds to the face looking straight ahead along the camera axis.
+Positive values for pitch correspond to head turning down.
+Positive values for yaw correspond to head turning right in the input image.
+Positive values for roll correspond to head rolling to the left in the input image, see illustration below.
+The values are in radians.
+<br/>
+Note: The order to properly apply these rotations is y-x-z.
+
+<br/><br/>
+<img src="images/coord-rotation.png" >
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFaceTranslation">faceTranslation</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceRotationApparent"><span class="type-signature"></span>getFaceRotationApparent<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Rotation of the head from the camera viewpoint.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK).</i>
+<br/><br/>
+This is the current estimated apparent rotation of the head, in radians.
+Rotation is expressed with three values determining the rotations
+around the three axes x, y and z, in radians. This means that the values represent
+the pitch, yaw and roll of the head, respectively. The zero apparent rotation
+(values 0, 0, 0) corresponds to the face looking straight into the camera i.e. a frontal face.
+Positive values for pitch correspond to head turning down.
+Positive values for yaw correspond to head turning right in the input image.
+Positive values for roll correspond to head rolling to the left in the input image.
+The values are in radians.
+<br/>
+Note: The order to properly apply these rotations is y-x-z.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceBoundingBox"><span class="type-signature"></span>getFaceBoundingBox<span class="signature">()</span><span class="type-signature"> &rarr; {VsRect}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Face bounding box.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+The bounding box is rectangular determined by the x and y coordinates of the upper-left corner and the width and height of the rectangle.
+Values are expressed in pixels.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    - structure with x, y, width and height members.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">VsRect</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getIrisRadius"><span class="type-signature"></span>getIrisRadius<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Iris radius values in px.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+The value with index 0 represents the iris radius of the left eye. The value with index 1 represents the iris radius of the right eye.
+If iris is not detected, the value is set to -1.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getGazeDirection"><span class="type-signature"></span>getGazeDirection<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Gaze direction.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+This is the current estimated gaze direction relative to the person's head.
+Direction is expressed with two values x and y, in radians. Values (0, 0) correspond to person looking straight.
+X is the horizontal rotation with positive values corresponding to person looking to his/her left.
+Y is the vertical rotation with positive values corresponding to person looking down.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getGazeDirectionGlobal">gazeDirectionGlobal</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getGazeDirectionGlobal"><span class="type-signature"></span>getGazeDirectionGlobal<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Global gaze direction, taking into account both head pose and eye rotation.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+This is the current estimated gaze direction relative to the camera axis.
+Direction is expressed with three values determining the rotations
+around the three axes x, y and z, i.e. pitch, yaw and roll. Values (0, 0, 0) correspond to the gaze direction parallel to the camera axis.
+Positive values for pitch correspond to gaze turning down.
+Positive values for yaw correspond to gaze turning right in the input image.
+Positive values for roll correspond to face rolling to the left in the input image, see illustration below.
+<br/><br/> 
+The values are in radians.
+<br/><br/>
+<img src="images/coord-rotation-eye.png">
+<br/><br/>
+The global gaze direction can be combined with eye locations to determine the line(s) of sight in the real-world coordinate system with the origin at the camera.
+To get eye positions use <a href="FaceData.html#getFeaturePoints3D">featurePoints3D</a> and <a href="FDP.html#getFP">FDP::getFP()</a> function, e.g.:
+<br/><br/>
+<pre class="prettyprint source"><code>
+var left_eye_fp = trackData.getFeaturePoints2D().getFP(3,5);
+var right_eye_fp = trackData.getFeaturePoints2D().getFP(3,6);
+
+var left_eye_pos = [];
+var right_eye_pos = [];
+
+ if (left_eye_fp.defined === 1 && right_eye_fp.defined === 1){
+	 left_eye_3d_pos[0] = left_eye_fp.getPos(0); //x
+	 left_eye_3d_pos[1] = left_eye_fp.getPos(1); //y
+	 left_eye_3d_pos[2] = left_eye_fp.getPos(2); //z
+	 right_eye_3d_pos[0] = right_eye_fp.getPos(0); //x
+	 right_eye_3d_pos[1] = right_eye_fp.getPos(1); //y
+	 right_eye_3d_pos[2] = right_eye_fp.getPos(2); //z
+}
+
+left_eye_fp.delete();
+right_eye_fp.delete();
+
+</code></pre>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getGazeDirection">gazeDirection</a>, <a href="FaceData.html#getFeaturePoints3D">featurePoints3D</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getShapeUnits"><span class="type-signature"></span>getShapeUnits<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of current values for facial Shape Units, one value for each shape unit.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face and only if au_fitting_model 
+parameter in the configuration file is set (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+Shape units can be described as static parameters of the face that are specific for each individual (e.g. shape of the nose).
+<br/><br/>
+The shape units used by the tracker and detector are defined in the
+3D face model file, specified by the au_fitting_model in the configuration file (see the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#shapeUnitCount">shapeUnitCount</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getActionUnitsUsed"><span class="type-signature"></span>getActionUnitsUsed<span class="signature">()</span><span class="type-signature"> &rarr; {Int32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Used facial Action Units.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set 
+(see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details). Detector leaves this variable undefined.</i>
+<br/><br/>
+List of values, one for each action unit, to determine if specific action unit is actually used in the current tracker configuration.
+Values are as follows: 1 if action unit is used, 0 if action unit is not used.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getActionUnits">actionUnits</a></li>
+        
+            <li><a href="FaceData.html#actionUnitCount">actionUnitCount</a></li>
+        
+            <li><a href="FaceData.html#getActionUnitsNames">actionUnitsNames</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Int32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getActionUnits"><span class="type-signature"></span>getActionUnits<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of current values for facial action units, one value for each action unit.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set 
+(see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details). Detector leaves this variable undefined.</i>
+<br/><br/>
+The action units used by the tracker are defined in the
+3D face model file (currently candide3.wfm; tracker can be configured to use another file; see the
+<a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).
+Furthermore, the tracker configuration file defines the names of action units and these names can be accessed through actionUnitNames.
+Please refer to section 2.3 Action Units in the <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for the full list of action units for each tracker configuration.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getActionUnitsUsed">actionUnitsUsed</a></li>
+        
+            <li><a href="FaceData.html#actionUnitCount">actionUnitCount</a></li>
+        
+            <li><a href="FaceData.html#getActionUnitsNames">actionUnitsNames</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getActionUnitsNames"><span class="type-signature"></span>getActionUnitsNames<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="VectorString.html">VectorString</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of facial Action Units names.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) and only if au_fitting_model parameter in the configuration file is set 
+(see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details). Face detector leaves this variable undefined.</i>
+<br/>
+NOTE: After the end of use, obtained list needs to be deleted to release the allocated memory. Example: 
+<pre class="prettyprint source"><code>
+for (var i = 0; i < faceData.actionUnitCount; ++i )
+{
+	var names = faceData.getActionUnitsNames();
+	console.log(names.get(i));
+	names.delete();
+}
+</code></pre>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getActionUnitsUsed">actionUnitsUsed</a></li>
+        
+            <li><a href="FaceData.html#actionUnitCount">actionUnitCount</a></li>
+        
+            <li><a href="FaceData.html#getActionUnits">actionUnits</a></li>
+        
+            <li><a href="VectorString.html">VectorString</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="VectorString.html">VectorString</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFeaturePoints3D"><span class="type-signature"></span>getFeaturePoints3D<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="FDP.html">FDP</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Facial feature points (global 3D coordinates).
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+The coordinate system is such that when looking towards the camera, the direction of x is to the
+left, y iz up, and z points towards the viewer.  The global origin (0,0,0) is placed at the camera, see illustration.
+<br/><br/>
+<img src="images/coord-camera.png">
+<br/><br/>
+If the value set for the camera focal length in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker/detector configuration</a> file
+corresponds to the real camera used, the returned coordinates shall be in meters; otherwise the scale is not known, 
+but the relative values are still correct (i.e. moving towards the camera results in smaller values of z coordinate).
+<br/><br/>
+The feature points are identified
+according to the MPEG-4 standard (with extension for additional points), so each feature point is identified by its group and index. For example, the tip of the chin
+belongs to group 2 and its index is 1, so this point is identified as point 2.1. The identification of all feature points is
+illustrated in the following image:
+<img src="images/mpeg-4_fba.png">
+<img src="images/half_profile_physical_2d.png">
+<br/><br/>
+Certain feature points, like the ones on the tongue and teeth, can not be reliably detected so they are not returned
+and their coordinates are always set to zero. These points are:
+6.1, 6.2, 6.3, 6.4, 9.8, 9.9, 9.10, 9.11, 11.4, 11.5, 11.6.
+<br/><br/>
+Several other points are estimated, rather than accurately detected, due to their specific locations. These points are:
+2.10, 2.11, 2.12, 2.13, 2.14, 5.1, 5.2, 5.3, 5.4, 7.1, 9.1, 9.2, 9.6, 9.7, 9.12, 9.13, 9.14, 11.1,
+11.2, 11.3, 12.1.
+<br/><br/>
+Ears' points - group 10 (points 10.1 - 10.24) can be either set to zero, accurately detected or estimated:
+<ul>
+<li> zero: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+</li> 
+<li> detected: 
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+<li> estimated: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+</ul>
+<br/><br/>
+
+Face contour - group 13 and group 15. Face contour is available in two versions: the visible contour (points 13.1 - 13.17) and the physical contour (points 15.1 - 15.17). 
+For more details regarding face contour please refer to the documentation of FDP class.
+<br/><br/>
+Nose contour - group 14, points: 14.21, 14.22, 14.23, 14.24, 14.25.
+<br/><br/>
+The resulting feature point coordinates are returned in form of an FDP object. This is a container class used for storage of MPEG-4 feature points.
+It provides functions to access each feature point by its group and index and to read its coordinates.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFeaturePoints3DRelative">featurePoints3DRelative</a>, <a href="FaceData.html#getFeaturePoints2D">featurePoints2D</a>, <a href="FDP.html">FDP</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="FDP.html">FDP</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFeaturePoints3DRelative"><span class="type-signature"></span>getFeaturePoints3DRelative<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="FDP.html">FDP</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Facial feature points (3D coordinates relative to the origin, right eye).
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+The coordinates are in the local coordinate system of the face, with the origin (0,0,0) placed at the center between the eyes.
+The x-axis points laterally  towards the side of the face, y-xis points up and z-axis points into the eye - see illustration below.
+<br/><br/>
+<img src="images/coord3.png">
+<br/><br/>
+The feature points are identified
+according to the MPEG-4 standard (with extension for additional points), so each feature point is identified by its group and index. For example, the tip of the chin
+belongs to group 2 and its index is 1, so this point is identified as point 2.1. The identification of all feature points is
+illustrated in the following image:
+<img src="images/mpeg-4_fba.png">
+<img src="images/half_profile_physical_2d.png">
+<br/><br/>
+Certain feature points, like the ones on the tongue and teeth, can not be reliably detected so they are not returned
+and their coordinates are always set to zero. These points are:
+6.1, 6.2, 6.3, 6.4, 9.8, 9.9, 9.10, 9.11, 11.4, 11.5, 11.6.
+<br/><br/>
+Several other points are estimated, rather than accurately detected, due to their specific locations. These points are:
+2.10, 2.11, 2.12, 2.13, 2.14, 5.1, 5.2, 5.3, 5.4, 7.1, 9.1, 9.2, 9.6, 9.7, 9.12, 9.13, 9.14, 11.1,
+11.2, 11.3, 12.1.
+<br/><br/>
+Ears' points - group 10 (points 10.1 - 10.24) can be either set to zero, accurately detected or estimated:
+<ul>
+<li> zero: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+</li> 
+<li> detected: 
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+<li> estimated: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+</ul>
+<br/><br/>
+
+Face contour - group 13 and group 15. Face contour is available in two versions: the visible contour (points 13.1 - 13.17) and the physical contour (points 15.1 - 15.17). 
+For more details regarding face contour please refer to the documentation of FDP class.
+<br/><br/>
+Nose contour - group 14, points: 14.21, 14.22, 14.23, 14.24, 14.25.
+<br/><br/>
+The resulting feature point coordinates are returned in form of an FDP object. This is a container class used for storage of MPEG-4 feature points.
+It provides functions to access each feature point by its group and index and to read its coordinates.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFeaturePoints3D">featurePoints3D</a>, <a href="FaceData.html#getFeaturePoints2D">featurePoints2D</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="FDP.html">FDP</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFeaturePoints2D"><span class="type-signature"></span>getFeaturePoints2D<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="FDP.html">FDP</a>}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Facial feature points (2D coordinates).
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+The 2D feature point coordinates are normalised to image size so that the lower left corner of the image has coordinates 0,0 and upper right corner 1,1.
+<br/><br/>
+The feature points are identified
+according to the MPEG-4 standard, so each feature point is identified by its group and index. For example, the tip of the chin
+belongs to group 2 and its index is 1, so this point is identified as point 2.1. The identification of all feature points is
+illustrated in the following image:
+<img src="images/mpeg-4_fba.png">
+<img src="images/half_profile_physical_2d.png">
+<br/><br/>
+Certain feature points, like the ones on the tongue and teeth, can not be reliably detected so they are not returned
+and their coordinates are always set to zero. These points are:
+6.1, 6.2, 6.3, 6.4, 9.8, 9.9, 9.10, 9.11, 11.4, 11.5, 11.6.
+<br/><br/>
+Several other points are estimated, rather than accurately detected, due to their specific locations. These points are:
+2.10, 2.11, 2.12, 2.13, 2.14, 5.1, 5.2, 5.3, 5.4, 7.1, 9.1, 9.2, 9.6, 9.7, 9.12, 9.13, 9.14, 11.1,
+11.2, 11.3, 12.1.
+<br/><br/>
+Ears' points - group 10 (points 10.1 - 10.24) can be either set to zero, accurately detected or estimated:
+<ul>
+<li> zero: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 NOT provided </ul>
+</li> 
+<li> detected: 
+  <ul> <i>refine_ears</i> configuration parameter turned on, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+<li> estimated: 
+  <ul> <i>refine_ears</i> configuration parameter turned off, 3D model with ears vertices and points mapping file for group 10 provided </ul>
+</ul>
+<br/><br/>
+
+Face contour - group 13 and group 15. Face contour is available in two versions: the visible contour (points 13.1 - 13.17) and the physical contour (points 15.1 - 15.17). 
+For more details regarding face contour please refer to the documentation of FDP class.
+<br/><br/>
+Nose contour - group 14, points: 14.21, 14.22, 14.23, 14.24, 14.25.
+<br/><br/>
+The resulting feature point coordinates are returned in form of an FDP object. This is a container class used for storage of MPEG-4 feature points.
+It provides functions to access each feature point by its group and index and to read its coordinates. Note that FDP stores 3D points and in the case of 2D feature points only the 
+x and y coordinates of each point are used.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#getFeaturePoints3D">featurePoints3D</a>, <a href="FaceData.html#getFeaturePoints3DRelative">featurePoints3DRelative</a>, <a href="FDP.html">FDP</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type"><a href="FDP.html">FDP</a></span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceModelVertices"><span class="type-signature"></span>getFaceModelVertices<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of vertex coordinates of the 3D face model.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+The format of the list is x, y, z coordinate for each vertex.
+<br/><br/>
+The coordinates are in the local coordinate system of the face, with the origin (0,0,0) placed at the centre point between the eyes.
+The x-axis points laterally  towards the side of the face, y-axis points up and z-axis points into the eye - see illustration below.
+<br/><br/> 
+<img src="images/coord3.png">
+<br/><br/> 
+To transform the coordinates into the coordinate system of the camera, use faceTranslation and faceRotation.
+<br/><br/>
+If the value set for the camera focal length in the <a href="doc/VisageTracker Configuration Manual.pdf">tracker configuration</a> file
+corresponds to the real camera used, the scale of the coordinates shall be in meters; otherwise the scale is not known.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceModelVerticesProjected"><span class="type-signature"></span>getFaceModelVerticesProjected<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        List of projected (image space) vertex coordinates of the 3D face model.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+The format of the list is x, y coordinate for each vertex.
+The 2D coordinates are normalised to image size so that the lower left corner of the image has coordinates 0,0 and upper right corner 1,1.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceModelTriangles"><span class="type-signature"></span>getFaceModelTriangles<span class="signature">()</span><span class="type-signature"> &rarr; {Int32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Triangles list for the 3D face model.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+Each triangle is described by three indices into the list of <a href="FaceData.html#getFaceModelVertices">vertices</a> (counter-clockwise convention is used for normals direction).
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#getFaceModelVertices">faceModelVertices</a>, <a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Int32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceModelTextureCoords"><span class="type-signature"></span>getFaceModelTextureCoords<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Texture coordinates for the 3D face model.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+A pair of u, v coordinates for each vertex. When FaceData is obtained from the tracker, the texture image is the current video frame.
+When FaceData is obtained from detector, the texture image is the input image of the detector.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#getFaceModelVertices">faceModelVertices</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getFaceModelTextureCoordsStatic"><span class="type-signature"></span>getFaceModelTextureCoordsStatic<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Static texture coordinates of the mesh from the configuration file parameter mesh_fitting_model.
+They can be used to apply textures based on the texture template for the unwrapped mesh to the face model. The texture template for these coordinates is provided in jk_300_textureTemplate.png
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face, providing that the mesh_fitting_model parameter is 
+set in the configuration file (see <a href="doc/VisageTracker Configuration Manual.pdf">VisageTracker Configuration Manual</a> for details).</i>
+<br/><br/>
+A pair of u, v coordinates for each vertex.
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceData.html#faceModelVertexCount">faceModelVertexCount</a>, <a href="FaceData.html#getFaceModelVertices">faceModelVertices</a>, <a href="FaceData.html#getFaceModelVerticesProjected">faceModelVerticesProjected</a></li>
+        
+            <li><a href="FaceData.html#faceModelTriangleCount">faceModelTriangleCount</a>, <a href="FaceData.html#getFaceModelTriangles">faceModelTriangles</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="getEyeClosure"><span class="type-signature"></span>getEyeClosure<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Discrete eye closure value.
+<br/><br/>
+<i>This variable is set only while tracker is tracking (TRACK_STAT_OK) or if the detector has detected a face.</i>
+<br/><br/>
+Index 0 represents closure of left eye. Index 1 represents closure of right eye.
+Value of 1 represents open eye. Value of 0 represents closed eye.
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="serializeJson"><span class="type-signature"></span>serializeJson<span class="signature">()</span><span class="type-signature"> &rarr; {String}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Converts FaceData object into a string, formatted as a JSON data.
+</br></br>
+This method allows to serialize multiple FaceData in one string array (an example can be found in www/Samples/ShowcaseDemo/ShowcaseDemo.html). 
+<br/></br>
+NOTE: Typically used for transferring FaceData information from main thread to web worker and vice versa.
+</br></br>
+Sample usage - sending data from UI thread:
+<pre class="prettyprint source"><code>
+// ... create a face data array ...
+// ... initialize and call VisageTracker/VisageFeaturesDetector on the image ...
+//
+var faceDataJson = "";
+//	
+for(var i = 0; i < numOfFaces; ++i)
+{
+	faceDataJson += faceDataArray.get(i).serializeJson() + "||";
+}
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">String</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="deserializeJson"><span class="type-signature"></span>deserializeJson<span class="signature">(FaceDataJson)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Reads JSON formatted string containing FaceData members' values (obtained by  <a href="FaceData.html#serializeJson">serializeJson()</a> method) and populates a FaceData object.
+<br/></br>
+NOTE: Typically used when transferring FaceData information from main thread to web worker and vice versa.
+<br/></br>
+Sample usage - receiving data in web worker: 
+<pre class="prettyprint source"><code>	
+var faceDataStringArray = msg.data.inFaceData.split("||", maxFacesDetector);
+
+for(var i = 0; i < numOfFaces; i++)
+{
+	m_faceDataArray.get(i).deserializeJson(faceDataStringArray[i]);
+}
+
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>FaceDataJson</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">FaceData in form of JSON string</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <i>true</i> on success, <i>false</i> on failure.
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">boolean</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="serializeAnalysis"><span class="type-signature"></span>serializeAnalysis<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Converts data from FaceData object required for face analysis (age, gender and emotions estimations and face recognition) into a TypedArray.
+<br/></br>
+NOTE: Typically used for transferring FaceData information from main thread to web worker and vice versa.
+</br>
+To increase postMessage() performance obtained buffer should be copied from native to JavaScript memory.
+<br/></br>
+Sample usage - sending data from UI thread:
+<pre class="prettyprint source"><code>
+// ... create a face data array ...
+// ... initialize and call VisageTracker/VisageFeaturesDetector on the image ...
+//
+//serialize FaceData object to TypedArray(Float32Array)
+var faceDataBuffer = TfaceDataArray.get(0).serializeAnalysis();
+//copy buffer from native memory to javascript memory to increase postMessage() performance
+faceDataBufferJS = new Float32Array(faceDataBuffer);
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="deserializeAnalysis"><span class="type-signature"></span>deserializeAnalysis<span class="signature">(Buffer)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Converts TypedArray containing FaceData members' values (obtained by  <a href="FaceData.html#serializeAnalysis">serializeAnalysis()</a> method) into FaceData object 
+where only members related to face analysis (age, gender and emotions estimations and face recognition) will be 
+assigned values, while the other members will not be updated.
+<br/></br>
+NOTE: Typically used for transferring FaceData information from main thread to web worker and vice versa.
+</br></br>
+Sample usage - receiving data in web worker: 
+<pre class="prettyprint source"><code>
+//obtain FaceData in ArrayBuffer
+faceDataBuffer = msg.data.inFaceData; 
+//create TypedArray object from ArrayBuffer
+faceDataBufferFloatArray = new Float32Array(faceDataBuffer);
+m_faceDataArray.get(0).deserializeAnalysis(faceDataBufferFloatArray);
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>Buffer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Float32Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">FaceData in form of Float32Array TypedArray.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="serializeBuffer"><span class="type-signature"></span>serializeBuffer<span class="signature">()</span><span class="type-signature"> &rarr; {Float32Array}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Converts FaceData object into a TypedArray.
+<br/></br>
+NOTE: Typically used for transferring FaceData information from main thread to web worker and vice versa. 
+</br>
+To increase postMessage() performance obtained buffer should be copied from native to JavaScript memory.
+</br></br>
+Sample usage - sending data from UI thread:
+<pre class="prettyprint source"><code>
+// ... create a face data array ...
+// ... initialize and call VisageTracker/VisageFeaturesDetector on the image ...
+//
+//serialize FaceData object to TypedArray(Float32Array)
+var faceDataBuffer = TfaceDataArray.get(0).serializeBuffer();
+//copy buffer from native memory to javascript memory to increase postMessage() performance
+faceDataBufferJS = new Float32Array(faceDataBuffer);
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">Float32Array</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="deserializeBuffer"><span class="type-signature"></span>deserializeBuffer<span class="signature">(Buffer)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Converts TypedArray containing FaceData members' values (obtained by  <a href="FaceData.html#serializeBuffer">serializeBuffer()</a> method) into FaceData object.
+<br/></br>
+NOTE: Typically used for transferring FaceData information from main thread to web worker and vice versa.
+</br></br>
+Sample usage - receiving data in web worker: 
+<pre class="prettyprint source"><code>	
+//obtain FaceData in ArrayBuffer
+faceDataBuffer = msg.data.inFaceData; 
+//create TypedArray object from ArrayBuffer
+faceDataBufferFloatArray = new Float32Array(faceDataBuffer);
+m_faceDataArray.get(0).deserializeBuffer(faceDataBufferFloatArray);
+</code></pre>
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>Buffer</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Float32Array</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">FaceData in form of Float32Array TypedArray.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:27 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

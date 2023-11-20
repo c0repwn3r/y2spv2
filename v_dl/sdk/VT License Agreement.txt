@@ -1,0 +1,1004 @@
+Visage Technologies License Agreement (VTLA) 
+______________________________________________________________________________
+
+SUMMARY
+
+This introductory section summarizes the main conditions of the License Agreement with the sole 
+purpose to enable easier reading. In case of ambiguity other sections prevail.
+
+By installing Visage Technologies' software, you are agreeing to the terms of this Agreement. 
+Visage Technologies grants you right to use its software internally for evaluation purposes. 
+Furthermore, subject to separately agreed fees and other conditions stated in this Agreement and 
+in the License Key File you may receive, you may develop and distribute your own product using 
+Visage Technologies' software. Such products shall register themselves automatically with the 
+Visage Technologies licensing server.
+Software licensed under Academic and Evaluation licenses cannot be used for commercial 
+purposes. If you have no valid License Key File, your license is an Evaluation license.
+______________________________________________________________________________
+
+DO NOT EDIT THIS AGREEMENT. It is a universal agreement covering evaluation, 
+development and several common types of deployment licenses. If you require more specific 
+licensing conditions, please discuss with Visage Technologies representative.
+______________________________________________________________________________
+
+
+1. DEFINITIONS.
+
+1.1. "Visage Technologies" means Visage Technologies AB, Diskettgatan 11, SE-583 35 
+Linkoping, Sweden.
+
+1.2. "Licensee" means you, whether an individual or an entity, to whom Visage Technologies 
+grants the License, and who is responsible for complying with the contractual obligations of the 
+License, and ensuring that anyone permitted access to Software also complies with such 
+obligations.
+
+1.3. "Software" means the specialized computer software developed and owned by Visage 
+Technologies, delivered and licensed under this Agreement, and described in Schedule 1 of this 
+Agreement.
+
+1.4. "Software Component" means any portion of, or file provided with, the Software.
+
+1.5. "Software Package" means a separately packaged portion of the Software, as described in 
+Schedule 1 of this Agreement.
+
+1.6. "Module" means a logical portion of the Software that can be licensed separately from other 
+parts of the Software, as described in Schedule 1 of this Agreement.
+
+1.7. "Product" means a product that Licensee has created by incorporating or linking any 
+Software Component. A Product must contain original code developed by Licensee and must 
+provide substantial functionality not contained in, or provided by, the Software.
+
+1.8. "Product License" means a license granted by Licensee to its end-users for the installation 
+and use of Licensee's Product.
+
+1.9. "Affiliate" means a legal entity which is controlled by, or controls, or is under common 
+control with Licensee. Control means (i) beneficial ownership of at least fifty percent (50%) of 
+the voting securities of a corporation or other business organization with voting securities, or (ii) 
+a fifty percent (50%) or greater interest in the profits and capital of a partnership or other business 
+organization without voting securities.
+
+1.10. "Internal Operations" means the use of Software by employees, consultants, subcontractors, 
+student interns, and software administration contractors of Licensee or an Affiliate on behalf of 
+the Licensee or Affiliate.
+
+1.11. "Third Party" means any person or legal entity that is not Visage Technologies, the 
+Licensee, or an Affiliate.
+
+1.12. "Third Party Licensor" means the person who, or entity which, grants a license to Visage 
+Technologies to redistribute that person's or entity's intellectual property. Third Party Licensors 
+are listed in Schedule 3.
+
+1.13. "Source Code"  means human-readable program code written in a higher-level language 
+such as C, C++, JavaTM or others, which must be translated or compiled into machine-readable 
+language before it can be executed by a computer. Source Code also includes header files and 
+other human-readable files necessary for a program to be compiled in the higher-level language.
+
+1.14. "Object Code" means the code created by a system compiler from Source Code; also called 
+"machine-readable code". Object Code can be linked with an appropriate linker to resolve 
+address references and may be combined with other Object Code for targeted execution on a 
+specific processor. Object Code includes "Object Code libraries" and "shared libraries" which are 
+groupings of Object Code for specific purposes.
+
+1.15. "License Key" means a numerical code that permits the Software or Product to run on one 
+or more devices. 
+
+1.16. "License Key File" means a file provided by Visage Technologies to Licensee and 
+containing a License Key. 
+
+1.17. "License Type" means the type of license granted to the Licensee, and determines specific 
+restrictions associated with each License Type. License Type can be Evaluation, Academic or 
+Full. Only Full licenses are intended for commercial use.
+
+
+2. ACCEPTANCE. By downloading and/or installing any part of the Software on a computer 
+system, you are consenting to be bound and are becoming a party to this License Agreement, i.e. 
+a Licensee. If Licensee does not accept the terms and conditions of this License Agreement and 
+any applicable Annex, or if Licensee terminates this License, for any reason, then Licensee shall 
+immediately remove the Software licensed hereunder from any computer systems controlled by 
+Licensee.
+
+
+3. LICENSE KEY FILE.  Licensee may receive one or more License Key Files for evaluation, 
+academic or commercial use of the Software. License Key and License Key File specify 
+important licensing conditions that constitute binding parts of this Agreement, specifically:
+
+
+
+Label in License Key File		Description
+-------------------------------		--------------
+Licensed application name:		The name of the Licensee's Product.
+Licensee:				Name and address of the Licensee.
+This License Key is issued for:	Software Package(s) and/or Module(s) for which the 
+License is valid (see Schedule 1). The software version for 
+which the license is valid is specified at the end of this line 
+marked with letter "V"; license is valid for the specified 
+version and all older versions.
+Operating system(s):			Operating systems for which the Software is licensed.
+License Type:				License Type (see Definitions).
+Application ID:			OS-specific identifier.
+Number of installations/licenses:	Permitted number of installations of the Product (number of 
+users). May be specified as unlimited. If the Product is 
+executed in the Web browser, then each download and use 
+of the Product in a Web browser represents one installation.
+Number of concurrent users:		Used for floating licenses.
+Licensed URL (for web license):	URL for which License is valid.
+Date of issuing:			Date when the License Key has been issued.
+Expiry date of the License Key:	License term, either expiry date or as "PERPETUAL".
+Automatic license registration:	Specifies automatic license registration mode; see Section 7.
+License Key:				The License Key.
+
+3.1. Licensee understands that the License Key and the License Key File are unique to the 
+Licensee and Product and may be used to identify the Licensee to whom the License Key was 
+issued and the Product for which it was issued.
+
+3.2. Licensee may distribute copies of the License Key File, provided that they are always 
+distributed as part of the Product and solely for the purpose of allowing end-users to use the 
+Product.
+
+3.3. Licensee may not modify the License Key or License Key File in any way, nor attempt to 
+create a new License Key or License Key File.
+
+3.4. If the Licensee does not have a valid License Key File, then the License Type is Evaluation.
+
+
+4. LICENSE GRANT. Visage Technologies hereby grants to Licensee, subject to payment of 
+the separately agreed License fees and the terms of this Agreement, in particular the restrictions 
+set forth in Section 5 of this Agreement, a non-exclusive, non-transferrable license (the "License") 
+to:
+
+4.1. install and use the Software solely for Internal Operations;
+
+4.2. integrate, market and sublicense the Software - solely as an integrated part of the Product 
+named in License Key File - to customers or end-users.
+
+5. LICENSE RESTRICTIONS. Licensee shall not, and shall not permit any Third Party to:
+
+5.1. modify, or create any derivative work of, any part of the Software (other than files provided 
+for convenience in Source Code form by Visage Technologies; their use is covered in paragraph 
+5.12);
+
+5.2. rent, lease, time-share or loan the Software, or provide service bureau use; 
+
+5.3. sell, license, sublicense, publish, display, distribute, disseminate, assign, or otherwise 
+transfer (whether by sale, exchange, lease, gift, or otherwise) to a Third Party the Software, any 
+copy or portion thereof, or any license or other rights thereto, in whole or in part, without Visage 
+Technologies' prior written consent, except as expressly permitted in this Agreement;
+
+5.4. disassemble, decompile, reverse engineer the Software or otherwise attempt to gain access to 
+its method of operation or Source Code (other than files provided for convenience in Source 
+Code form by Visage Technologies; their use is covered in paragraph 5.12);
+
+5.5. alter, remove, or obscure any copyright, trade secret, patent, trademark, logo, proprietary 
+and/or other legal notices on or in copies of the Software;
+
+5.6. use Visage Technologies' name, trade names, logos, or other trademarks of Visage 
+Technologies in any advertising, promotional literature or any other material, whether in written, 
+electronic, or other form, distributed to any Third Party, except in the form provided by Visage 
+Technologies, and then solely for purposes of identifying Visage Technologies' Software;
+
+5.7. Academic Licenses are granted strictly for non-commercial usage of the Software in 
+education and/or research, and no other use is permitted.
+
+5.8. Evaluation Licenses are granted strictly for internal evaluation of the Software by the 
+Licensee, with the sole purpose of allowing the Licensee to make an informed decision about 
+acquiring a different License Type. No other use is permitted.
+
+5.9. Licensee may use, copy and distribute shared Object Code library files for deployment of the 
+Product, but only if a header file exists in the Software for the shared library file. Licensee may 
+not copy or distribute the header files themselves.
+
+5.10. Licensee may include, by compilation for deployment, only those select Object Code files 
+from the Software required for the Product.
+
+5.11. In no event shall Licensee distribute any library header files nor the library (.lib) files.
+
+5.12. Licensee may use and modify the Source Code files included in the Software solely for the 
+creation of the Product. Licensee may copy and distribute Object Code compiled from this 
+Source Code, but only for use in the Product. The Source Code files or their derivative forms 
+may not be distributed.
+
+Further restrictions or obligations for specific Modules are listed in Schedule 2.
+
+6. PRODUCT LICENSING. For any distribution of the Product to Third Parties, the Product 
+shall be accompanied by a Product License whose terms and conditions are at least as restrictive 
+as the Agreement, unless the Product is part of an embedded system that has no provision for 
+licensing to its end users.
+
+6.1. In no circumstances shall Licensee include a warranty for any form of Software that is 
+inconsistent with or additional to the warranty contained in this Agreement.
+
+6.2. Notwithstanding the termination of the Agreement, all valid Product Licenses shall remain 
+and continue in full force and effect, and, if the Agreement was not terminated due to: (a) 
+Licensee's failure to pay applicable fees to Visage Technologies, (b) Licensee's violation of the 
+License restrictions, or (c) violation of Visage Technologies' proprietary rights in the Software; 
+then Licensee may continue to use the Software to support Products that have been placed in use 
+pursuant to an Product License prior to the effective date of termination.
+
+
+7. AUTOMATIC LICENSE REGISTRATION. Software includes built-in licensing function 
+that may automatically register each individual copy of the Product with the Visage Technologies 
+licensing server using the internet. The License Key File specifies when this automatic license 
+registration is performed; there are the following possibilities:
+
+7.1. "First online use": automatic license registration is performed at first use of Software within 
+the Product. If the connection to the Visage Technologies licensing server fails, the Product will 
+function normally, and registration is performed at next use.
+
+7.2. "First use": automatic license registration is performed at first use of Software within the 
+Product. The device on which the Product is running must be online and have network access to 
+the Visage Technologies licensing server at first use.
+
+7.3. "Always if online": automatic license registration is performed at every use of Software 
+within the Product. If the connection to the Visage Technologies licensing server fails, the 
+Product will function normally.
+
+7.4. "Always": automatic license registration is performed at every use of Software within the 
+Product. The device on which the Product is running must be online and have network access to 
+the Visage Technologies licensing server.
+
+
+8. RETENTION OF RIGHT, TITLE AND INTEREST BY VISAGE TECHNOLOGIES. 
+The Software shall at all times remain the property of Visage Technologies and/or Third Party 
+Licensors and Licensee shall have no right, title, or interest therein, except as expressly set forth 
+in this Agreement. 
+
+
+9. LICENSES FOR THIRD PARTY SOFTWARE. Visage Technologies has been granted 
+licenses to distribute certain Third Party software by Third Party Licensors. As a condition of 
+those licenses, Visage Technologies is required to distribute the Third Party software to Licensee 
+subject to specific terms and conditions, which may be different from or additional to those 
+contained herein for the Software. Licensee understands and agrees that acceptance of this 
+Agreement also confirms Licensee's acceptance of the applicable provisions for use, including 
+the restrictions on use, of such Third Party software. All such Third Party software and the 
+corresponding licenses are listed in Schedule 3.
+
+
+10. LICENSE TERM. 
+
+10.1. License term is specified in the License Key File provided to the Licensee, either by expiry 
+date or as "perpetual". If no License Key File has been provided to the Licensee, then the License 
+term is one (1) month.
+
+10.2. If the License term is specified in the License Key File as "perpetual", Licensee shall have 
+the right to use the Software indefinitely, subject to the termination provisions in this Agreement. 
+
+10.3. Licensee understands and agrees that the Software and Product will stop operating 
+immediately after the expiration of License term specified in the License Key File, unless 
+Licensee renews its License. 
+
+
+11. TERMINATION. Visage Technologies may terminate this Agreement and all Licenses 
+granted hereunder by written notice to Licensee if Licensee breaches any material term of this 
+License, including failure to pay any License fees due, and Licensee has not cured such breach 
+within thirty (30) days of written notification. Visage Technologies may immediately terminate 
+upon notice this Agreement and all Licenses granted hereunder should Licensee breach the terms 
+and conditions of Sections 4 and/or 5 of this Agreement. Licensee may terminate this License at 
+any time, for any reason. Licensee shall not be entitled to any refund if this License is terminated. 
+Upon termination, Licensee shall promptly return all but archival copies of the Software in 
+Licensee's possession or control, or promptly provide written certification of their destruction.
+
+
+12. TAXES, DUTIES, CUSTOMS. Absent appropriate exemption certificates or other 
+conclusive proof of tax exempt status, Licensee shall pay all applicable sales, use, excise, value-
+added, and other taxes, duties, levies, assessments, and governmental charges payable in 
+connection with this Agreement or the Licenses granted hereunder, excluding taxes based on or 
+measured by Visage Technologies' income or those based on or measured by the Third Party 
+Licensors' income, for which Visage Technologies shall be solely responsible.
+
+
+13. LIMITATION OF LIABILITY. The Software should not be relied on as the sole basis to 
+solve a problem or implement a design whose incorrect solution or implementation could result 
+in injury to person or property. If Software is employed in such a manner, it is at the Licensee's 
+own risk and Visage Technologies and Third Party Licensors explicitly disclaim all liability for 
+such misuse to the extent allowed by law. Visage Technologies' and Third Party Licensors' 
+liability for death or personal injury resulting from negligence or for any other matter in relation 
+to which liability by law cannot be excluded or limited shall not be excluded or limited. Except as 
+aforesaid, (a) any other liability of Visage Technologies and Third Party Licensors (whether in 
+relation to breach of contract, negligence or otherwise) shall not in total exceed the amount paid 
+to Visage Technologies under this Agreement in the twelve month period preceding the claim in 
+question, for the Software with respect to which the liability in question arises; and (b) Visage 
+Technologies and Third Party Licensors shall have no liability for any indirect or consequential 
+loss (whether foreseeable or otherwise and including loss of profits, loss of business, loss of 
+opportunity, and loss of use of any computer hardware or software). Some countries and states do 
+not allow the exclusion or limitation of incidental or consequential damages, so the above 
+exclusion or limitation may not apply to Licensee.
+
+
+14. LIMITED WARRANTY/LIMITATION OF REMEDIES. Visage Technologies warrants 
+that Visage Technologies, on its own behalf or through Third Party Licensors, has the right to 
+grant the License rights hereunder. Visage Technologies warrants, for a period of one (1) year 
+from delivery or for the term of the License, whichever is less, that each copy of Software will 
+conform in all material respects to the description of the Software's operation in its 
+documentation. In the event that the Software does not operate as warranted, Licensee's exclusive 
+remedy and Visage Technologies' sole liability under this warranty shall be the correction or 
+workaround by Visage Technologies of major defects within a reasonable time. Should such 
+correction or workaround be impractical, Visage Technologies may, at its option, terminate the 
+relevant License and refund the initial License fee paid to Visage Technologies for Software. All 
+requests for warranty assistance should be directed to Visage Technologies AB, Diskettgatan 11, 
+SE-583 35 Linkoping, Sweden.
+
+
+15. DISCLAIMER OF WARRANTIES. Except for warranties expressly set forth in Section 14 
+of this Agreement (or as implied by law where the law provides that the particular terms implied 
+cannot be excluded by contract), Software, its documentation and software maintenance services 
+are delivered "as is" and Visage Technologies makes and the Licensee receives no additional 
+express or implied warranties. Visage Technologies and Third Party Licensors hereby expressly 
+disclaim any and all other conditions, warranties, or other terms of any kind or nature concerning 
+the Software, its documentation, and software maintenance services (including, without 
+limitation, any with regard to infringement, merchantability, quality, accuracy, or fitness for a 
+particular purpose or Licensee's purpose). Visage Technologies also expressly disclaims any 
+warranties that may be implied from usage of trade, course of dealing, or course of performance. 
+Except for the express warranties stated in Section 14 of this Agreement, the Software, its 
+documentation, and software maintenance services are provided with all faults, and the entire risk 
+of satisfactory quality, performance, accuracy, and effort is with Licensee. Visage Technologies 
+does not warrant that the Software will operate without interruption or be error free. Some states 
+and countries do not allow limitations on how long an implied warranty lasts, so the above 
+limitation may not apply to Licensee. The warranty in Section 14 gives Licensee specific legal 
+rights and Licensee may also have other rights which vary from state to state and country to 
+country. Licensee accepts responsibility for its use of the Software and the results obtained 
+therefrom.
+
+
+16. DISCLAIMER OF OBLIGATIONS AND LIABILITY FOR LICENSEE'S PRODUCT. 
+
+16.1. Visage Technologies shall have no support or warranty obligations, and disclaims all 
+liability, for the Product developed or distributed by Licensee.
+
+16.2. Licensee agrees that prior to using, incorporating, or distributing the Software in any 
+Product, it will thoroughly test and validate the Product and the functionality of the Software in 
+that Product and be solely responsible for any problems or failures.
+
+
+17. GOVERNING LAW; JURISDICTION. This Agreement shall be interpreted, enforced and 
+construed and the rights of the parties hereunder governed in all respects by the laws of Sweden, 
+and both parties consent to the jurisdiction of the courts located in Sweden and consent to the 
+service of process, pleadings and notices in connection with any and all actions initiated in such 
+courts. The parties agree that a final judgment in any such action or proceeding shall be 
+conclusive and binding and may be enforced in any other jurisdiction. To the extent any 
+governing law, treaty, or regulation is in conflict with this Agreement, the conflicting terms of 
+this Agreement shall be superseded only to the extent necessary by such law, treaty, or regulation. 
+If any provision of this Agreement shall be otherwise unlawful, void, or otherwise unenforceable, 
+that provision shall be enforced to the maximum extent permissible. In either case, the remainder 
+of this Agreement shall not be affected. 
+
+
+18. COMPLIANCE. Licensee agrees to notify Visage Technologies promptly upon discovery of any failure
+to comply with one or more Licenses granted under this Agreement, or any failure to comply with any
+other material term of this Agreement.
+
+
+19. ENTIRE AGREEMENT. This Agreement, and any applicable Annex thereto including any 
+documents referenced therein are incorporated herein by reference, and contain the entire 
+understanding of the parties and may not be modified or amended except by written instrument, 
+executed by authorized representatives of Visage Technologies and Licensee. In the event of any 
+conflict between this Agreement and any purchase order executed by Licensee (whether executed 
+before or after this Agreement), this Agreement shall prevail.
+
+
+
+
+______________________________________________________________________________
+Schedule 1 - Software
+
+The Software which is the subject of this Agreement includes the following Software Packages 
+that can be downloaded and installed separately: visage|SDK and makeup|SDK.
+
+visage|SDK is a Software Development Kit for face tracking and analysis. It exists in versions for 
+specific platforms: visage|SDK for Windows, visage|SDK for iOS, visage|SDK for Android, 
+visage|SDK for HTML5, visage|SDK for Mac OS X, visage|SDK for Linux, visage|SDK for Red 
+Hat, visage|SDK for rPI. Each of these Software Packages includes the following Modules that 
+may be licensed separately:
+
+*	visage|SDK FaceTrack: Tracking of head and facial features from video sequences or 
+images in real time, with provision of the full set of facial features co-ordinates in 2D and 
+3D space (face contour, eyes, eyebrows, irides, nose, lips and ears), 3D head pose, 
+textured 3D model of the face, gaze direction, screen-space gaze point, iris tracking, ear 
+tracking and other related information. The software enables tracking of multiple faces.
+*	visage|SDK FaceTrack Lite: Tracking of head and facial features from video sequences or 
+images in real time, with provision of a limited set of facial features co-ordinates in 2D 
+space (face contour, eyes, eyebrows, nose and lips), 3D head pose and the textured 3D 
+model of the face. 
+*	visage|SDK Face Analysis: Estimation of age, gender and emotion from facial images. 
+*	visage|SDK Face Recognition: Matching/recognising faces based on identity-discerning 
+face descriptors extracted from facial images.
+*	"visage|SDK Full" means the combination of visage|SDK FaceTrack, visage|SDK Face 
+Analysis and visage|SDK Face Recognition .
+
+makeup|SDK is a Software Development Kit for rendering virtual makeup based on face tracking. 
+It exists in versions for specific platforms: makeup|SDK for iOS, makeup|SDK for Android, 
+makeup|SDK for HTML5. It provides a simple API which allows easy integration of augmented-
+reality makeup features into iOS, Android and HTML5 applications. makeup|SDK supports 
+rendering of various makeup features, including foundation, powder, concealer, blush, 
+eyeshadow, eyeliner, mascara, eyebrow, lipstick, lip gloss and lipliner. 
+
+Schedule 2 - Specific obligations per Module
+
+For Licensees licensing visage|SDK FaceTrack Lite, the following additional obligations apply:
+
+Licensee agrees that Visage Technologies may use Licensee's project description, application 
+information, any imagery, visuals and additional information for marketing purposes on Visage 
+Technologies' websites and any other marketing materials. 
+Furthermore, Licensee agrees to actively promote Visage Technologies in one of the following 
+manners:
+a)	Feature Visage Technologies logo, company information or links to Visage Technologies 
+websites on Licensee' websites, in Licensee's application/project description, or 
+promotional materials, and provide proof on request to Visage Technologies' team.
+b)	Participate in one case study and/or testimonial written by Visage Technologies' team.
+
+Schedule 3 - Third Party software
+
+This Annex lists all Third Party software used in the Software, and licenses under which such 
+Third Party software is used. 
+The software items 2 and 3 below are used only for the face recognition function in the Software. 
+The software items 4 and 5 below are used only for the licensing function in the Software.
+The software items 6, 6a, 6b and 6c below are related to the use of OpenVINO(tm) toolkit and are 
+included only in visage|SDK for Windows, visage|SDK for macOS and visage|SDK for Linux, 
+and used only when OpenVINO(tm) toolkit is used. OpenVINO is a trademark of Intel Corporation 
+or its subsidiaries.
+The software item 7 below is included only in visage|SDK for Linux.
+The software items 8 and 8a - 8h below are related to the use of TensorFlow and are included 
+only in visage|SDK for iOS, makeup|SDK for iOS, visage|SDK for Android, makeup|SDK for 
+Android, and visage|SDK for Raspberry PI. TensorFlow is a trademark of Google Inc.
+The software item 11 below is included only in makeup|SDK.
+The software item 12 below is included only in makeup|SDK for HTML5.
+
+
+1. Open Source Computer Vision Library (OpenCV). OpenCV is used in the Software under 
+the following license:
+License Agreement
+For Open Source Computer Vision Library
+(3-clause BSD License)
+
+Redistribution and use in source and binary forms, with or without modification, are permitted 
+provided that the following conditions are met:
+1	Redistributions of source code must retain the above copyright notice, this list of conditions 
+and the following disclaimer.
+2	Redistributions in binary form must reproduce the above copyright notice, this list of 
+conditions and the following disclaimer in the documentation and/or other materials provided 
+with the distribution.
+3	Neither the names of the copyright holders nor the names of the contributors may be used to 
+endorse or promote products derived from this software without specific prior written 
+permission.
+This software is provided by the copyright holders and contributors "as is" and any express or 
+implied warranties, including, but not limited to, the implied warranties of merchantability and 
+fitness for a particular purpose are disclaimed. In no event shall copyright holders or contributors 
+be liable for any direct, indirect, incidental, special, exemplary, or consequential damages 
+(including, but not limited to, procurement of substitute goods or services; loss of use, data, or 
+profits; or business interruption) however caused and on any theory of liability, whether in 
+contract, strict liability, or tort (including negligence or otherwise) arising in any way out of
+the use of this software, even if advised of the possibility of such damage.
+
+
+2. OpenBLAS. OpenBLAS is used in the Software under the following license:
+License
+OpenBLAS is licensed under the 3-clause BSD license. Full license text follows:
+Copyright (c) 2011-2015, The OpenBLAS Project
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted 
+provided that the following conditions are met:
+
+*	Redistributions of source code must retain the above copyright notice, this list of conditions 
+and the following disclaimer.
+*	Redistributions in binary form must reproduce the above copyright notice, this list of 
+conditions and the following disclaimer in the documentation and/or other materials provided 
+with the distribution.
+*	Neither the name of the OpenBLAS project nor the names of its contributors may be used to 
+endorse or promote products derived from this software without specific prior written 
+permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE OPENBLAS PROJECT OR CONTRIBUTORS 
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+3. reference BLAS. reference BLAS is used in the Software under the following license:
+Licensing:
+The reference BLAS is a freely-available software package. It is available from netlib via 
+anonymous ftp and the World Wide Web. Thus, it can be included in commercial software 
+packages (and has been). We only ask that proper credit be given to the authors.
+Like all software, it is copyrighted. It is not trademarked, but we do ask the following:
+*	If you modify the source for these routines we ask that you change the name of the routine 
+and comment the changes made to the original.
+*	We will gladly answer any questions regarding the software. If a modification is done, 
+however, it is the responsibility of the person who modified the routine to provide support.
+Acknowledgements:
+This material is based upon work supported by the National Science Foundation under Grant No. 
+ASC-9313958 and DOE Grant No. DE-FG03-94ER25219. Any opinions, findings and 
+conclusions or recommendations expressed in this material are those of the author(s) and do not 
+necessarily reflect the views of the National Science Foundation (NSF) or the Department of 
+Energy (DOE).
+
+4. curl. Curl is used in the Software under the following license:
+
+The curl license
+COPYRIGHT AND PERMISSION NOTICE
+
+Copyright (c) 1996 - 2019, Daniel Stenberg, daniel@haxx.se, and many contributors, see the 
+THANKS file.
+
+All rights reserved.
+
+Permission to use, copy, modify, and distribute this software for any purpose with or without fee 
+is hereby granted, provided that the above copyright notice and this permission notice appear in 
+all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT OF THIRD PARTY RIGHTS. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE 
+OR OTHER DEALINGS IN THE SOFTWARE.
+
+Except as contained in this notice, the name of a copyright holder shall not be used in advertising 
+or otherwise to promote the sale, use or other dealings in this Software without prior written 
+authorization of the copyright holder.
+
+5. zlib. zlib is used in the Software under the following license:
+
+'zlib' general purpose compression library
+  version 1.2.11, January 15th, 2017
+
+  Copyright (C) 1995-2017 Jean-loup Gailly and Mark Adler
+
+  This software is provided 'as-is', without any express or implied
+  warranty.  In no event will the authors be held liable for any damages
+  arising from the use of this software.
+
+  Permission is granted to anyone to use this software for any purpose,
+  including commercial applications, and to alter it and redistribute it
+  freely, subject to the following restrictions:
+
+  1. The origin of this software must not be misrepresented; you must not
+     claim that you wrote the original software. If you use this software
+     in a product, an acknowledgment in the product documentation would be
+     appreciated but is not required.
+  2. Altered source versions must be plainly marked as such, and must not be
+     misrepresented as being the original software.
+  3. This notice may not be removed or altered from any source distribution.
+
+  Jean-loup Gailly        Mark Adler
+  jloup@gzip.org          madler@alumni.caltech.edu
+
+
+6. OpenVINO(tm) toolkit. OpenVINO(tm) toolkit is used in the Software under the Apache License, 
+Version 2.0. which can be obtained at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the Apache 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied.
+See the Apache License for the specific language governing permissions and limitations under 
+the License.
+
+
+6a. Intel(r) Math Kernel Library. 
+6b. Intel(r) Threading Building Blocks. 
+6c. Intel(r) OpenMP runtime. 
+Items 6a, 6b and 6c are used in the Software under the following license:
+
+Intel Simplified Software License (Version April 2018)
+
+Copyright (c) 2018 Intel Corporation.
+
+Use and Redistribution.  You may use and redistribute the software (the "Software"), without 
+modification, provided the following conditions are met:
+
+* Redistributions must reproduce the above copyright notice and the following terms of use in the 
+Software and in the documentation and/or other materials provided with the distribution.
+
+* Neither the name of Intel nor the names of its suppliers may be used to endorse or promote 
+products derived from this Software without specific prior written permission.
+
+* No reverse engineering, decompilation, or disassembly of this Software is permitted.
+
+Limited patent license.  Intel grants you a world-wide, royalty-free, non-exclusive license under 
+patents it now or hereafter owns or controls to make, have made, use, import, offer to sell and sell 
+("Utilize") this Software, but solely to the extent that any such patent is necessary to Utilize the 
+Software alone. The patent license shall not apply to any combinations which include this 
+software.  No hardware per se is licensed hereunder.
+
+Third party and other Intel programs.  "Third Party Programs" are the files listed in the "third-
+party-programs.txt" text file that is included with the Software and may include Intel programs 
+under separate license terms. Third Party Programs, even if included with the distribution of the 
+Materials, are governed by separate license terms and those license terms solely govern your use 
+of those programs. 
+
+DISCLAIMER.  THIS SOFTWARE IS PROVIDED "AS IS" AND ANY EXPRESS OR 
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, 
+AND NON-INFRINGEMENT ARE DISCLAIMED. THIS SOFTWARE IS NOT INTENDED 
+FOR USE IN SYSTEMS OR APPLICATIONS WHERE FAILURE OF THE SOFTWARE 
+MAY CAUSE PERSONAL INJURY OR DEATH AND YOU AGREE THAT YOU ARE 
+FULLY RESPONSIBLE FOR ANY CLAIMS, COSTS, DAMAGES, EXPENSES, AND 
+ATTORNEYS' FEES ARISING OUT OF ANY SUCH USE, EVEN IF ANY CLAIM 
+ALLEGES THAT INTEL WAS NEGLIGENT REGARDING THE DESIGN OR 
+MANUFACTURE OF THE MATERIALS.
+
+LIMITATION OF LIABILITY. IN NO EVENT WILL INTEL BE LIABLE FOR ANY DIRECT, 
+INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR 
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING 
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+POSSIBILITY OF SUCH DAMAGE. YOU AGREE TO INDEMNIFY AND HOLD INTEL 
+HARMLESS AGAINST ANY CLAIMS AND EXPENSES RESULTING FROM YOUR USE 
+OR UNAUTHORIZED USE OF THE SOFTWARE.
+
+No support.  Intel may make changes to the Software, at any time without notice, and is not 
+obligated to support, update or provide training for the Software.
+
+Termination. Intel may terminate your right to use the Software in the event of your breach of 
+this Agreement and you fail to cure the breach within a reasonable period of time.
+
+Feedback.  Should you provide Intel with comments, modifications, corrections, enhancements or 
+other input ("Feedback") related to the Software Intel will be free to use, disclose, reproduce, 
+license or otherwise distribute or exploit the Feedback in its sole discretion without any 
+obligations or restrictions of any kind, including without limitation, intellectual property rights or 
+licensing obligations.
+
+Compliance with laws.  You agree to comply with all relevant laws and regulations governing 
+your use, transfer, import or export (or prohibition thereof) of the Software.
+
+Governing law.  All disputes will be governed by the laws of the United States of America and 
+the State of Delaware without reference to conflict of law principles and subject to the exclusive 
+jurisdiction of the state or federal courts sitting in the State of Delaware, and each party agrees 
+that it submits to the personal jurisdiction and venue of those courts and waives any objections. 
+The United Nations Convention on Contracts for the International Sale of Goods (1980) is 
+specifically excluded and will not apply to the Software.
+
+*Other names and brands may be claimed as the property of others.
+
+7. LibreSSL. LibreSSL is used in the Software under the following license:
+
+The OpenSSL toolkit stays under a dual license, i.e. both the conditions of the OpenSSL License 
+and the original SSLeay license apply to the toolkit. See below for the actual license texts.  In 
+case of any license issues related to OpenSSL please contact openssl-core@openssl.org.
+
+OpenSSL License
+====================================================================
+ * Copyright (c) 1998-2011 The OpenSSL Project.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. All advertising materials mentioning features or use of this
+ *    software must display the following acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit. (http://www.openssl.org/)"
+ *
+ * 4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
+ *    endorse or promote products derived from this software without
+ *    prior written permission. For written permission, please contact
+ *    openssl-core@openssl.org.
+ *
+ * 5. Products derived from this software may not be called "OpenSSL"
+ *    nor may "OpenSSL" appear in their names without prior written
+ *    permission of the OpenSSL Project.
+ *
+ * 6. Redistributions of any form whatsoever must retain the following
+ *    acknowledgment:
+ *    "This product includes software developed by the OpenSSL Project
+ *    for use in the OpenSSL Toolkit (http://www.openssl.org/)"
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
+ * EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR
+ * PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT,
+ * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * 
+====================================================================
+ *
+ * This product includes cryptographic software written by Eric Young
+ * (eay@cryptsoft.com).  This product includes software written by Tim
+ * Hudson (tjh@cryptsoft.com).
+ *
+ */
+
+ Original SSLeay License
+ -----------------------
+
+/* Copyright (C) 1995-1998 Eric Young (eay@cryptsoft.com)
+ * All rights reserved.
+ *
+ * This package is an SSL implementation written
+ * by Eric Young (eay@cryptsoft.com).
+ * The implementation was written so as to conform with Netscapes SSL.
+ * 
+ * This library is free for commercial and non-commercial use as long as
+ * the following conditions are aheared to.  The following conditions
+ * apply to all code found in this distribution, be it the RC4, RSA,
+ * lhash, DES, etc., code; not just the SSL code.  The SSL documentation
+ * included with this distribution is covered by the same copyright terms
+ * except that the holder is Tim Hudson (tjh@cryptsoft.com).
+ * 
+ * Copyright remains Eric Young's, and as such any Copyright notices in
+ * the code are not to be removed.
+ * If this package is used in a product, Eric Young should be given attribution
+ * as the author of the parts of the library used.
+ * This can be in the form of a textual message at program startup or
+ * in documentation (online or textual) provided with the package.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. All advertising materials mentioning features or use of this software
+ *    must display the following acknowledgement:
+ *    "This product includes cryptographic software written by
+ *     Eric Young (eay@cryptsoft.com)"
+ *    The word 'cryptographic' can be left out if the rouines from the library
+ *    being used are not cryptographic related :-).
+ * 4. If you include any Windows specific code (or a derivative thereof) from 
+ *    the apps directory (application code) you must include an acknowledgement:
+ *    "This product includes software written by Tim Hudson (tjh@cryptsoft.com)"
+ * 
+ * THIS SOFTWARE IS PROVIDED BY ERIC YOUNG ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, 
+THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
+PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE 
+LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE 
+GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * 
+ * The licence and distribution terms for any publically available version or
+ * derivative of this code cannot be changed.  i.e. this code cannot simply be
+ * copied and put under another distribution licence
+ * [including the GNU Public Licence.]
+ */
+
+
+8. TensorFlow. 
+8a. Abseil.
+8b. flatbuffers.
+8c. ruy.
+8d. eigen.
+8e. gemmlowp.
+
+Items 8, 8a, 8b, 8c, 8d and 8e are used in the Software under the Apache License, Version 2.0. 
+which can be obtained at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the Apache 
+License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF 
+ANY KIND, either express or implied.
+See the Apache License for the specific language governing permissions and limitations under 
+the License.
+
+8f. XNNPACK. XNNPACK is used in the Software under the following license:
+
+BSD License
+
+For XNNPACK software
+
+Copyright (c) Facebook, Inc. and its affiliates. All rights reserved.
+Copyright 2019 Google LLC
+
+Redistribution and use in source and binary forms, with or without modification,
+are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+
+ * Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+
+ * Neither the name Facebook nor the names of its contributors may be used to
+   endorse or promote products derived from this software without specific
+   prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+8g. FP16. FP16 is used in the Software under the following license:
+
+The MIT License (MIT)
+
+Copyright (c) 2017 Facebook Inc.
+Copyright (c) 2017 Georgia Institute of Technology
+Copyright 2019 Google LLC
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or 
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+
+8h. Farmhash. Farmhash is used in the Software under the following license:
+
+// Copyright (c) 2014 Google, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
+SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
+OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN
+// THE SOFTWARE.
+
+9. rttr. rttr is used in the Software under the following license:
+
+MIT License
+
+Copyright (c) 2014 - 2018 Axel Menzel <info@rttr.org>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
+SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
+OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE
+SOFTWARE.
+
+10. better-enums. better-enums is used in the Software under the following license:
+
+Copyright (c) 2012-2020, Anton Bachin All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted 
+provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and 
+the following disclaimer.
+
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions 
+and the following disclaimer in the documentation and/or other materials provided with the 
+distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND 
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, 
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF 
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS 
+BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT 
+OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR 
+BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+11. Unity Software. Unity Software is used in the Software under the terms from the website: 
+https://unity3d.com/legal/terms-of-service/software 
+(last accessed: 2021-12-08) 
+
+12. three.js. three.js is used in the Software under the following license:
+
+The MIT License
+
+Copyright (c) 2010-2021 three.js authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and 
+associated documentation files (the "Software"), to deal in the Software without restriction, 
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or 
+substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND 
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT 
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+DEALINGS IN THE SOFTWARE.
+______________________________________________________________________________
+
+
+Visage Technologies AB
+Diskettgatan 11A
+SE-583 35 Linkoping
+Sweden 
+www.visagetechnologies.com
+info@visagetechnologies.com
+2022-01-09
+
+
+
+
+
+

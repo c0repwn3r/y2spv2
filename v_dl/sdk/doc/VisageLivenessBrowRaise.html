@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: VisageLivenessBrowRaise</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: VisageLivenessBrowRaise</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageLivenessBrowRaise
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="VisageLivenessBrowRaise"><span class="type-signature"></span>new VisageLivenessBrowRaise<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        VisageLivenessBrowRaise is a class that detects whether the person on the live video stream has raised his/hers eyebrows.
+<br/><br/>	
+In order for action to be detected accurately, it is required that the face is frontal and facial expression is neutral for 30 frames before
+performing eyebrows raise.
+During eyebrows raise verification, face data from latest 30 frames ("face data sequence"), i.e. last 30 calls of 
+<a href="VisageLivenessBrowRaise.html#update">update()</a> is used to verify head
+stability (<a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_STABLE">STATE_WAIT_FOR_STABLE</a>). Each time the action is reset, 
+face data sequence will be cleared and the action will need to go through
+initializing state (<a href="VisageLivenessBrowRaise.html#STATE_ACTION_INITIALIZING">STATE_ACTION_INITIALIZING</a>) to store initial face data sequence.
+Additionally, face data sequence is used as a baseline for
+neutral facial expression when detecting if eyebrows raise was performed. Algorithm presumes that the face will be neutral before performing
+eyebrows raise.
+<br/><br/>	
+Action should be updated for each frame in order to update its internal state. The action can be in one of the following states
+(states are sequentially verified in each call of <a href="VisageLivenessBrowRaise.html#update">update()</a>):
+<br/>
+<ul>
+<li><a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_FRONTAL">STATE_WAIT_FOR_FRONTAL</a> Face is not frontal. Action is reset.</li>
+<li><a href="VisageLivenessBrowRaise.html#STATE_ACTION_INITIALIZING">STATE_ACTION_INITIALIZING</a> Action is storing first set of face data sequence. 
+After each reset, action needs to reinitialize.</li>
+<li><a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_STABLE">STATE_WAIT_FOR_STABLE</a> Head is not stable. 
+In order for action to be verified successfully, the user should keep his head still.</li>
+<li><a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_ACTION">STATE_WAIT_FOR_ACTION</a> Data is processed in order to verify blink.</li>
+<li><a href="VisageLivenessBrowRaise.html#STATE_ACTION_VERIFIED">STATE_ACTION_VERIFIED</a> Action is verified.</li>
+</ul>
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="STATE_ACTION_VERIFIED"><span class="type-signature"></span>STATE_ACTION_VERIFIED<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Describes action's state where the action was performed and verified.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>0</li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="STATE_WAIT_FOR_FRONTAL"><span class="type-signature"></span>STATE_WAIT_FOR_FRONTAL<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Describes action's state where face in the frame is not frontal (head rotations larger than 0.3 rad, ~17 degrees). 
+<br/><br/>
+If this state is detected, the action will be reset.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>1</li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="STATE_ACTION_INITIALIZING"><span class="type-signature"></span>STATE_ACTION_INITIALIZING<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Describes action's state while the action is initializing, i.e. storing initial face data sequence. 
+After each reset, action needs to reinitialize.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>2</li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="STATE_WAIT_FOR_STABLE"><span class="type-signature"></span>STATE_WAIT_FOR_STABLE<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Describes action's state when user is not keeping his head still.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>3</li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="STATE_WAIT_FOR_ACTION"><span class="type-signature"></span>STATE_WAIT_FOR_ACTION<span class="type-signature"> :number</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        Describes action's state when blink is trying to be verified.
+    </div>
+    
+    
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy"><li>4</li></ul></dd>
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">(frameWidth, frameHeight, p_imageData, faceData)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Method that should be called for each frame until the action is verified. 
+</br></br>
+It should only be called when tracking status is TRACK_STAT_OK. Returns action's current state so appropriate message and/or image can be
+displayed if user interaction is required (e.g. warning for user or instruction on how to perform blink). 
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Width of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Height of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>p_imageData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">Pointer to image pixel data, size of the array must correspond to frameWidth and frameHeight.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FaceData.html">FaceData</a></span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last"><a href="FaceData.html">FaceData</a> object filled with tracking results from a previous call of the <a href="VisageTracker.html#track">VisageTracker.track()</a>
+or 
+<a href="VisageDetector.html#detectFeatures">VisageDetector.detectFeatures()</a> function.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    state - action's current state.
+<br/>
+State can be one of the following: 
+<ul>
+<li><a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_FRONTAL">STATE_WAIT_FOR_FRONTAL</a> , <a href="VisageLivenessBrowRaise.html#STATE_ACTION_INITIALIZING">STATE_ACTION_INITIALIZING</a>, <a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_STABLE">STATE_WAIT_FOR_STABLE</a>, <a href="VisageLivenessBrowRaise.html#STATE_WAIT_FOR_ACTION">STATE_WAIT_FOR_ACTION</a>, <a href="VisageLivenessBrowRaise.html#STATE_ACTION_VERIFIED">STATE_ACTION_VERIFIED</a>. </li>
+</ul>
+or -1 if frame is not valid (frameWidth and frameHeight less than 1 or p_imageData is null).
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="reset"><span class="type-signature"></span>reset<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Resets action. 
+<br/><br/>
+Clears face data sequence. 
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:30 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

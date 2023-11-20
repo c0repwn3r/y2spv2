@@ -1,0 +1,259 @@
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+<link href="css/browserref.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>VisageTrackerUnityDemo sample project</h1>
+<p>
+The VisageTrackerUnityDemo sample project demonstrates the integration of visage|SDK with Unity game engine
+and is aimed at developers starting to use face tracking functionality of visage|SDK in Unity game engine and development tool. 
+<br>The application needs to be built from the Unity project which is located in <a href="../www/Samples/VisageTrackerUnityDemo"><em>www/Samples/VisageTrackerUnityDemo</em></a>.
+Detailed instructions for building and running the project are available in sections <a href="#buildproject">Building the project</a> and <a href="#runapp">Running the project</a>.
+If you wish to integrate visage|SDK in your own Unity project, instructions can be found <a href="unity_integration.html">here</a>.
+<br><br>
+The sample project shows how face tracking is used to put virtual objects (glasses) on multiple faces in Unity, 
+and how to access the full 3D face model of the faces. The sample also shows the use of face analysis by displaying age, gender and emotion estimation results for each tracked face. 
+Developers may use parts of this project to speed up their own development in Unity using visage|SDK or use this application as a starting point for their own projects.
+</p>
+
+<h2 id="buildproject">Building the project</h2>
+<p>
+The files related to the VisageTrackerUnityDemo sample project are located in the <i>www/Samples/VisageTrackerUnityDemo</i> subfolder of the visage|SDK folder.
+<br><br>
+The application was built and tested with version 2020.3.21f1.
+<br><br>
+</p>
+<p>
+<b>NOTE:</b> 
+<ul>
+<li>The plugin should be modified if it is used in older versions of Unity. More information can be found in the <a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a> and  <a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a> documentation.</li>
+<br>
+<li>Depending on the Unity version that is used, multiple error messages related to project dependencies might appear in the console. 
+Unity offers several possible solutions for this issue and more information can be found <a href="https://docs.unity3d.com/Manual/upm-errors.html#Upgrade">here</a>.</li>
+</ul>
+</p>
+<br>
+<p>
+To build the application follow these steps:
+<ol>
+    <li>Open VisageTrackerUnityDemo project in Unity (<i>www/Samples/VisageTrackerUnityDemo</i>).
+    <li>Add license key to the application (more information can be found in <a href="licensing.html"><em>Licensing</em></a> section of the documentation).
+    <li>Select and open the <b>Main</b> scene, located in Project's Assets.<br>
+	Please make sure the Analyser.cs script is attached to the Anaylser object in the Main scene.
+	<li>Build the application by selecting <i>File</i>-><i>Build settings</i>... and under <i>Platform</i> choose <b>WebGL</b>.
+	<li>Check the <b>Main</b> scene in window Scenes In Build. If the Main scene is not listed, press <i>Add Open Scenes</i> button.
+    <li>Press the <b>Build</b> button to generate the project, a dialog window will appear. In this window, locate and set a destination folder to <i>www/Samples/VisageTrackerUnityDemo/Build</i> (the Build folder must first be created).
+</ol>
+
+WebGL build generates 3 folders:
+<ol>
+<li>Build</li>
+<li>StreamingAssets</li>
+<li>TemplateData</li> 
+</ol>
+and html file: <br>
+<ol>
+<li style="list-style-type: none;">index.html</li>
+</ol>
+
+Before running: 
+<ul id="BuildUnity">
+	<li>copy <b>visageSDK.js, visageSDK.wasm, visageSDK.data, visageAnalysisData.js and visageAnalysisData.data</b> from the <i>www/lib</i> folder to the same folder as index.html file (<i>www/Samples/VisageTrackerUnity/Build</i>).</li>
+	<br>
+	<li>Modify index.html output file to expose <b>unityInstance</b> to the global variable <b>unityGame</b>:
+	<pre class="prettyprint source"><code>
+	&lt;body>
+		&lt;script>
+		...
+		<b>var unityGame;</b>
+		var script = document.createElement("script");
+		script.src = loaderUrl;
+		script.onload = () => {
+		  createUnityInstance(canvas, config, (progress) => {
+			progressBarFull.style.width = 100 * progress + "%";
+		  }).then((unityInstance) => {
+			loadingBar.style.display = "none";
+			<b>unityGame = unityInstance;</b>
+			fullscreenButton.onclick = () => {
+			  unityInstance.SetFullscreen(1);
+			};
+		  }).catch((message) => {
+			alert(message);
+		  });
+		};
+		document.body.appendChild(script);
+		&lt;/script>
+	&lt;/body>
+	</code></pre>
+	</li>
+</ul>
+
+
+
+
+<h2 id="runapp">Running the project</h2>
+
+The WebGL build output (<i>Samples/VisageTrackerUnity/Build</i>) must be installed on a web server in order to run (it can not run from a local disk). 
+<br><br>
+To install the application on your own web server, upload folder <i>Samples/VisageTrackerUnityDemo/Build</i> to your web server. To run the application access the <i>Samples/VisageTrackerUnityDemo/index.html</i> page via a web browser.
+<br>
+For a quick trial from Visage Technologies web server, click 
+<a href="https://visagetechnologies.com/demo/" target="_blank">here</a> and choose <b>Visage Tracker Unity</b>.
+<br><br>
+</p>
+
+<p>
+The application must be licensed in order to function. Licensing is based on License Key Files. To obtain the License Key File:
+<ol>
+<li>Contact your Visage Technologies contact person in order to obtain a license key.</li>
+<li>Copy the obtained license key file into your application folder (e.g. <i>Samples/VisageTrackerUnityDemo/Assets/StreamingAssets/Visage Tracker</i>).</li>
+<li>Set the <i>licenseString</i> member of the LicenseString class (script LicenseString.cs) so it contains the name of the license key file.</li>
+<li>Preload license key file to the file system in Awake() function using _preloadFile function (see <a href="module-VisageTrackerUnityPlugin.html#_preloadFile">_preloadFile</a>).</li> 
+<li>Send the path of the license file to _initializeLicense function (see <a href="module-VisageTrackerUnityPlugin.html#_initializeLicense">_initializeLicense</a>).
+<br>
+Example from Tracker.cs (<i>www/Sample/VisageTrackerUnityDemo/Assets/Scripts</i>) script:
+<pre class="prettyprint source"><code>
+
+	VisageTrackerNative._preloadFile(Application.streamingAssetsPath + "/Visage Tracker/" + LicenseString.licenseString);
+	
+	licenseFilePath = "";
+	
+	...
+
+	VisageTrackerNative._initializeLicense(licenseFilePath + LicenseString.licenseString);
+	
+</code></pre>
+
+</ol> 
+</p>
+
+<p>
+For further information please read <a href="licensing.html" target="_blank">licensing</a> section of the documentation.
+</p>
+
+<h2>Using the sample application</h2>
+
+<ul>
+<li>Running the sample requires WebGL 2.0 compatible browsers.</li>
+<li>Allow the application to access your camera by choosing "Allow" in the browser's pop-up bar.</li>
+<li>Tracking and face analysis will start automatically when a frontal face is found in the camera frame. </li>
+<li><i>Optional</i>: Play/Pause in the lower right corner</li>
+<li><i>Optional</i>: Switch effect in the lower right corner</li>
+</ul>
+
+<h2>Implementation overview</h2>
+<p>
+The project consists of the main scene with Unity’s GameObjects that provide different functionalities. A GameObject is the main building block of a scene in Unity. 
+It consists of different Components and can parent other GameObjects. Manipulation of GameObjects is done with Scripts. 
+It is recommended for developers to get familiar with Unity basics before continuing. 
+The integration with visage|SDK is done through a plugin (VisageTrackerUnityPlugin and VisageAnalyserUnityPlugin) that wraps native code 
+calls to visage|SDK and provides functions that can be called from Unity scripts.
+
+<h3>Tracker GameObject</h3>
+
+The core of the example is the Tracker GameObject. It consists of different components attached to it. 
+The main component of the Tracker GameObject is the Tracker script component that handles the communication with the tracker (starts it and gets results from it). 
+The behaviour of the script can be modified by changing its properties and the script code. 
+Other properties can be added as well. The existing Tracker script properties of interest are as follows:
+<ul>
+    <li>MAX_FACES parameter: a parameter that determines how many faces in the frame will be tracked
+	<li>Controllable Objects Glasses: list of Glasses Model GameObjects that will be transformed automatically while the face tracking is performed</li>
+    <li>Controllable Objects Tiger: list of tiger textures that will be transformed while the face tracking is performed after the button effect is pressed</li>
+    <li>Config File: filename of the configuration file that will be used by the tracker</li>
+</ul>
+<br>
+
+<h3>Analyser GameObject</h3>
+
+Analyser GameObject is another important object that relies on the functionality of the Tracker object, i.e. Tracker script component.
+The behaviour of this object is defined in the Analyser script. 
+The existing Analyser script properties of interest are:
+<ul>
+    <li>Analysis Data Element: prefab attached to the Analyser GameObject which contains the components needed to display information about the person's age, gender and emotions</li>
+	<li>Analysis list: list of Analysis Data Elements instances for each tracked face that will be transformed while the face tracking is performed
+</ul>
+<br>
+
+<h3>Cameras</h3>
+
+There are two cameras in the scene, one for the 3D scene (Main Camera) and the other for video display (Video Camera). The main camera "Field of View" is automatically set according to the Tracker focus (<i>camera_focus</i> parameter in the configuration file) and input image aspect by the Tracker script. The Video Camera renders objects in the Video layer by using orthographic projection.
+
+<h3>Video object</h3>
+
+Video GameObject contains Video Plane that is used for displaying video and is automatically scaled to input frame aspect ratio by the VideoController script attached to it. 
+
+<h3>Glasses object</h3>
+
+The rotation and translation information from the tracker is applied to the Glasses object as they are in the Tracker script Controllable Objects Glasses list. This enables overlaying virtual objects to the tracked face that transform correctly with it. Other custom objects can be used instead of the glasses object. For the correct size and positioning of the glasses objects and also on how to achieve occlusion refer to the <a href="doc/modeling_guide.pdf">Animation & AR Modeling Guide</a> .
+
+<h3>VisageUnityPlugin</h3>
+
+The integration of visage|SDK face tracking with Unity is done through a plugin that wraps native code calls and provides functions that can be called from Unity scripts. 
+The provided plugin is divided into two files: VisageTrackerUnityPlugin.jslib and VisageAnalyserUnityPlugin.jslib and can be used as-is. 
+For more information about the plugin including its source code, see the documentation of <a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a>
+and <a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a>.
+
+
+<h2>Browser compatibility</h2>
+<p>
+Visage Tracker Unity Demo sample is tested on the recent browsers on Windows, Mac, Android and iPhone platforms. 
+Results are represented in the following table:
+</p>
+
+<script>
+
+function platform(platformName) {
+    var i;
+    var x = document.getElementsByClassName("browser");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; 
+    }
+    document.getElementById(platformName).style.display = "block"; 
+}
+</script>
+
+
+<div id="Desktop" class="browser">
+ <table class="browserref notranslate">
+  <tr>
+    <th></th>
+    <th style="width:15%;" class="bsChrome" title="Chrome"></th>
+    <th style="width:15%;" class="bsFirefox" title="FireFox"></th>
+    <th style="width:15%;" class="bsOpera" title="Opera"></th>
+    <th style="width:15%;" class="bsEdge" title="Edge"></th></th>
+    <th style="width:15%;" class="bsSafari" title="Safari"></th></th>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsDesktop" title="Desktop"></th>
+    <td style="background-color:#99cc99">96</td>
+    <td style="background-color:#99cc99">91</td>
+    <td style="background-color:#99cc99">81</td>
+    <td style="background-color:#99cc99">88</td>
+    <td style="background-color:#ff9999">14</td>
+  </tr>
+  <tr>
+    <th style="width:10%;" class="bsAndroid" title="Android"></th>
+    <td style="background-color:#ff9999">95</td>
+    <td style="background-color:#ff9999">93</td>
+    <td style="background-color:#ff9999">64</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+  </tr>
+   <tr>
+    <th style="width:10%;" class="bsIphone" title="Iphone"></th>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#D3D3D3">--</td>
+    <td style="background-color:#ff9999">14</td>
+  </tr>
+</table>
+</div>
+</br>
+</body>
+</html>

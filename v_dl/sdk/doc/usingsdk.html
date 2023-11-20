@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+
+<h1>Welcome to visage|SDK</h1>
+
+
+<p>Visage|SDK for HTML5 is a JavaScript software development kit encapsulating Visage Technologies’ powerful face detection and tracking technology, as well as a 
+simple high-level API for Augemented Reality applications based on face tracking, such as virtual eyewear try-on.</p>
+
+<h2>Getting started</h2>
+
+<p>Visage|SDK provides access to face tracking technology through a flexible API supporting a variety of aplications. An
+overview of the API is given in the <a href="index_api.html"><em>API</em></a> section. Visage|SDK includes sample projects with full source code demonstrating
+how to use the API. It is recommended to start by running the samples, described in the <a href="samples.html"><em>Samples</em></a> section.</p>
+
+<h2>Implementation</h2>
+
+<p id="webassembly">
+visage|SDK library is implemented in <i>Webassembly</i> format within <b>visageSDK.js</b> and <b>visageSDK.wasm</b> files with main data packaged separately within <b>visageSDK.data</b> file.
+<ul>
+<li>visageSDK.js</li>
+<li>visageSDK.wasm</li>
+<li>visageSDK.data</li>
+</ul>
+Additional data files are provided in a form of a loader script and accompanying .data file, to be optionally included, depending on algorithms used.
+<ul>
+<li>visageEarsRefinerData.js & visageEarsRefinerData.data</li>
+<li>visageRecognitionData.js & visageRecognitionData.data</li>
+<li>visageAnalyserData.js & visageAnalyserData.data</li>
+</ul>
+
+For more information see the API page of <a href="VisageTracker.html"><em>VisageTracker</em></a>, <a href="VisageFaceAnalyser.html"><em>VisageFaceAnalyser</em></a> and <a href="VisageFaceRecognition.html"><em>VisageFaceRecognition</em></a>.
+</p>
+<p>
+
+<br/>
+Note that it is important for the web server to serve .wasm files over the network with the correct MIME type which is "application/wasm".  
+That will allow streaming compilation, where the browser can start to compile code as it downloads.
+</p>
+<p>
+For example, in Apache modify .htaccess file on web server as follows:
+<ul>
+<i> AddType application/wasm .wasm </i>
+</ul>
+
+</p>
+
+
+</body>
+</html>

@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: VisageDetector</title>
+    
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+    
+    <h1 class="page-title">Class: VisageDetector</h1>
+    
+    
+
+
+
+<section>
+    
+<header>
+    <h2>
+    VisageDetector
+    </h2>
+    
+</header>  
+
+<article>
+    <div class="container-overview">
+    
+    
+    
+        
+<dt>
+    <h4 class="name" id="VisageDetector"><span class="type-signature"></span>new VisageDetector<span class="signature">(configurationName)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Faces and facial features detector implementation.
+<br/><br/>
+VisageDetector class detects one or more faces and their facial features in an image. The input is image data and image descriptors (image width, image height, ...). 
+The results are, for each detected face, the 3D head pose, the coordinates of facial feature points, e.g. chin tip, nose tip, lip corners etc. and 3D face model fitted to the face.
+The results are returned in one or more FaceData objects, one for each detected face. Please refer to the FaceData documentation for detailed description of returned data.
+<br/><br/>
+<b>Note</b>: After the end of use VisageDetector object needs to be deleted to release the allocated memory. Example:
+<pre class="prettyprint source"><code>
+&lt;script>
+m_Detector = new VisageModule.VisageDetector("../../lib/Face Detector.cfg");
+...
+m_Detector.delete();
+&lt;/script>
+</code></pre>
+<br/><br/>
+
+<h5>Dependencies</h5>
+<br/>
+VisageDetector requires data file, configuration file and license key file
+to be preloaded to virtual file system. Data and configuration files can be found in the <i>www/lib</i> folder.
+<br/><br/>
+
+<h6>Data files</h6>
+Main VisageDetector data is bundled in the <b>visageSDK.data</b> file and loaded using the <b>visageSDK.js</b> script.
+
+<br/><br/>
+
+<u id="changeLocation"><i>Changing the location of data files</u></i>
+<br/>
+By default, loader scripts expect the <b>.data</b> files to be in the same location as <b>the application's main html file</b>, 
+while <b>visageSDK.wasm</b> is expected to be in the same location as <b>visageSDK.js</b> library file.
+However, location of the <i>.data</i> and <i>.wasm</i> files can be changed.
+<br/>
+The code example below shows how to implement <i>locateFile</i> function and how to set it as an attribute to the VisageModule object.
+<br/><br/>
+
+<h6>Configuration and license key files</h6>
+VisageDetector uses <b>Face Detector.cfg</b> configuration file.
+Configuration and the license key files are preloaded to the virtual file system using VisageModule's  API function assigned to the <i>preRun</i> attribute:
+<pre><code>
+      VisageModule.FS_createPreloadedFile(parent, name, url, canRead, canWrite)
+</code></pre>
+where <i>parent</i> and <i>name</i> are the path on the virtual file system and the name of the file, respectively.
+</br></br>
+
+<h5>visage|SDK initialization order</h5>
+<br/>
+The order in which the VisageModule is declared and library and data scripts are included is important.
+<br/>
+<ul>
+<li> First, <b>VisageModule</b> object is declared
+<ul>
+  <li> including preloading of the configuration files, license files and possibly, changing the location of data files
+</ul>
+<li> then <b>visageSDK.js</b> library script is included and
+<li> last, external data loader script is included
+</ul>
+<br/><br/>
+Sample usage - changing data files location and script including order:
+<br/>
+<pre class="prettyprint source"><code>
+&lt;script>
+licenseName = "lic_web.vlc"
+licenseURL = "lic_web.vlc"
+
+var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
+
+VisageModule = {
+
+  locateFile: locateFile,
+
+  preRun: [function() {
+      VisageModule.FS_createPreloadedFile('/', 'Face Detector.cfg', "../../lib/Face Detector.cfg", true, false);
+      VisageModule.FS_createPreloadedFile('/', 'NeuralNet.cfg', "../../lib/NeuralNet.cfg", true, false);
+      VisageModule.FS_createPreloadedFile('/', licenseName, licenseURL, true, false, function(){ },  function(){ alert("Loading License Failed!") }); 	
+
+  }],
+
+  onRuntimeInitialized: onModuleInitialized
+}
+&lt;/script>
+
+&lt;script src="../../lib/visageSDK.js"> &lt;/script>
+</code></pre>
+<br/>
+<br/>
+
+<br/><br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>configurationName</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            
+            
+            <td class="description last">the name of the detector configuration file (Face Detector.cfg; default configuration file provided in lib folder;
+for further details see <a href="doc/VisageTracker Configuration Manual.pdf">VTCM</a>).</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+        <h3 class="subsection-title">Methods</h3>
+        
+        <dl>
+            
+<dt>
+    <h4 class="name" id="detectFeatures"><span class="type-signature"></span>detectFeatures<span class="signature">(frameWidth, frameHeight, p_imageData, faceDataArray, <span class="optional">maxFaces</span>, <span class="optional">minFaceScale</span>, <span class="optional">maxFaceScale</span>, <span class="optional">outputOnly2DFeatures</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Performs faces and facial features detection in a still image.
+<br/><br/>
+The algorithm detects one or more faces and their features. The results are, for each detected face, the 3D head pose, gaze direction, eye closure, 
+coordinates of facial feature points (e.g. chin tip, nose tip, lip corners etc.) and 3D face model fitted to the face.
+<br/><br/>
+The results are returned in form of FaceData objects. An array of FaceData objects passed to this method as output parameter should be allocated to maxFaces size. 
+<br/><br/>
+Sample usage:
+<br/>
+<pre class="prettyprint source"><code>
+var m_Detector,
+    faceData,
+    maxFaces,
+    frameWidth,
+    frameHeight;
+
+function onInitializeDetector(){
+    //Initialize licensing with the obtained license key file
+    VisageModule.initializeLicenseManager("xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx.vlc");
+    //Instantiate detector object
+    m_Detector = new VisageModule.VisageDetector("../../lib/Face Detector.cfg");
+    //Instantiate an FaceDataVector instance where detection results will be stored
+    faceDataArray = new VisageModule.FaceDataVector();
+    //Specify the maximum number of faces that will be detected in the image
+    maxFaces = 10;
+    for (var i = 0; i < maxFaces; ++i)
+    {
+          faceData = new VisageModule.FaceData();
+          faceDataArray.push_back(faceData);
+    }
+    frameWidth = canvas.width;
+    frameHeight = canvas.height;
+    
+    //Allocate memory for image data
+    ppixels = VisageModule._malloc(mWidth*mHeight*4);
+    //Create a view to the memory
+    pixels = new Uint8ClampedArray(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
+}
+function onDetectInImage(){
+    //Obtain the image pixel data
+    var imageData = canvas.getContext('2d').getImageData(0,0, mWidth, mHeight).data;
+    //Fill pixels with imageData
+    pixels.set(imageData);
+    //Call the detection method
+    var numberOfFaces = m_Detector.detectFeatures(frameWidth, frameHeight, ppixels, faceDataArray, maxFaces);
+    //Based on the number of detected faces do some action with the return values located in face data array
+    if (numberOfFaces > 0)
+    {
+         for (var i = 0; i < maxFaces; ++i)
+         {
+              drawSomething(faceDataArray.get(i));
+         }
+    }    
+}
+function onCleanUp(){
+    //Clean up Detector memory
+    m_Detector.delete();
+    //Clean up FaceData objects
+    for (var i = 0; i < maxFaces; ++i)
+    {
+          var f_data = faceDataArray.get(i);
+          f_data.delete();
+    }
+    //Clean up FaceDataArray object
+    faceDataArray.delete();
+}
+</code></pre>
+<br/><br/>
+After this call, n contains the number of faces actually detected. The first n members of the data array are filled with resulting data for each detected face.
+Please refer to the FaceData documentation for detailed description of returned parameters. If maxFaces is smaller than the number of faces actually present in the image, 
+the function will return only first maxFaces detected faces.
+<br/><br/>
+Following image formats are supported: 
+<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_RGB: each pixel of the image is represented by three bytes representing red, green and blue channels, respectively.<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_RGBA: each pixel of the image is represented by four bytes representing red, green, blue and alpha (ignored) channels, respectively.<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_LUMINANCE: each pixel of the image is represented by one byte representing the luminance (gray level) of the image.
+Origin must be:<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_ORIGIN_TL: Origin is the top left pixel of the image. Pixels are ordered row-by-row starting from top left.
+<br/><br/>
+Note that the input image is internally converted to grayscale.
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Width of the frame.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Height of the frame.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>p_imageData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Pointer to image pixel data, size of the array must correspond to frameWidth and frameHeight.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>faceDataArray</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="FaceDataVector.html">FaceDataVector</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Array of <a href="FaceData.html">FaceData</a> objects  that will receive the detection results. The size of the faceDataArray is equal to maxFaces parameter.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxFaces</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">Maximum number of faces to be detected.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minFaceScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0.1
+                
+                </td>
+            
+            
+            <td class="description last">Scale of smallest face to be searched for, defined as decimal fraction [0.0 - 1.0] of input image size (min(width, height)).</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxFaceScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">Scale of largest face to be searched for, defined as decimal fraction [0.0 - 1.0] of input image size (min(width, height))</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>outputOnly2DFeatures</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+            
+            <td class="description last">If set, detection time will be reduced and only featurePoints2D will be returned.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="FaceDataVector.html">FaceDataVector</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    numberOfFaces - Number of detected faces (0 or more), -1 if error occurred
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="detectFaces"><span class="type-signature"></span>detectFaces<span class="signature">(frameWidth, frameHeight, p_imageData, VSRectVector, <span class="optional">maxFaces</span>, <span class="optional">minFaceScale</span>, <span class="optional">maxFaceScale</span>, <span class="optional">useRefinementStep</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        Performs face detection in a still image.
+<br/><br/>
+The algorithm detects one or more faces. For each detected face a square facial bounding box is returned.
+<br/><br/>
+The results are returned in form of VSRect objects. An array of VSRect objects passed to this method as output parameter should be allocated to maxFaces size. 
+<br/><br/>
+Sample usage:
+<br/>
+<pre class="prettyprint source"><code>
+var m_Detector,
+    faceData,
+    maxFaces,
+    frameWidth,
+    frameHeight;
+
+function onInitializeDetector(){
+    //Initialize licensing with the obtained license key file
+    VisageModule.initializeLicenseManager("xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx-xxx.vlc");
+    //Instantiate detector object
+    m_Detector = new VisageModule.VisageDetector("../../lib/Face Detector.cfg");
+    //Instantiate an VSRectVector instance where detection results will be stored
+    boundingBoxArray = new VisageModule.VSRectVector();
+    //Specify the maximum number of faces that will be detected in the image
+    maxFaces = 10;
+    for (var i = 0; i < maxFaces; ++i)
+    {
+          boundingBox = new VisageModule.VSRect();
+          boundingBoxArray.push_back(boundingBox);
+    }
+    frameWidth = canvas.width;
+    frameHeight = canvas.height;
+    
+    //Allocate memory for image data
+    ppixels = VisageModule._malloc(mWidth*mHeight*4);
+    //Create a view to the memory
+    pixels = new Uint8ClampedArray(VisageModule.HEAPU8.buffer, ppixels, mWidth*mHeight*4);
+}
+function onDetectInImage(){
+    //Obtain the image pixel data
+    var imageData = canvas.getContext('2d').getImageData(0,0, mWidth, mHeight).data;
+    //Fill pixels with imageData
+    pixels.set(imageData);
+    //Call the detection method
+    var numberOfFaces = m_Detector.detectFaces(frameWidth, frameHeight, ppixels, boundingBoxArray, maxFaces);
+    //Based on the number of detected faces do some action with the return values located in VSRect array
+    if (numberOfFaces > 0)
+    {
+         for (var i = 0; i < maxFaces; ++i)
+         {
+              drawSomething(boundingBoxArray.get(i));
+         }
+    }    
+}
+function onCleanUp(){
+    //Clean up Detector memory
+    m_Detector.delete();
+    //Clean up VSRect objects
+    for (var i = 0; i < maxFaces; ++i)
+    {
+          var boundingBox = boundingBoxArray.get(i);
+          boundingBox.delete();
+    }
+    //Clean up VSRectVector object
+    boundingBoxArray.delete();
+}
+</code></pre>
+<br/><br/>
+After this call, n contains the number of detected faces. The first n members of the faces array are filled with resulting bounding boxes for each detected face.
+If maxFaces is smaller than the number of faces actually detected in the image, the function will return only first maxFaces detected faces.
+<br/><br/>
+Following image formats are supported:
+<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_RGB: each pixel of the image is represented by three bytes representing red, green and blue channels, respectively.<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_RGBA: each pixel of the image is represented by four bytes representing red, green, blue and alpha (ignored) channels, respectively.<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_FMT_LUMINANCE: each pixel of the image is represented by one byte representing the luminance (gray level) of the image.
+Origin must be:<br/>
+- VisageModule.VISAGE_FRAMEGRABBER_ORIGIN_TL: Origin is the top left pixel of the image. Pixels are ordered row-by-row starting from top left.
+<br/><br/>
+Note that the input image is internally converted to grayscale.
+<br/>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		<th>Argument</th>
+		
+		
+		
+		<th>Default</th>
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameWidth</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Width of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>frameHeight</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Height of the frame</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>p_imageData</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Pointer to image pixel data, size of the array must correspond to frameWidth and frameHeight</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>VSRectVector</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type"><a href="VSRectVector.html">VSRectVector</a></span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                </td>
+            
+            
+            <td class="description last">Provide an empty array. It will be filled with <a href="VSRect.html">VSRect</a> instances.</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxFaces</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+            
+            <td class="description last">Maximum number of faces to be detected</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>minFaceScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    0.1
+                
+                </td>
+            
+            
+            <td class="description last">Scale of smallest face to be searched for, defined as decimal fraction [0.0 - 1.0] of input image size (min(width, height)).</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>maxFaceScale</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    1.0
+                
+                </td>
+            
+            
+            <td class="description last">Scale of largest face to be searched for, defined as decimal fraction [0.0 - 1.0] of input image size (min(width, height))</td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>useRefinementStep</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+                    
+                
+                    
+                
+                </td>
+            
+            
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+            
+            <td class="description last">If set to true, additional refinement algorithm will be used resulting with more precise facial bounding boxes and lower FPR, but higher detection time.</td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="VSRectVector.html">VSRectVector</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    numberOfFaces - Number of detected faces (0 or more), -1 if error occurred
+</div>
+
+
+
+<dl>
+	<dt>
+		Type
+	</dt>
+	<dd>
+		
+<span class="param-type">number</span>
+
+
+	</dd>
+</dl>
+
+        
+    
+    
+</dd>
+
+        </dl>
+    
+    
+    
+    
+    
+</article>
+
+</section>  
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Modules</h3><ul><li><a href="module-VisageTrackerUnityPlugin.html">VisageTrackerUnityPlugin</a></li><li><a href="module-VisageAnalyserUnityPlugin.html">VisageAnalyserUnityPlugin</a></li></ul><h3>Classes</h3><ul><li><a href="FaceData.html">FaceData</a></li><li><a href="ScreenSpaceGazeData.html">ScreenSpaceGazeData</a></li><li><a href="VectorFloat.html">VectorFloat</a></li><li><a href="VectorShort.html">VectorShort</a></li><li><a href="VectorString.html">VectorString</a></li><li><a href="VisageFaceAnalyser.html">VisageFaceAnalyser</a></li><li><a href="AnalysisData.html">AnalysisData</a></li><li><a href="FeaturePoint.html">FeaturePoint</a></li><li><a href="FDP.html">FDP</a></li><li><a href="VisageDetector.html">VisageDetector</a></li><li><a href="FaceDataVector.html">FaceDataVector</a></li><li><a href="VSRectVector.html">VSRectVector</a></li><li><a href="VSRect.html">VSRect</a></li><li><a href="VisageGazeTracker.html">VisageGazeTracker</a></li><li><a href="VisageFaceRecognition.html">VisageFaceRecognition</a></li><li><a href="VisageTracker.html">VisageTracker</a></li><li><a href="VisageConfiguration.html">VisageConfiguration</a></li><li><a href="VisageLivenessBlink.html">VisageLivenessBlink</a></li><li><a href="VisageLivenessSmile.html">VisageLivenessSmile</a></li><li><a href="VisageLivenessBrowRaise.html">VisageLivenessBrowRaise</a></li><li><a href="VisageAR.html">VisageAR</a></li></ul><h3>Global</h3><ul><li><a href="global.html#FP_START_GROUP_INDEX">FP_START_GROUP_INDEX</a></li><li><a href="global.html#FP_END_GROUP_INDEX">FP_END_GROUP_INDEX</a></li><li><a href="global.html#FP_NUMBER_OF_GROUPS">FP_NUMBER_OF_GROUPS</a></li><li><a href="global.html#initializeLicenseManager">initializeLicenseManager</a></li><li><a href="global.html#VisageTrackerStatus">VisageTrackerStatus</a></li><li><a href="global.html#VisageTrackerImageFormat">VisageTrackerImageFormat</a></li><li><a href="global.html#VisageTrackerOrigin">VisageTrackerOrigin</a></li><li><a href="global.html#getSDKVersion">getSDKVersion</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.2.0</a> on Sat Jul 29 2023 01:38:29 GMT-0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

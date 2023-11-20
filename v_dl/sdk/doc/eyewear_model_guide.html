@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Introduction</title>
+<link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Model preparation guide</h1>
+<p>
+This guide explains how to prepare 3D models to be used in augmented reality (AR) applications based on visage|SDK head tracking. As an example, the guide shows how to prepare 
+eyeglasses for Virtual Try-on application. The same principles may be applied to other objects to be used in AR applications.
+</p>
+
+<h2>Size and positioning</h2>
+<p>
+Real-life size, in meter units.<br/>
+X positioning: centre of glasses at X=0<br/>
+Y positioning: visual axes at Y = 0<br/>
+Z positioning: eyeball front edge at Z = 0 (therefore lenses at approx Z = 0.02 - 0.025 m depending on glasses model)<br/>
+</p>
+<p>
+<div style="margin: 0 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;">
+    <img src="images/vet-geometry.jpg" width="640" height="480" /></br>
+    Fig1. - Size and positioning of the glasses in 3D authoring tool.
+ </div>
+</div>
+</p>
+
+<h2>Occlusion</h2>
+<p>If occlusions are not handled, glasses would always appear on top of the face like this:</p>
+<p>
+<div style="margin: 0 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;">
+    <img src="images/glass_no_oclussion.jpg" width="640" height="480"/></br>
+    Fig2. - No occlusion
+ </div>
+</div>
+</p>
+<p>In reality, parts of the glasses are occluded by the head, nose or ears. To achieve the same effect in augmented reality, an occlusion mask is used. 
+This is an object shaped roughly like a human head and placed inside the glasses. 
+The material of this object is called <i>occluder_mat</i>. At runtime, the occlusion mask covers the object behind it but is not itself visible, achieving the desired effect. 
+The next two images show the occlusion mesh highlighted as wireframe (left), and the final effect (right).
+</p>
+<p>
+<div style="margin: 0 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occluder_wireframe.jpg" width="320" height="240"/></br>
+    Fig3. - Occlusion final(wireframe)
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occluder_final.jpg" width="320" height="240" /></br>
+    Fig4. - Occlusion final
+ </div>
+</div>
+</p>
+
+<h3>Importing the occlusion mask</h3>
+<p>Occlusion mask is available: models/occlusion_mask.obj. When imported into the scene, the mask should automatically be correctly sized and positioned, as follows:<br/>
+Real-life size, in meter units.<br/>
+X positioning: point between the eye centres at X=0<br/>
+Y positioning: eye centres at Y = 0<br/>
+Z positioning: eyeball front edge at Z = 0<br/>
+<b>The occlusion mask must not be moved or scaled.</b>
+</p>
+
+<h3>Adjusting the occlusion mask</h3>
+<p>Small adjustments to the mask can be made so it better fits the specific glasses model.</p>
+
+<h4>Nose adjustment</h4>
+<p>Nose can be widened in order to fit the glasses' nose pads as close as possible.</br>
+Following images illustrate the correct fitting of the nose:
+</p>
+<p>
+<div style="margin: 5 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_nose_correct.jpg" width="210" height="163" /></br>
+    Fig5. - Correct nose adjustments
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_nose_narrow.jpg" width="210" height="163" /></br>
+    Fig6. - Nose too narrow
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_nose_wide.jpg" width="210" height="163" /></br>
+    Fig7. - Nose too wide
+ </div>
+</div>
+</p>
+
+<h4>Head sides</h4>
+<p>If the occlusion mask is too wide or too narrow, it can be adjusted by moving the sides of the head or adjusting them so that the temples of the glasses fit closely to the mask.</p>
+</p>
+<p>
+<div style="margin: 5 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_head_correct.jpg" width="210" height="264" /></br>
+    Fig8. - Correct head sides adjustments
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_head_narrow.jpg" width="210" height="264"/></br>
+    Fig9. - Head sides too narrow
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_head_wide.jpg" width="210" height="264" /></br>
+    Fig10. - Head sides too wide
+ </div>
+</div>
+</p>
+
+<h4>Ears</h4>
+<p>The ears of the occlusion mask should fully cover the back part of the temples.</p>
+<p>
+<div style="margin: 0 auto; text-align: center; overflow: hidden;">
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_ears_correct.jpg" width="310" height="251" /></br>
+    Fig11. - Correct ears adjustments
+ </div>
+ <div style="float: left;margin-right:5px;">
+    <img src="images/occlude_ears_wrong.jpg" width="310" height="251"/></br>
+    Fig12. - Temples not completely occluded
+ </div>
+</div>
+</p>
+<h2>Importing the model into the final AR application</h2>
+<p>This section covers issues of file formats and conversions. The two subsections cover the two 3D platforms typically used to build final AR applications using visage|SDK - Three.js and Unity3D.</p>
+
+<h3>Three.js (used in visage|SDK for HTML5)</h3>
+<p>Models need to be in OBJ format with a corresponding MTL material file. Most 3D authoring tools provide a way to export an object to OBJ and MTL.</p>
+<p>Resulting OBJ file must contain both the glasses and the occlusion mask.
+Occlusion mask mesh should be grouped under <i>occluder_mat</i> name. For example, 
+in Blender this is done by naming the material of the mesh <i>occluder_mat</i> and exporting to OBJ with setting <i>Material Groups</i> checked.</p>
+
+<h4>Editing the MTL file</h4>
+<p>
+Materials are defined in the MTL file, usually generated from the materials in the authoring tool. 
+After exporting advanced users can do fine tuning by editing the file. For syntax reference see <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file#Material_template_library">here</a>.
+Textures used in the MTL file should be placed in the path relative to the MTL folder. Supported texture formats include JPG, TGA and PNG.
+</p>
+
+<h3>Unity3D (used in visage|SDK for Windows, iOS, Android)</h3>
+<p>Models are typically built in a 3D authoring tool such as 3ds Max or Blender, then imported into Unity.
+See a tutorial <a href="https://docs.unity3d.com/2019.1/Documentation/Manual/HOWTO-ImportObjectsFrom3DApps.html">here</a> for a list of supported formats and details regarding the import process.
+After importing process is complete <b>check that the size and positioning of the model and the occlusion mask are consistent with the instructions in sections <i>Size and Positioning</i> and <i>Importing the occlusion mask</i>.</b>
+</p>
+<p>Unity3D package contains an occlusion shader that needs to be assigned to the <i>occluder_mask</i> object. Occlusion shader is available in the unity scene in: Materials/<xy>.
+Note that most materials will need to be recreated because Unity uses its own shaders.
+</p>
+
+</body>
+</html>
