@@ -20,16 +20,16 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <a href="/learn.html" class="btn btn-secondary p-5 w-100">Go Back</a>
+                    <a href="/learn.html" class="btn btn-secondary p-5 w-100" style="font-size: 30pt;">&larr; Go Back</a>
                 </div>
                 <div class="col">
-                    <a id="link" href="/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=1" class="btn btn-success p-5 w-100">Practice!</a>
+                    <a id="link" href="/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=1" class="btn btn-success p-5 w-100" style="font-size: 30pt;">Practice! &rarr; </a>
                 </div>
             </div>
     </div>
     </div>
 </div>
-<p style="position: absolute; bottom: 0; left: 10pt;">~core/expressed v1.0.2 - <a href="/changelog.html">changelog</a> - made with <3 - last build 11/21/23 01:37:33Z</p>
+<p style="position: fixed; bottom: 0; left: 10pt;">~core/expressed v1.1.0 - <a href="/changelog.html">changelog</a> - made with <3 - last build 12/06/23 21:02:45Z</p>
     <script>
         const params = new URLSearchParams(window.location.search);
         if (!params.has("v")) {
@@ -38,7 +38,14 @@
 
         let emotions = ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise", "Neutral"];
         let emotion_descriptions = [
-            "Anger description",
+            "<b>Tense Jaw and Clenched Teeth</b><br>" +
+            "Anger tightens the jaw, with visible teeth clenching and pronounced jaw muscles, revealing the effort to control intense emotions.<br>" +
+            "<br>" +
+            "<b>Narrowed Eyes and Intense Stare</b><br>" +
+            "Angry eyes narrow, eyebrows lower, and the gaze intensifies, conveying focused and heightened emotional intensity.<br>" +
+            "<br>" +
+            "<b>Flushed Complexion and Furrowed Forehead</b><br>" +
+            "Anger leads to a flushed complexion, especially in the cheeks, and a furrowed forehead, reflecting both physiological and mental responses to the emotion.",
             "Disgust description",
             "Fear description",
 
@@ -49,9 +56,27 @@
             "<b>Relaxed Brow</b><br>" +
             "The forehead is usually smooth and free from tension or furrowing when a person is happy. There are no signs of stress or worry, and the eyebrows may be slightly raised.",
 
-            "Sadness description",
-            "Surprise description",
-            "Neutral description"
+            "<b>Lower Your Eyebrows:</b><br> Gently bring your eyebrows down and closer together. You might feel a slight tension in your forehead. It's a subtle movement, not a frown, but more of a slight furrowing of the brows.<br>" +
+            "<br>" +
+            "<b>Relax Your Eyes:</b><br> Let your eyelids relax and droop slightly. Your eyes might feel a bit heavy, and you don't need to completely close them, but just let them soften. The area around your eyes might feel a bit more relaxed or less open than usual.<br>" +
+            "<br>" +
+            "<b>Slight Frown:</b><br> Allow the corners of your mouth to turn downwards. It's not a strong frown, but more like a gentle easing of the mouth corners down. You might feel a slight pull down on the muscles around your mouth.<br>" +
+            "<br>" +
+            "<b>Overall Facial Relaxation:</b><br> Generally, when someone is sad, their face isn't tense or tight. Let your face feel a bit more relaxed or less animated than usual.<br>" +
+            "<br>" +
+            "<b>Breathing and Mood:</b><br> Your breathing might be slower, and you might feel a bit of heaviness in your chest or a sense of stillness in your posture.<br>",
+
+
+
+            "<b>Eyebrows and Forehead:</b><br> When someone is scared, their eyebrows are usually raised and curved. You can think of it like lifting your eyebrows as high as they can go, causing wrinkles to form on the forehead. This movement is often a reaction to surprise or shock.<br>" +
+            "<br>" +
+            "<b>Eyes:</b><br> The eyes open very wide. This is like trying to see as much as possible, to understand what's causing fear. The eyelids are pulled back, and sometimes people can’t blink when they are extremely frightened.<br>" +
+            "<br>" +
+            "<b>Nose and Cheeks:</b> The nose might wrinkle slightly, and the cheeks are tense. It's less pronounced than in expressions like disgust or anger, but there's still some tension there.<br>" +
+            "<br>" +
+            "<b>Mouth:</b><br> The mouth is often open when someone is scared. It might be wide open in a sort of gasp, or just slightly open. The lips are usually tense or stretched, and the jaw might drop a bit due to the shock or surprise of the fearful situation.<br>" +
+            "<br>" +
+            "<b>Overall Feeling:</b><br> Imagine suddenly feeling a rush of cold or a jolt of electricity that makes you extremely alert and tense. Your face reacts to this by opening up as much as possible – eyes wide to see danger, mouth open in shock, and the whole face tensed and alert.<br>"
         ];
 
         document.getElementById("title2").innerText = "ExpressED: Learning " + emotions[Number(params.get("v"))];
