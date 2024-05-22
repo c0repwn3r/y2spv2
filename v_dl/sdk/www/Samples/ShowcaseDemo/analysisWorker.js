@@ -73,7 +73,7 @@ self.onmessage = function (msg) {
 }
 
 
-let licenses = ["291-990-011-548-883-275-738-041-539-138-740.vlc"];
+let licenses = ["291-990-011-548-883-275-738-041-539-138-740.vlc", "248-147-647-778-748-993-365-066-111-665-360.vlc"];
 
 var locateFile = function(dataFileName) {var relativePath = "../../lib/" + dataFileName; return relativePath};
 VisageModule = {
