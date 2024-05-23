@@ -2,7 +2,7 @@
 <html lang="en" data-bs-theme="dark">
   <head>
     <meta charset="UTF-8" />
-    <title>ExpressED - Unlocking Expressions For The Visually Impaired</title>
+    <title>ExpressED</title>
     <link rel="stylesheet" href="/bootstrap.min.css" />
     <style>
       body {
@@ -16,7 +16,8 @@
         align-items: center;
         padding: 20px;
       }
-      h1 {
+      h1,
+      h2 {
         text-align: center;
         margin-bottom: 20px;
         opacity: 0;
@@ -28,26 +29,29 @@
         gap: 20px;
         justify-content: center;
       }
-      .btn-primary {
+      .btn-primary,
+      .btn-secondary {
         font-size: 28px;
         padding: 20px 40px;
         margin: 10px;
         border-radius: 15px;
-        background-color: #ff69b4;
-        border: 2px solid #ff69b4;
-        color: #fff;
         opacity: 0;
         animation: fadeIn 1s forwards;
       }
-      .btn-primary:hover {
+      .btn-primary {
+        background-color: #ff69b4;
+        border: 2px solid #ff69b4;
+        color: #fff;
+      }
+      .btn-secondary {
+        background-color: transparent;
+        border: 2px solid #fff;
+        color: #fff;
+      }
+      .btn-primary:hover,
+      .btn-secondary:hover {
         background-color: #ff1493;
         border-color: #ff1493;
-      }
-      .logo {
-        width: 500px;
-        height: 500px;
-        margin: 50px auto;
-        display: block;
       }
       @keyframes fadeIn {
         to {
@@ -59,25 +63,32 @@
   <body>
     <div class="h-100 d-flex align-items-center justify-content-center">
       <div>
-        <h1>ExpressED - Unlocking Expressions For The Visually Impaired</h1>
+        <h1>Welcome to ExpressED!</h1>
+        <h2>Click to Master Emotions</h2>
+
         <div class="container btn-container">
-          <a href="/learn.html" class="btn btn-primary">Learn!</a>
-          <a href="/practice.html" class="btn btn-primary">Practice!</a>
-          <a href="/master.html" class="btn btn-primary">Master!</a>
+          <a href="/MasterAnger.html" class="btn btn-primary">Master Anger</a>
+          <a href="/MasterDisgust.html" class="btn btn-primary"
+            >Master Disgust</a
+          >
+          <a href="/MasterFear.html" class="btn btn-primary">Master Fear</a>
+          <a href="/MasterHappiness.html" class="btn btn-primary"
+            >Master Happiness</a
+          >
+          <a href="/MasterSadness.html" class="btn btn-primary"
+            >Master Sadness</a
+          >
+          <a href="/MasterSurprise.html" class="btn btn-primary"
+            >Master Surprise</a
+          >
+          <a href="/index.html" class="btn btn-secondary">&larr; Go Back</a>
         </div>
-        <img
-          aria-description="ExpressED logo"
-          alt="ExpressED logo"
-          src="/logo.png"
-          class="logo"
-        />
       </div>
     </div>
-
     <p style="position: fixed; bottom: 0; left: 10pt; color: #fff">
       ~core/expressed/s_ad1 v1.2.0 -
-      <a href="/changelog.html" style="color: #fff">changelog</a> - made with <3
-      - last build 05/22/24 20:50:22Z
+      <a href="/changelog.html" style="color: #fff">changelog</a> - made with
+      &lt;3 - last build 05/22/24 20:50:22Z
     </p>
 
     <script

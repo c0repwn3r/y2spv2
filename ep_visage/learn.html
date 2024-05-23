@@ -1,89 +1,130 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title id="title">ExpressED | Loading Practice</title>
     <link rel="stylesheet" href="/bootstrap.min.css" />
-</head>
-<body>
-<div class="h-100 d-flex align-items-center justify-content-center text-center">
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h1 id="title2">ExpressED: Loading Practice</h1>
-                    <h3 id="bdata">Please wait, while we load this emotion</h3>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <a href="/learn.html" class="btn btn-secondary p-5 w-100" style="font-size: 30pt;">&larr; Go Back</a>
-                </div>
-                <div class="col">
-                    <a id="link" href="/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=1" class="btn btn-success p-5 w-100" style="font-size: 30pt;">Practice! &rarr; </a>
-                </div>
-            </div>
+    <style>
+      body {
+        background-color: #121212;
+        color: #ffffff;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        padding: 20px;
+      }
+      h1,
+      h3 {
+        margin-bottom: 20px;
+      }
+      .btn {
+        font-size: 24pt;
+        padding: 20px;
+        border-radius: 10px;
+      }
+      .btn-primary,
+      .btn-secondary {
+        width: 100%;
+        margin: 10px 0;
+      }
+      .btn-primary {
+        background-color: #28a745;
+        border-color: #28a745;
+      }
+      .btn-secondary {
+        background-color: #6c757d;
+        border-color: #6c757d;
+      }
+      .btn-primary:hover,
+      .btn-secondary:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+      p.footer {
+        position: fixed;
+        bottom: 0;
+        left: 10px;
+        color: #bbb;
+      }
+      p.footer a {
+        color: #bbb;
+        text-decoration: none;
+      }
+      p.footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="h-100 d-flex align-items-center justify-content-center text-center"
+    >
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col">
+            <h1 id="title2">ExpressED: Loading Practice</h1>
+            <h3 id="bdata">Please wait, while we load this emotion</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <a href="/learn.html" class="btn btn-secondary">&larr; Go Back</a>
+          </div>
+          <div class="col">
+            <a
+              id="link"
+              href="/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=1"
+              class="btn btn-primary"
+              >Practice! &rarr;</a
+            >
+          </div>
+        </div>
+      </div>
     </div>
-    </div>
-</div>
-<p style="position: fixed; bottom: 0; left: 10pt;">~core/expressed v1.1.2 - <a href="/changelog.html">changelog</a> - made with <3 - last build 01/08/23 20:50:22Z</p>
+    <p class="footer">
+      ~core/expressed/s_ad1 v1.2.0 - <a href="/changelog.html">changelog</a> - made
+      with <3 - last build 05/22/24 20:50:22Z
+    </p>
     <script>
-        const params = new URLSearchParams(window.location.search);
-        if (!params.has("v")) {
-            window.location.href = "/";
-        }
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("v")) {
+        window.location.href = "/";
+      }
 
-        let emotions = ["Anger", "Disgust", "Fear", "Happiness", "Sadness", "Surprise", "Neutral"];
-        let emotion_descriptions = [
-            "<b>Tense Jaw and Clenched Teeth</b><br>" +
-            "Anger tightens the jaw, with visible teeth clenching and pronounced jaw muscles, revealing the effort to control intense emotions.<br>" +
-            "<br>" +
-            "<b>Narrowed Eyes and Intense Stare</b><br>" +
-            "Angry eyes narrow, eyebrows lower, and the gaze intensifies, conveying focused and heightened emotional intensity.<br>" +
-            "<br>" +
-            "<b>Flushed Complexion and Furrowed Forehead</b><br>" +
-            "Anger leads to a flushed complexion, especially in the cheeks, and a furrowed forehead, reflecting both physiological and mental responses to the emotion.",
-		"<b>Forehead and Eyebrows</b><br>: Start by wrinkling your forehead. It's like scrunching up a piece of paper - you're pulling your eyebrows closer together. At the same time, raise your eyebrows as if you're surprised or questioning something.		<b>Eyes</b><br> Narrow your eyes slightly, but not completely closed. It's similar to squinting when looking at something unclear or small.		<b>Nose</b><br> Wrinkle your nose. Imagine smelling something unpleasant or bad; this typically causes the nose to wrinkle and the cheeks to raise slightly.		<b>Mouth</b><br> Open your mouth slightly and pull the corners of your lips down. It’s like doing the opposite of a smile. Your upper lip might also raise a bit, making it seem like you’re snarling slightly.		<b>Overall Feeling</b><br> The overall sensation is a mix of showing you're displeased and trying to distance yourself from something disagreeable. It might feel like you're preparing to say \"ew\" or \"yuck.\"",
-		"<b>Wide Eyes</b><br> Open eyes as wide as possible<br>		<b>Raised Eyebrows</b><br> Raise eyebrows as much as possible and bring them closer together<br>		<b>Wide Mouth</b><br> Open your mouth wide, try gasping like you’re scared! For emphasis, slightly clench your jaw so your teeth have a gap between them. <br>		<b>Raise Shoulders</b><br> Bring your shoulders up, like you’re shrugging.<br>		<b>Overall Sensation</b><br> Pretend you just heard a scary noise, your body will tense up and you will gasp audibly.<br>",
+      let emotions = [
+        "Anger",
+        "Disgust",
+        "Fear",
+        "Happiness",
+        "Sadness",
+        "Surprise",
+        "Neutral",
+      ];
+      let emotion_descriptions = [
+        "<b>Tense Jaw and Clenched Teeth</b><br>Anger tightens the jaw, with visible teeth clenching and pronounced jaw muscles, revealing the effort to control intense emotions.<br><br><b>Narrowed Eyes and Intense Stare</b><br>Angry eyes narrow, eyebrows lower, and the gaze intensifies, conveying focused and heightened emotional intensity.<br><br><b>Flushed Complexion and Furrowed Forehead</b><br>Anger leads to a flushed complexion, especially in the cheeks, and a furrowed forehead, reflecting both physiological and mental responses to the emotion.",
+        "<b>Forehead and Eyebrows</b><br>Start by wrinkling your forehead. It's like scrunching up a piece of paper - you're pulling your eyebrows closer together. At the same time, raise your eyebrows as if you're surprised or questioning something.<br><b>Eyes</b><br>Narrow your eyes slightly, but not completely closed. It's similar to squinting when looking at something unclear or small.<br><b>Nose</b><br>Wrinkle your nose. Imagine smelling something unpleasant or bad; this typically causes the nose to wrinkle and the cheeks to raise slightly.<br><b>Mouth</b><br>Open your mouth slightly and pull the corners of your lips down. It’s like doing the opposite of a smile. Your upper lip might also raise a bit, making it seem like you’re snarling slightly.<br><b>Overall Feeling</b><br>The overall sensation is a mix of showing you're displeased and trying to distance yourself from something disagreeable. It might feel like you're preparing to say \"ew\" or \"yuck.\"",
+        "<b>Wide Eyes</b><br>Open eyes as wide as possible<br><b>Raised Eyebrows</b><br>Raise eyebrows as much as possible and bring them closer together<br><b>Wide Mouth</b><br>Open your mouth wide, try gasping like you’re scared! For emphasis, slightly clench your jaw so your teeth have a gap between them.<br><b>Raise Shoulders</b><br>Bring your shoulders up, like you’re shrugging.<br><b>Overall Sensation</b><br>Pretend you just heard a scary noise, your body will tense up and you will gasp audibly.",
+        "<b>Smile</b><br>The person's lips curve upward, forming a friendly and joyful smile.<br><b>Bright Eyes</b><br>Happy eyes often appear bright and lively. The muscles around the eyes may crinkle, forming crow's feet or laugh lines at the corners, indicating genuine happiness. The eyes may also be slightly narrowed, emphasizing the warmth and sincerity of the smile.<br><b>Relaxed Brow</b><br>The forehead is usually smooth and free from tension or furrowing when a person is happy. There are no signs of stress or worry, and the eyebrows may be slightly raised.",
+        "<b>Lower Your Eyebrows:</b><br>Gently bring your eyebrows down and closer together. You might feel a slight tension in your forehead. It's a subtle movement, not a frown, but more of a slight furrowing of the brows.<br><br><b>Relax Your Eyes:</b><br>Let your eyelids relax and droop slightly. Your eyes might feel a bit heavy, and you don't need to completely close them, but just let them soften. The area around your eyes might feel a bit more relaxed or less open than usual.<br><br><b>Slight Frown:</b><br>Allow the corners of your mouth to turn downwards. It's not a strong frown, but more like a gentle easing of the mouth corners down. You might feel a slight pull down on the muscles around your mouth.<br><br><b>Overall Facial Relaxation:</b><br>Generally, when someone is sad, their face isn't tense or tight. Let your face feel a bit more relaxed or less animated than usual.<br><br><b>Breathing and Mood:</b><br>Your breathing might be slower, and you might feel a bit of heaviness in your chest or a sense of stillness in your posture.",
+        "<b>Eyebrows and Forehead:</b><br>When someone is scared, their eyebrows are usually raised and curved. You can think of it like lifting your eyebrows as high as they can go, causing wrinkles to form on the forehead. This movement is often a reaction to surprise or shock.<br><br><b>Eyes:</b><br>The eyes open very wide. This is like trying to see as much as possible, to understand what's causing fear. The eyelids are pulled back, and sometimes people can’t blink when they are extremely frightened.<br><br><b>Nose and Cheeks:</b>The nose might wrinkle slightly, and the cheeks are tense. It's less pronounced than in expressions like disgust or anger, but there's still some tension there.<br><br><b>Mouth:</b><br>The mouth is often open when someone is scared. It might be wide open in a sort of gasp, or just slightly open. The lips are usually tense or stretched, and the jaw might drop a bit due to the shock or surprise of the fearful situation.<br><br><b>Overall Feeling:</b><br>Imagine suddenly feeling a rush of cold or a jolt of electricity that makes you extremely alert and tense. Your face reacts to this by opening up as much as possible – eyes wide to see danger, mouth open in shock, and the whole face tensed and alert.",
+      ];
 
-            "<b>Smile</b><br>" +
-            "The person's lips curve upward, forming a friendly and joyful smile.<br>" +
-            "<b>Bright Eyes</b><br>" +
-            " Happy eyes often appear bright and lively. The muscles around the eyes may crinkle, forming crow's feet or laugh lines at the corners, indicating genuine happiness. The eyes may also be slightly narrowed, emphasizing the warmth and sincerity of the smile.<br>" +
-            "<b>Relaxed Brow</b><br>" +
-            "The forehead is usually smooth and free from tension or furrowing when a person is happy. There are no signs of stress or worry, and the eyebrows may be slightly raised.",
-
-            "<b>Lower Your Eyebrows:</b><br> Gently bring your eyebrows down and closer together. You might feel a slight tension in your forehead. It's a subtle movement, not a frown, but more of a slight furrowing of the brows.<br>" +
-            "<br>" +
-            "<b>Relax Your Eyes:</b><br> Let your eyelids relax and droop slightly. Your eyes might feel a bit heavy, and you don't need to completely close them, but just let them soften. The area around your eyes might feel a bit more relaxed or less open than usual.<br>" +
-            "<br>" +
-            "<b>Slight Frown:</b><br> Allow the corners of your mouth to turn downwards. It's not a strong frown, but more like a gentle easing of the mouth corners down. You might feel a slight pull down on the muscles around your mouth.<br>" +
-            "<br>" +
-            "<b>Overall Facial Relaxation:</b><br> Generally, when someone is sad, their face isn't tense or tight. Let your face feel a bit more relaxed or less animated than usual.<br>" +
-            "<br>" +
-            "<b>Breathing and Mood:</b><br> Your breathing might be slower, and you might feel a bit of heaviness in your chest or a sense of stillness in your posture.<br>",
-
-
-
-            "<b>Eyebrows and Forehead:</b><br> When someone is scared, their eyebrows are usually raised and curved. You can think of it like lifting your eyebrows as high as they can go, causing wrinkles to form on the forehead. This movement is often a reaction to surprise or shock.<br>" +
-            "<br>" +
-            "<b>Eyes:</b><br> The eyes open very wide. This is like trying to see as much as possible, to understand what's causing fear. The eyelids are pulled back, and sometimes people can’t blink when they are extremely frightened.<br>" +
-            "<br>" +
-            "<b>Nose and Cheeks:</b> The nose might wrinkle slightly, and the cheeks are tense. It's less pronounced than in expressions like disgust or anger, but there's still some tension there.<br>" +
-            "<br>" +
-            "<b>Mouth:</b><br> The mouth is often open when someone is scared. It might be wide open in a sort of gasp, or just slightly open. The lips are usually tense or stretched, and the jaw might drop a bit due to the shock or surprise of the fearful situation.<br>" +
-            "<br>" +
-            "<b>Overall Feeling:</b><br> Imagine suddenly feeling a rush of cold or a jolt of electricity that makes you extremely alert and tense. Your face reacts to this by opening up as much as possible – eyes wide to see danger, mouth open in shock, and the whole face tensed and alert.<br>"
-        ];
-
-        document.getElementById("title2").innerText = "ExpressED: Learning " + emotions[Number(params.get("v"))];
-        document.getElementById("title").innerText = "ExpressED | Learning " + emotions[Number(params.get("v"))];
-        document.getElementById("bdata").innerHTML = emotion_descriptions[Number(params.get("v"))];
-        document.getElementById("link").href = "/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=" + params.get("v");
+      document.getElementById("title2").innerText =
+        "ExpressED: Learning " + emotions[Number(params.get("v"))];
+      document.getElementById("title").innerText =
+        "ExpressED | Learning " + emotions[Number(params.get("v"))];
+      document.getElementById("bdata").innerHTML =
+        emotion_descriptions[Number(params.get("v"))];
+      document.getElementById("link").href =
+        "/v_dl/sdk/www/Samples/ShowcaseDemo/ShowcaseDemo.html?v=" +
+        params.get("v");
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

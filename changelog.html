@@ -1,41 +1,104 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>ExpressED | Changelog</title>
     <link rel="stylesheet" href="/bootstrap.min.css" />
-</head>
-<body>
-<div class="h-100 d-flex align-items-center justify-content-center text-center">
-    <div>
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <h1>ExpressED: Changelog</h1>
-                    <h2>1.1.0 - 12/06/23</h2>
-                    <p>Added descriptions. Added logo to splash page. Made text bigger. Removed Neutral. Added back button to practice screen.</p>
-                    <h2>1.0.2 - 11/27/23</h2>
-                    <p>Made text bigger on the learn page.</p>
-                    <hr>
-                    <h2>1.0.1 - 11/20/23</h2>
-                    <p>Slight theme changes. Learn window layout modified to be more friendly to screen readers. Visage watermarks removed. Version footer added.</p>
-                    <hr>
-                    <h2>1.0.0 - 11/20/23</h2>
-                    <p>Initial release! Everything added.</p>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <a href="/" class="btn btn-secondary p-5 w-100" style="font-size: 30pt;">Go Back</a>
-                </div>
-            </div>
+    <style>
+      body {
+        background-color: #000;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        margin: 0;
+      }
+      h1 {
+        margin-bottom: 20px;
+        font-size: 2.5rem;
+        text-align: center;
+        opacity: 0;
+        animation: fadeIn 1s forwards;
+      }
+      h2 {
+        margin-top: 20px;
+        font-size: 2rem;
+        opacity: 0;
+        animation: fadeIn 2s forwards;
+      }
+      p {
+        font-size: 1.25rem;
+        opacity: 0;
+        animation: fadeIn 3s forwards;
+      }
+      .btn {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+        opacity: 0;
+        animation: fadeIn 4s forwards;
+      }
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+      .changelog-container {
+        max-width: 800px;
+        width: 100%;
+      }
+      .version-footer {
+        position: fixed;
+        bottom: 0;
+        left: 10pt;
+        color: #fff;
+        opacity: 0;
+        animation: fadeIn 5s forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="changelog-container text-center">
+      <h1>ExpressED: Changelog</h1>
+      <div>
+        <h2>1.2.0 - 5/22/24</h2>
+        <p>UI improved. Mastery Added (in development).</p>
+        <hr />
+        <h2>1.1.0 - 12/06/23</h2>
+        <p>
+          Added descriptions. Added logo to splash page. Made text bigger.
+          Removed Neutral. Added back button to practice screen.
+        </p>
+        <hr />
+        <h2>1.0.2 - 11/27/23</h2>
+        <p>Made text bigger on the learn page.</p>
+        <hr />
+        <h2>1.0.1 - 11/20/23</h2>
+        <p>
+          Slight theme changes. Learn window layout modified to be more friendly
+          to screen readers. Visage watermarks removed. Version footer added.
+        </p>
+        <hr />
+        <h2>1.0.0 - 11/20/23</h2>
+        <p>Initial release! Everything added.</p>
+      </div>
+      <div class="mt-4">
+        <a href="/" class="btn btn-secondary w-100">Go Back</a>
+      </div>
     </div>
-    </div>
-</div>
-<p style="position: fixed; bottom: 0; left: 10pt;">~core/expressed v1.1.1 - <a href="/changelog.html">changelog</a> - made with <3 - last build 01/08/23 20:50:22Z</p>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-</body>
+    <p class="version-footer">
+      ~core/expressed/s_ad1 v1.2.0 -
+      <a href="/changelog.html" style="color: #fff">changelog</a> - made with <3
+      - last build 01/08/23 20:50:22Z
+    </p>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
